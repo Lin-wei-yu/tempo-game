@@ -1,0 +1,17 @@
+*.dll
+.vscode/
+bin/
+obj/
+*/
+allegro*
+*.depend
+*.layout
+*_file_list
+*.jpg
+*.png
+*.wav
+*.ogg
+*.ttf
+*.otf
+*.txt
+*.db
