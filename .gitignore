@@ -16,3 +16,5 @@ allegro*
 *.txt
 *.db
 asset*
+Makefile*
+*.out
