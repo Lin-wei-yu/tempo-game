@@ -17,3 +17,5 @@ allegro*
 *.db
 Makefile*
 *.out
+game
+.DS*
