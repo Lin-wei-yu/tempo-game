@@ -88,7 +88,7 @@ GameWindow::GameWindow()
         show_err_msg(-1);
 
     printf("Game Initializing...\n");
-
+    // al_set_new_display_flags(ALLEGRO_FULLSCREEN);
     display = al_create_display(WINDOW_WIDTH, WINDOW_HEIGHT);
     event_queue = al_create_event_queue();
 
@@ -160,13 +160,13 @@ void GameWindow::game_reset()
     // stop sample instance
     // al_stop_sample_instance(backgroundSound);
     // al_stop_sample_instance(startSound);
-
+    
     // stop timer
     al_stop_timer(timer);
 
     // init game objects
     game_map = new Map();
-    monsters.push_back(new Monster("assets/monster/undead_santa.png"));
+    // monsters.push_back(new Monster("assets/monster/undead_santa.png"));
     mainCharacter = new MainCharacter("assets/main/TEMP_medic.png");
 }
 
@@ -196,9 +196,6 @@ int GameWindow::process_event()
     int i;
     int instruction = GAME_CONTINUE;
 
-    // offset for pause window
-    int offsetX = FIELD_WIDTH/2 - 200;
-    int offsetY = FIELD_HEIGHT/2 - 200;
 
     al_wait_for_event(event_queue, &event);
     redraw = false;
@@ -272,23 +269,32 @@ int GameWindow::process_event()
 
 void GameWindow::draw_running_map()
 {
+
+    
     unsigned int i, j;
     al_clear_to_color(al_map_rgb(0, 0, 0));
-
+    
     // 2 times bigger
-    ALLEGRO_TRANSFORM prev, trans;
-    al_copy_transform(&prev, al_get_current_transform());
-    al_identity_transform(&trans);
-    al_scale_transform(&trans, 4, 4);
-    al_use_transform(&trans);
-    al_clear_to_color(al_map_rgb(100, 100, 100));
-    game_map -> draw();
+    // ALLEGRO_TRANSFORM prev, trans;
+    // al_copy_transform(&prev, al_get_current_transform());
+    // al_identity_transform(&trans);
+    // al_scale_transform(&trans, 4, 4);
+    // al_use_transform(&trans);
+    // al_clear_to_color(al_map_rgb(100, 100, 100));
+    game_map -> draw_floor();
     for (auto monster : monsters){
         monster -> draw();
     }
     mainCharacter -> draw();
-
-    al_use_transform(&prev);
+    game_map -> draw_block();
+    int character_y, character_x;
+    character_y = mainCharacter -> getY() / GRID_SIZE;
+    character_x = mainCharacter -> getX() / GRID_SIZE;
+    printf("%d %d\n", character_y, character_x);
+    if(game_map->map_type[character_y-1][character_x] != BlockType::FLOOR_ONE && game_map->map_type[character_y-1][character_x] != BlockType::FLOOR_TWO) {
+        mainCharacter -> draw();
+    }
+    // al_use_transform(&prev);
 
     // al_draw_filled_rectangle(FIELD_HEIGHT, 0, WINDOW_WIDTH, WINDOW_HEIGHT, al_map_rgb(100, 100, 100));
     al_flip_display();

@@ -62,7 +62,7 @@ public:
     void draw_running_map();
 
     // process of updated event
-    int process_event(){};
+    int process_event();
     // detect if mouse hovers over a rectangle
     bool mouse_hover(int, int, int, int);
 

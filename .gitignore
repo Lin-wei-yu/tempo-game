@@ -15,6 +15,5 @@ allegro*
 *.otf
 *.txt
 *.db
-asset*
 Makefile*
 *.out
