@@ -1,11 +1,12 @@
 #include "GameWindow.h"
 #include <iostream>
-using namespace std;
+
+
 int main(int argc, char *argv[])
 {
-    GameWindow *TempoGame= new GameWindow();
-    TempoGame->game_play();
+    GameWindow *tempoGame= new GameWindow();
+    tempoGame->game_play();
 
-    delete TempoGame;
+    delete tempoGame;
     return 0;
 }
