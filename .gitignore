@@ -2,13 +2,12 @@
 .vscode/
 bin/
 obj/
-*/
+.DS_Store
 allegro*
 *.depend
 *.layout
 *_file_list
 *.jpg
-*.png
 *.wav
 *.ogg
 *.ttf
