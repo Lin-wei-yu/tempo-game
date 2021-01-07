@@ -2,6 +2,10 @@
 #define MAINWINDOW_H_INCLUDED
 
 #include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_image.h>
 #include <allegro5/allegro_acodec.h>
 #include <vector>
 #include <list>
@@ -49,7 +53,7 @@ public:
     void draw_running_map();
 
     // process of updated event
-    int process_event();
+    int process_event(){};
     // detect if mouse hovers over a rectangle
     bool mouse_hover(int, int, int, int);
     // detect if a tower will be constructed on road

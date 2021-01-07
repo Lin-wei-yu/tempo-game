@@ -1,5 +1,6 @@
 #include "GameWindow.h"
-
+#include "global.h"
+#include <iostream>
 GameWindow::GameWindow()
 {
 
@@ -8,7 +9,7 @@ GameWindow::GameWindow()
 
     printf("Game Initializing...\n");
 
-    display = al_create_display(window_width, window_height);
+    display = al_create_display(WINDOW_WIDTH, WINDOW_HEIGHT);
     event_queue = al_create_event_queue();
 
     timer = al_create_timer(1.0 / FPS);
@@ -30,9 +31,9 @@ GameWindow::GameWindow()
     al_install_mouse();    // install mouse event
     al_install_audio();    // install audio event
 
-    font = al_load_ttf_font("Caviar_Dreams_Bold.ttf",12,0); // load small font
-    Medium_font = al_load_ttf_font("Caviar_Dreams_Bold.ttf",24,0); //load medium font
-    Large_font = al_load_ttf_font("Caviar_Dreams_Bold.ttf",36,0); //load large font
+    // font = al_load_ttf_font("Caviar_Dreams_Bold.ttf",12,0); // load small font
+    // Medium_font = al_load_ttf_font("Caviar_Dreams_Bold.ttf",24,0); //load medium font
+    // Large_font = al_load_ttf_font("Caviar_Dreams_Bold.ttf",36,0); //load large font
 
     al_register_event_source(event_queue, al_get_display_event_source(display));
     al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -44,6 +45,10 @@ GameWindow::GameWindow()
     game_init();
 }
 
+void
+GameWindow::show_err_msg(int msg) {
+
+}
 
 void GameWindow::game_init()
 {
@@ -52,21 +57,6 @@ void GameWindow::game_init()
 
 void GameWindow::game_reset()
 {
-    // reset game and begin
-    for(auto&& child : towerSet) {
-        delete child;
-    }
-    towerSet.clear();
-    monsterSet.clear();
-
-
-    selectedTower = -1;
-    lastClicked = -1;
-    Coin_Inc_Count = 0;
-    Monster_Pro_Count = 0;
-    mute = false;
-    redraw = false;
-    menu->Reset();
 
     // stop sample instance
     al_stop_sample_instance(backgroundSound);
@@ -106,6 +96,11 @@ void GameWindow::game_begin()
 
     al_start_timer(timer);
     al_start_timer(monster_pro);
+}
+
+void GameWindow::draw_running_map() {
+
+
 }
 
 int GameWindow::game_run()
