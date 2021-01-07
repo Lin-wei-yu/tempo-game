@@ -12,9 +12,15 @@
 #include <vector>
 #include <list>
 #include <time.h>
+#include "global.h"
 #include "Map.h"
 #include "Monster.h"
 #include "MainCharacter.h"
+#include "monsters/GreenSlime.h"
+#include "monsters/BlueSlime.h"
+#include "monsters/RedBat.h"
+#include "Reward.h"
+#include "rewards/Coin.h"
 
 
 #define GAME_INIT -1
@@ -26,7 +32,7 @@
 #define GAME_TERMINATE 5
 #define GAME_NEXT_LEVEL 6
 #define GAME_EXIT 7
-
+ 
 // clock rate
 const float FPS = 60;
 
@@ -34,8 +40,8 @@ const float FPS = 60;
 const int LevelNum = 4;
 
 // 1 coin every 2 seconds
-const int CoinSpeed = FPS * 2;
-const int Coin_Time_Gain = 1;
+// const int CoinSpeed = FPS * 2;
+// const int Coin_Time_Gain = 1;
 
 class GameWindow
 {
@@ -77,7 +83,10 @@ private:
 
     ALLEGRO_EVENT_QUEUE *event_queue = NULL;
     ALLEGRO_EVENT event;
-    ALLEGRO_TIMER *timer = NULL;
+    ALLEGRO_TIMER *basic_timer = NULL;
+    int basic_cycle = 0;
+    ALLEGRO_TIMER *quater_timer = NULL; // 1/4 tempo.
+    int beat_cnt = 0; // four tempo count = 1 tempo
 
     ALLEGRO_SAMPLE *sample = NULL;
     ALLEGRO_SAMPLE_INSTANCE *startSound = NULL;
@@ -87,14 +96,13 @@ private:
 
     // games' character and object
     Map* game_map;
-    vector<Monster*> monsters;
-    MainCharacter* mainCharacter;
-
+    list<Monster*> monsters;
+    MainCharacter* main_character;
+    list<Reward*> rewards;
     // utility variable
     int mouse_x, mouse_y;
     bool redraw = false;
     bool mute = false;
-    
 };
 
 #endif // MAINWINDOW_H_INCLUDED

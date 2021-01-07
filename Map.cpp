@@ -3,9 +3,9 @@
 Map::Map(){
     basic = al_load_bitmap("assets/block/wall_shop_crypt.png");
 
-    blocks.push_back({5,5});
-    blocks.push_back({5,5 + 24});
-    blocks.push_back({5,5 + 24*2});
+    blocks.push_back({0,0});
+    blocks.push_back({0,0 + 24});
+    blocks.push_back({0,0 + 24*2});
 }
 Map::~Map(){
 

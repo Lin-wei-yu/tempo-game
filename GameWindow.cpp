@@ -1,7 +1,4 @@
 #include "GameWindow.h"
-#include "global.h"
-#include <iostream>
-
 #define WHITE al_map_rgb(255, 255, 255)
 #define BLACK al_map_rgb(0, 0, 0)
 #define ORANGE_LIGHT al_map_rgb(255, 196, 87)
@@ -12,12 +9,23 @@
 #define min(a, b) ((a) < (b)? (a) : (b))
 #define max(a, b) ((a) > (b)? (a) : (b))
 
+/*
+GameWindow() -> game_init() -> 
+game_play() -> game_begin() -> game_run()
+*/
 
-
-
+void mainCharacter_attack( MainCharacter* main_character, Monster* monster){
+    main_character->attack();
+    monster->be_attacked(main_character->get_power());
+}
+void monster_attack(Monster* monster, MainCharacter* main_character){
+    monster->attack();
+    main_character->be_attacked(monster->get_power());
+    // exit(0);
+}
 
 void GameWindow::game_init()
-{
+{   
     char buffer[50];
     // load image 
     // icon = al_load_bitmap("./icon.png");
@@ -55,6 +63,8 @@ bool GameWindow::mouse_hover(int startx, int starty, int width, int height)
 }
 void GameWindow::game_play()
 {
+    // cout << MON_DOC.ACTION["ABC"]<<"play"<<endl;
+
     int msg;
 
     srand(time(NULL));
@@ -88,13 +98,13 @@ GameWindow::GameWindow()
         show_err_msg(-1);
 
     printf("Game Initializing...\n");
-
+    //al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
     display = al_create_display(WINDOW_WIDTH, WINDOW_HEIGHT);
     event_queue = al_create_event_queue();
 
-    timer = al_create_timer(1.0 / FPS);
-
-    if(timer == NULL)
+    basic_timer = al_create_timer(1.0 / FPS);
+    quater_timer = al_create_timer(8.0 / FPS);
+    if(basic_timer == NULL || quater_timer == NULL)
         show_err_msg(-1);
 
     if (display == NULL || event_queue == NULL)
@@ -118,8 +128,8 @@ GameWindow::GameWindow()
     al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_mouse_event_source());
 
-    al_register_event_source(event_queue, al_get_timer_event_source(timer));
-
+    al_register_event_source(event_queue, al_get_timer_event_source(basic_timer));
+    al_register_event_source(event_queue, al_get_timer_event_source(quater_timer));
     game_init();
 }
 
@@ -131,7 +141,8 @@ void GameWindow::game_begin()
     // while(al_get_sample_instance_playing(startSound));
     // al_play_sample_instance(backgroundSound);
 
-    al_start_timer(timer);
+    al_start_timer(basic_timer);
+    al_start_timer(quater_timer);
 }
 
 int GameWindow::game_run()
@@ -139,7 +150,6 @@ int GameWindow::game_run()
     int error = GAME_CONTINUE;
 
     if (!al_is_event_queue_empty(event_queue)) {
-
         error = process_event();
     }
     return error;
@@ -149,25 +159,77 @@ int GameWindow::game_update()
 {   /*
     update the status of every object. lives, position validation ...
     */
+    if (beat_cnt == 4){ // moving tempo
+        
+        int next_x = main_character->get_next_x();
+        int next_y = main_character->get_next_y();
+        int pos_x = main_character->get_x();
+        int pos_y = main_character->get_x();
+        for(auto it=monsters.begin(); it!=monsters.end(); ) {
+            Monster* monster = (*it);
 
+            if(next_x == monster->get_x() && next_y == monster->get_y()) {
+                // check if main character kill monsters
+                mainCharacter_attack( main_character, monster);
+                if (monster->is_dead()){
+                    rewards.push_back(new Coin(1, monster->get_x(), monster->get_y()));
+                    it = monsters.erase(it);
+                    delete monster;
+
+                }else it++;
+            }else if ( next_x == monster->get_next_x() && next_y == monster->get_next_y()){
+                // check if monster kill main character
+                monster_attack(monster, main_character);
+                if (main_character->is_dead()){
+                    // exit(0); // game over
+                }
+                it++;
+            }else {
+                it++;
+            }
+        }
+        for (auto monster : monsters){
+            monster->move();
+        }
+        main_character->move();
+        beat_cnt = 0;
+    }
+
+   
+   return GAME_CONTINUE;
 }
 
 void GameWindow::game_reset()
-{
-    /*
-    new object
+{   /*
+    1. clear object 
+    2. new object
     */
+    for (auto& monster : monsters){
+        delete monster;
+    }
+    monsters.clear();
+    for (auto reward : rewards){
+        delete reward;
+    }
+    rewards.clear();
+
     // stop sample instance
     // al_stop_sample_instance(backgroundSound);
     // al_stop_sample_instance(startSound);
 
     // stop timer
-    al_stop_timer(timer);
+    al_stop_timer(basic_timer);
+    al_stop_timer(quater_timer);
 
     // init game objects
     game_map = new Map();
-    monsters.push_back(new Monster("assets/monster/undead_santa.png"));
-    mainCharacter = new MainCharacter("assets/main/TEMP_medic.png");
+    // monsters.push_back(moo);
+
+    // monsters.push_back(new GreenSlime());
+    // monsters.push_back(new BlueSlime());
+    monsters.push_back(new BlueSlime());
+    // monsters.push_back(new RedBat());
+    main_character = new MainCharacter("assets/main/TEMP_medic.png");
 }
 
 void GameWindow::game_destroy()
@@ -179,8 +241,8 @@ void GameWindow::game_destroy()
     // al_destroy_font(font);
     // al_destroy_font(Medium_font);
     // al_destroy_font(Large_font);
-
-    al_destroy_timer(timer);
+    al_destroy_timer(quater_timer);
+    al_destroy_timer(basic_timer);
 
     // al_destroy_bitmap(icon);
     // al_destroy_bitmap(background);
@@ -196,27 +258,36 @@ int GameWindow::process_event()
     int i;
     int instruction = GAME_CONTINUE;
 
-    // offset for pause window
-    int offsetX = FIELD_WIDTH/2 - 200;
-    int offsetY = FIELD_HEIGHT/2 - 200;
+
 
     al_wait_for_event(event_queue, &event);
     redraw = false;
 
     if(event.type == ALLEGRO_EVENT_TIMER) {
-        if(event.timer.source == timer) {
+        if (event.timer.source == quater_timer){
             redraw = true;
-
-                al_stop_timer(timer);
-                // return GAME_EXIT;
-        
+            beat_cnt ++ ;
+            // monster's animation
+            for (auto monster : monsters){
+                monster->change_action();
+            }
+            if (beat_cnt == 4) { // 4 beat move once
+                // monsters early move
+                for (auto monster : monsters){
+                    monster->early_move();
+                }
+                // main character early move
+                main_character->early_move();
+            }else {
+                //main_character->change_dir(NON);
+            }
         }
     }
     else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
         return GAME_EXIT;
     }
     else if(event.type == ALLEGRO_EVENT_KEY_DOWN) {
-        redraw = true;
+        redraw = false;
         switch(event.keyboard.keycode) {
 
             case ALLEGRO_KEY_P:
@@ -230,16 +301,16 @@ int GameWindow::process_event()
                     al_play_sample_instance(backgroundSound);
                 break;
             case ALLEGRO_KEY_UP:
-                mainCharacter -> move(UP);
+                main_character->change_dir(UP);
                 break;
             case ALLEGRO_KEY_DOWN:
-                mainCharacter -> move(DOWN);
+                main_character->change_dir(DOWN);
                 break;
             case ALLEGRO_KEY_LEFT:
-                mainCharacter -> move(LEFT);
+                main_character->change_dir(LEFT);
                 break;
             case ALLEGRO_KEY_RIGHT:
-                mainCharacter -> move(RIGHT);
+                main_character->change_dir(RIGHT);
                 break;
 
       
@@ -247,15 +318,11 @@ int GameWindow::process_event()
     }
     else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
         if(event.mouse.button == 1) {
-            // mouse_hover(0, 0, field_width, field_height)
-            // 
         }
-
     }
     else if(event.type == ALLEGRO_EVENT_MOUSE_AXES){
         mouse_x = event.mouse.x;
         mouse_y = event.mouse.y;
-
     }
 
     if(redraw) {
@@ -281,13 +348,15 @@ void GameWindow::draw_running_map()
     al_identity_transform(&trans);
     al_scale_transform(&trans, 4, 4);
     al_use_transform(&trans);
-    al_clear_to_color(al_map_rgb(100, 100, 100));
+    al_clear_to_color(al_map_rgb(0, 0, 0));
     game_map -> draw();
     for (auto monster : monsters){
         monster -> draw();
     }
-    mainCharacter -> draw();
-
+    main_character -> draw();
+    for (auto reward : rewards){
+        reward -> draw();
+    }
     al_use_transform(&prev);
 
     // al_draw_filled_rectangle(FIELD_HEIGHT, 0, WINDOW_WIDTH, WINDOW_HEIGHT, al_map_rgb(100, 100, 100));
