@@ -31,6 +31,9 @@
 #include "rewards/Coin.h"
 #include "TempoHeart.h"
 #include "items/Bomb.h"
+#include "items/Shovel.h"
+#include "items/Torch.h"
+#include "items/Dagger.h"
 
 
 #define GAME_INIT -1
@@ -88,7 +91,6 @@ public:
 
 private:
     ALLEGRO_BITMAP *icon;
-    ALLEGRO_BITMAP *background = NULL;
 
     ALLEGRO_DISPLAY* display = NULL;
     ALLEGRO_FONT *font = NULL;

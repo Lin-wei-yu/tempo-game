@@ -27,7 +27,9 @@ public:
     void find_money(int num);
     void draw_text(string str,int x, int y);
     void find_item(Item* item);
-    void shovel_level();
+    bool shovable(Block block);
+    void draw_items();
+    void draw_life_and_coin();
 private:
     DIR tmp_dir;
     float lives;

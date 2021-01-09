@@ -13,10 +13,11 @@ class Block:public Object{
 public:
     Block(int, int, BlockType, ALLEGRO_BITMAP*);
     ~Block(){};
-
     void draw();
+    int get_level();
 private:
     BlockType type;
+    int level;
 };
 
 

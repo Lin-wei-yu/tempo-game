@@ -4,10 +4,9 @@
 
 class Dagger: public Item{
 public:
-    Dagger(ALLEGRO_BITMAP* img);
+    Dagger(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img );
     ~Dagger(){};
 protected:
-    ItemFunc item_func;
     int power;
 };
 

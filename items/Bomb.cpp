@@ -1,11 +1,12 @@
 #include "Bomb.h"
-Bomb::Bomb(ALLEGRO_BITMAP* img):Item(img){
+Bomb::Bomb(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img ):Item(img, slot_img){
     //
     item_type = bomb;
+    item_level = 1;
+    num_animation = 5;
     //
     start_count = false;
     beat_cnt = 0;
-    num_animation = 5;
     power = 1;
 
 }
@@ -22,6 +23,7 @@ void Bomb::draw(){
         al_draw_scaled_bitmap(img, 0, 0, sw, h, pos_x, pos_y, sw, h, 0);
     }
 }
+
 void Bomb::pass_beat(){
     if (start_count){
         beat_cnt ++;

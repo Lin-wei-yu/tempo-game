@@ -37,17 +37,6 @@ void MainCharacter::draw(){
     int w = al_get_bitmap_width(img);
     int h = al_get_bitmap_height(img);
     al_draw_scaled_bitmap(img, 0, 0, w/2, h/2, pos_x, pos_y - CHARACTER_OFFSET, w/2, h/2, 0);
-    // draw lives
-    w = al_get_bitmap_width(heart_imgs[0]);
-    int remain = lives;
-    for (int i=0; i<5; i++){
-        if (remain <= 0) al_draw_bitmap(heart_imgs[0], 500+i*w, 20 ,0);
-        else if (remain < 1) al_draw_bitmap(heart_imgs[1], 500+i*w, 20 ,0);
-        else al_draw_bitmap(heart_imgs[2], 500+i*w, 20 ,0);
-        remain --;
-    }
-    // draw money
-    al_draw_bitmap(coin_img, 620, 20,0);
 }
 void MainCharacter::move(){
     if (move_status == leave && body_status == healthy){
@@ -122,10 +111,49 @@ void MainCharacter::find_money(int num){
 void MainCharacter::find_item(Item* item){
     item_list[item->get_type()].push_back(item);
 }
-void MainCharacter::shovel_level(Block* block){
+bool MainCharacter::shovable(Block block){
     for (auto shovel : item_list[shovel]){
-        shovel
+        if (shovel->get_level() >= block.get_level() ){
+            return true;
+        };
     }
+    return false;
 }
 
+void MainCharacter::draw_items(){
+    // draw
+    int offset_x = 10;
+    int offset_y = 10;
+    int item_idx = 0;
+    int item_width = 40;
+    for (auto shovel: item_list[shovel]){
+        shovel -> show(offset_x, offset_y+item_idx*item_width);
+        item_idx ++;
+    }
+    for (auto bomb: item_list[bomb]){
+        bomb -> show(offset_x, offset_y+item_idx*item_width);
+        item_idx ++;
+    }
+    for (auto attack_tool: item_list[attack_tool]){
+        attack_tool -> show(offset_x, offset_y+item_idx*item_width);
+        item_idx ++;
+    }
+    for (auto torch: item_list[torch]){
+        torch -> show(offset_x, offset_y+item_idx*item_width);
+        item_idx ++;
+    }
+}
+void MainCharacter::draw_life_and_coin(){
+    // draw lives
+    int w = al_get_bitmap_width(heart_imgs[0]);
+    int remain = lives;
+    for (int i=0; i<5; i++){
+        if (remain <= 0) al_draw_bitmap(heart_imgs[0], 500+i*w, 20 ,0);
+        else if (remain < 1) al_draw_bitmap(heart_imgs[1], 500+i*w, 20 ,0);
+        else al_draw_bitmap(heart_imgs[2], 500+i*w, 20 ,0);
+        remain --;
+    }
+    // draw coin
+    al_draw_bitmap(coin_img, 620, 20,0);
+}
 
