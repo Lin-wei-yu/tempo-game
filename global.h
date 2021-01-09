@@ -14,10 +14,10 @@
 #define GRID_SIZE 24
 #include <map>
 #include <string>
-
+#define ENLARGE_PARAM 4
 // direction
-enum DIR{UP, DOWN, LEFT, RIGHT};
-
-
-
+typedef enum _DIR {UP, DOWN, LEFT, RIGHT, NON} DIR;
+#define DIR_KINDS 4
+// for tempo
+#define BEAT_PER_TEMPO 8
 #endif // GLOBAL_H_INCLUDED

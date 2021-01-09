@@ -36,10 +36,37 @@
 			<Add option="-Wall" />
 			<Add directory="allegro/include" />
 		</Compiler>
+		<Unit filename="Block.cpp" />
+		<Unit filename="Block.h" />
 		<Unit filename="GameWindow.cpp" />
 		<Unit filename="GameWindow.h" />
 		<Unit filename="Main.cpp" />
+		<Unit filename="MainCharacter.cpp" />
+		<Unit filename="MainCharacter.h" />
+		<Unit filename="Map.cpp" />
+		<Unit filename="Map.h" />
+		<Unit filename="Monster.cpp" />
+		<Unit filename="Monster.h" />
+		<Unit filename="Object.h" />
+		<Unit filename="Reward.cpp" />
+		<Unit filename="Reward.h" />
+		<Unit filename="TempoHeart.cpp" />
+		<Unit filename="TempoHeart.h" />
 		<Unit filename="global.h" />
-		<Extensions />
+		<Unit filename="monsters/BlueSlime.cpp" />
+		<Unit filename="monsters/BlueSlime.h" />
+		<Unit filename="monsters/GreenSlime.cpp" />
+		<Unit filename="monsters/GreenSlime.h" />
+		<Unit filename="monsters/RedBat.cpp" />
+		<Unit filename="monsters/RedBat.h" />
+		<Unit filename="monsters/Zombie.cpp" />
+		<Unit filename="monsters/Zombie.h" />
+		<Unit filename="rewards/Coin.cpp" />
+		<Unit filename="rewards/Coin.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
