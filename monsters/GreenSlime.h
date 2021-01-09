@@ -1,13 +1,14 @@
 #ifndef GREENSLIME_H_INCLUDED
 #define GREENSLIME_H_INCLUDED
 #include "../Monster.h"
+#include <allegro5/allegro5.h>
 #include <string>
 class GreenSlime:public Monster{
 public: 
-    GreenSlime();
+    GreenSlime(ALLEGRO_BITMAP* img);
     ~GreenSlime();
-    void move();
-    void early_move();
-    void get_reward(){};
+    void move() override;
+    void early_move() override;
+    void get_reward() override{};
 };
 #endif

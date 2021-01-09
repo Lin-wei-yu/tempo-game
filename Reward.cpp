@@ -1,5 +1,7 @@
 #include "Reward.h"
-
+Reward::Reward(){
+    hidden = false;
+}
 void Reward::draw(){
     int w = al_get_bitmap_width(img);
     int h = al_get_bitmap_height(img);

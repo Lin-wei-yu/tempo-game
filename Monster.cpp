@@ -3,19 +3,23 @@
 using namespace std;
 // monster manual
 // static MonsterDOC monster_manual;
-Monster::Monster():Object(){
-    
+Monster::Monster(ALLEGRO_BITMAP* img):Object(){
+    // declare in object.h
+    this -> img = img;
     pos_x = (rand()%5 )* 24;
     pos_y = (rand()%5 )* 24;
-    hidden = false;
+
+    // declare in monster.h
+    cur_dir = NON;
+    tmp_dir = NON;
     cur_tempo = 0;
     cur_action = 0;
-    cur_dir = NON;
-    temp_dir = NON;
     body_status = healthy;
     move_status = stay;
     next_x = pos_x;
     next_y = pos_y;
+    hidden = false;
+    beat_cnt = 0;
 }
 Monster::~Monster(){}
 void Monster::draw(){
@@ -44,7 +48,7 @@ void Monster::be_attacked(int power){
     lives = lives - power;
     body_status = injured;
 }
-int Monster::get_power(){
+float Monster::get_power(){
     return power;
 }
 int Monster::get_next_x(){
@@ -52,6 +56,16 @@ int Monster::get_next_x(){
 }
 int Monster::get_next_y(){
     return next_y;
+}
+int Monster::get_drop_money(){
+    return drop_money;
+}
+void Monster::pass_beat(){
+    beat_cnt++;
+    if (beat_cnt == beat_of_change){
+        change_action();
+        beat_cnt = 0;
+    }
 }
 
 

@@ -2,15 +2,13 @@
 #define REDBAT_H_INCLUDED
 #include "../Monster.h"
 #include "../global.h"
-#include "../MainCharacter.h"
 #include <string>
 class RedBat:public Monster{
 public: 
-    RedBat();
+    RedBat(ALLEGRO_BITMAP* img);
     ~RedBat();
-    void move();   
-    void early_move(); 
-    void get_reward(){};
-
+    void move() override;   
+    void early_move() override; 
+    void get_reward() override{};
 };
 #endif

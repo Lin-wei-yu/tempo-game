@@ -9,9 +9,12 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_primitives.h>
+#include <iostream>
 #include <vector>
 #include <list>
+#include <map>
 #include <time.h>
+#include <string>
 #include "global.h"
 #include "Map.h"
 #include "Monster.h"
@@ -19,8 +22,10 @@
 #include "monsters/GreenSlime.h"
 #include "monsters/BlueSlime.h"
 #include "monsters/RedBat.h"
+#include "monsters/Zombie.h"
 #include "Reward.h"
 #include "rewards/Coin.h"
+#include "TempoHeart.h"
 
 
 #define GAME_INIT -1
@@ -42,7 +47,7 @@ const int LevelNum = 4;
 // 1 coin every 2 seconds
 // const int CoinSpeed = FPS * 2;
 // const int Coin_Time_Gain = 1;
-
+using namespace std;
 class GameWindow
 {
 public:
@@ -68,6 +73,9 @@ public:
     // detect if mouse hovers over a rectangle
     bool mouse_hover(int, int, int, int);
 
+    // load imgs
+    void load_coin_imgs();
+    void load_monster_imgs();
 
 public:
     bool initial = true;
@@ -83,8 +91,8 @@ private:
 
     ALLEGRO_EVENT_QUEUE *event_queue = NULL;
     ALLEGRO_EVENT event;
-    ALLEGRO_TIMER *basic_timer = NULL;
-    int basic_cycle = 0;
+    ALLEGRO_TIMER *refresh_timer = NULL;
+    int refresh_cycle = 0;
     ALLEGRO_TIMER *quater_timer = NULL; // 1/4 tempo.
     int beat_cnt = 0; // four tempo count = 1 tempo
 
@@ -93,12 +101,15 @@ private:
     ALLEGRO_SAMPLE_INSTANCE *clearSound = NULL;
     ALLEGRO_SAMPLE_INSTANCE *failSound = NULL;
     ALLEGRO_SAMPLE_INSTANCE *backgroundSound = NULL;
-
+    // object's image
+    map<int, ALLEGRO_BITMAP*> coin_imgs;
+    map<string, ALLEGRO_BITMAP*> monster_imgs;
     // games' character and object
     Map* game_map;
     list<Monster*> monsters;
     MainCharacter* main_character;
-    list<Reward*> rewards;
+    list<Coin*> coins;
+    TempoHeart* tempo_heart;
     // utility variable
     int mouse_x, mouse_y;
     bool redraw = false;

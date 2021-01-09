@@ -1,12 +1,14 @@
 #include "BlueSlime.h"
 
-BlueSlime::BlueSlime():Monster(){
+BlueSlime::BlueSlime(ALLEGRO_BITMAP* img):Monster(img){
     // blue slime profile 
-    img = al_load_bitmap("assets/monster/slime_blue.png");
     name = "blue_slime";
     tempo = 2;
     num_action = 8;
     power = 1;
+    lives = 2;
+    drop_money = 2;
+    beat_of_change = (BEAT_PER_TEMPO*tempo)/num_action;
 }
 BlueSlime::~BlueSlime(){}
 
@@ -14,7 +16,7 @@ void BlueSlime::move() {
     if (move_status == leave && body_status == healthy){
         pos_x = next_x;
         pos_y = next_y;
-        cur_dir = temp_dir;
+        cur_dir = tmp_dir;
     }
     move_status = stay;
     body_status = healthy;
@@ -28,15 +30,15 @@ void BlueSlime::early_move(){
         switch (cur_dir)
         {
         case UP:
-            temp_dir = DOWN;
+            tmp_dir = DOWN;
             next_y = pos_y - GRID_HEIGHT;
             break;
         case DOWN:
-            temp_dir = UP;
+            tmp_dir = UP;
             next_y = pos_y + GRID_HEIGHT;
             break;
         default:
-            temp_dir = DOWN;
+            tmp_dir = DOWN;
             next_y = pos_y - GRID_HEIGHT;
             break;
         }

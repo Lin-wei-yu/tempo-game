@@ -4,45 +4,48 @@
 #include <string>
 #include "Object.h"
 #include "global.h"
-
 using namespace std;
 // typedef enum _BodyStatus{injured, healthy} BodyStatus;
 // typedef enum _MoveStatus {leave, stay} MoveStatus;
 
 class Monster: public Object{
 public:
-    Monster();
+    Monster(ALLEGRO_BITMAP* img);
     virtual ~Monster();
-    void draw();
+    virtual void draw();
     void change_action();
     bool is_dead();
     void attack();
     void be_attacked(int power);
-    // void attack(MainCharacter* main_character);
     virtual void move() = 0;
     virtual void early_move() = 0;
     virtual void get_reward() = 0;
-    int get_power();
+    float get_power();
     int get_next_x();
     int get_next_y();
+    int get_drop_money();
+    void pass_beat();
 
 protected:
     // define in sub-class
     string name;
-    bool hidden;
-    int power;
-    int lives;
     int tempo;
     int num_action;
+    float power;
+    float lives;
+    int drop_money;
+    int beat_of_change;
     // define in current class
     DIR cur_dir;
-    DIR temp_dir;
+    DIR tmp_dir;
     int cur_tempo;
     int cur_action;
     BodyStatus body_status;
     MoveStatus move_status;
     int next_x;
     int next_y;
+    bool hidden;
+    int beat_cnt;
 };
 
 #endif

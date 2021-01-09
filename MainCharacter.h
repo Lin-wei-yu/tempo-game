@@ -1,9 +1,11 @@
 #ifndef MAINCHARACTER_H_INCLUDED
 #define MAINCHARACTER_H_INCLUDED
 #include <allegro5/allegro.h>
+#include <vector>
+#include <string>
 #include "global.h"
 #include "Object.h"
-// typedef enum _MoveStatus{leave, stay} MoveStatus;
+using namespace std;
 class MainCharacter : public Object{
 public:
     MainCharacter(const char* path);
@@ -14,20 +16,25 @@ public:
     bool is_dead();
     // void attack(Monster* monster);
     void attack();
-    void be_attacked(int power);
+    void be_attacked(float power);
     void change_dir(DIR dir);
     int get_power();
     int get_next_x();
     int get_next_y();
+    void find_money(int num);
+    void draw_text(string str,int x, int y);
+
 private:
-    DIR temp_dir;
-    int lives;
+    DIR tmp_dir;
+    float lives;
     MoveStatus move_status;
     BodyStatus body_status;
     int power;
     int tempo;
     int cur_tempo;
-    ALLEGRO_BITMAP* heart_img;
+    vector<ALLEGRO_BITMAP*> heart_imgs;
+    ALLEGRO_BITMAP* coin_img;
+    ALLEGRO_BITMAP* text_img;
     int num_coin;
     int next_x;
     int next_y;

@@ -6,10 +6,11 @@ using namespace std;
 
 class Coin: public Reward{
 public :
-    Coin(int dollar, int x, int y); 
+    Coin(int value, int x, int y, ALLEGRO_BITMAP* img); 
     ~Coin();
+    int get_value();
 private:
-    int dollar;
+    int value;
 };
 
 #endif

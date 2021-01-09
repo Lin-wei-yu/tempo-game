@@ -5,8 +5,8 @@
 using namespace std;
 class Reward: public Object{
 public :
-    // Reward(); 
-    // ~Reward();
+    Reward(); 
+    ~Reward(){};
     void draw();
 private:
     bool hidden;

@@ -10,12 +10,8 @@ typedef enum _MoveStatus {leave, stay} MoveStatus;
 
 class Object {
 public:
-    Object() {
-        img = NULL;
-    }
-    virtual ~Object() {
-        delete img;
-    }
+    Object() {}
+    virtual ~Object() {}
     // pure function for drawing object
     virtual void draw() = 0;
     int get_x() {
@@ -25,9 +21,9 @@ public:
         return pos_y;
     }
 protected:
+    ALLEGRO_BITMAP* img;
     int pos_x;
     int pos_y;
-    ALLEGRO_BITMAP* img;
 };
 
 #endif // OBJECT_H_INCLUDED

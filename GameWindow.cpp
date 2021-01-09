@@ -6,8 +6,9 @@
 #define PURPLE al_map_rgb(149, 128, 255)
 #define BLUE al_map_rgb(77, 129, 179)
 
-#define min(a, b) ((a) < (b)? (a) : (b))
-#define max(a, b) ((a) > (b)? (a) : (b))
+// #define min(a, b) ((a) < (b)? (a) : (b))
+// #define max(a, b) ((a) > (b)? (a) : (b))
+
 
 /*
 GameWindow() -> game_init() -> 
@@ -23,7 +24,24 @@ void monster_attack(Monster* monster, MainCharacter* main_character){
     main_character->be_attacked(monster->get_power());
     // exit(0);
 }
-
+void GameWindow::load_monster_imgs(){
+    monster_imgs["green_slime"] = al_load_bitmap("assets/monster/slime_green.png");
+    monster_imgs["blue_slime"] = al_load_bitmap("assets/monster/slime_blue.png");
+    monster_imgs["red_bat"] = al_load_bitmap("assets/monster/bat_red.png");
+    monster_imgs["zombie"] = al_load_bitmap("assets/monster/zombie.png");
+}
+void GameWindow::load_coin_imgs(){
+    coin_imgs[1] = al_load_bitmap("assets/reward/resource_coin1.png");
+    coin_imgs[2] = al_load_bitmap("assets/reward/resource_coin2.png");
+    coin_imgs[3] = al_load_bitmap("assets/reward/resource_coin3.png");
+    coin_imgs[4] = al_load_bitmap("assets/reward/resource_coin4.png");
+    coin_imgs[5] = al_load_bitmap("assets/reward/resource_coin5.png");
+    coin_imgs[6] = al_load_bitmap("assets/reward/resource_coin6.png");
+    coin_imgs[7] = al_load_bitmap("assets/reward/resource_coin7.png");
+    coin_imgs[8] = al_load_bitmap("assets/reward/resource_coin8.png");
+    coin_imgs[9] = al_load_bitmap("assets/reward/resource_coin9.png");
+    coin_imgs[10] = al_load_bitmap("assets/reward/resource_coin10.png");
+}
 void GameWindow::game_init()
 {   
     char buffer[50];
@@ -102,9 +120,9 @@ GameWindow::GameWindow()
     display = al_create_display(WINDOW_WIDTH, WINDOW_HEIGHT);
     event_queue = al_create_event_queue();
 
-    basic_timer = al_create_timer(1.0 / FPS);
+    refresh_timer = al_create_timer(1.0 / FPS);
     quater_timer = al_create_timer(8.0 / FPS);
-    if(basic_timer == NULL || quater_timer == NULL)
+    if(refresh_timer == NULL || quater_timer == NULL)
         show_err_msg(-1);
 
     if (display == NULL || event_queue == NULL)
@@ -128,20 +146,34 @@ GameWindow::GameWindow()
     al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_mouse_event_source());
 
-    al_register_event_source(event_queue, al_get_timer_event_source(basic_timer));
+    al_register_event_source(event_queue, al_get_timer_event_source(refresh_timer));
     al_register_event_source(event_queue, al_get_timer_event_source(quater_timer));
     game_init();
 }
 
 void GameWindow::game_begin()
 {
+    // load images
+    load_coin_imgs();
+    load_monster_imgs();
+    // init game objects
+    game_map = new Map();
+
+    monsters.push_back(new GreenSlime(monster_imgs["green_slime"]));
+    monsters.push_back(new BlueSlime(monster_imgs["blue_slime"]));
+    monsters.push_back(new RedBat(monster_imgs["red_bat"]));
+    monsters.push_back(new Zombie(monster_imgs["zombie"]));
+    main_character = new MainCharacter("assets/main/TEMP_medic.png");
+    tempo_heart = new TempoHeart();
+
+    
     draw_running_map();
 
     // al_play_sample_instance(startSound);
     // while(al_get_sample_instance_playing(startSound));
     // al_play_sample_instance(backgroundSound);
 
-    al_start_timer(basic_timer);
+    al_start_timer(refresh_timer);
     al_start_timer(quater_timer);
 }
 
@@ -159,7 +191,7 @@ int GameWindow::game_update()
 {   /*
     update the status of every object. lives, position validation ...
     */
-    if (beat_cnt == 4){ // moving tempo
+    if (beat_cnt == BEAT_PER_TEMPO){ // moving tempo
         
         int next_x = main_character->get_next_x();
         int next_y = main_character->get_next_y();
@@ -172,7 +204,8 @@ int GameWindow::game_update()
                 // check if main character kill monsters
                 mainCharacter_attack( main_character, monster);
                 if (monster->is_dead()){
-                    rewards.push_back(new Coin(1, monster->get_x(), monster->get_y()));
+                    int drop = monster->get_drop_money();
+                    coins.push_back(new Coin(drop, monster->get_x(), monster->get_y(), coin_imgs[drop]));
                     it = monsters.erase(it);
                     delete monster;
 
@@ -192,6 +225,18 @@ int GameWindow::game_update()
             monster->move();
         }
         main_character->move();
+        // find coin;
+        for (auto it=coins.begin(); it!=coins.end(); ){
+            if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
+                main_character->find_money((*it)->get_value());
+                Coin* coin = (*it);
+                delete coin;
+                it = coins.erase(it);
+
+            }else it++;
+        }
+        
+
         beat_cnt = 0;
     }
 
@@ -201,35 +246,31 @@ int GameWindow::game_update()
 
 void GameWindow::game_reset()
 {   /*
-    1. clear object 
-    2. new object
+    clear object and free memory
     */
-    for (auto& monster : monsters){
+    for (auto&& monster : monsters){
         delete monster;
     }
     monsters.clear();
-    for (auto reward : rewards){
-        delete reward;
+    for (auto&& coin : coins){
+        delete coin;
     }
-    rewards.clear();
-
+    coins.clear();
+    for (auto&& coin_img : coin_imgs){
+        delete coin_img.second;
+    }
+    coin_imgs.clear();
+    for (auto&& monster_img :monster_imgs){
+        delete monster_img.second;
+    }
+    monster_imgs.clear();
     // stop sample instance
     // al_stop_sample_instance(backgroundSound);
     // al_stop_sample_instance(startSound);
 
     // stop timer
-    al_stop_timer(basic_timer);
+    al_stop_timer(refresh_timer);
     al_stop_timer(quater_timer);
-
-    // init game objects
-    game_map = new Map();
-    // monsters.push_back(moo);
-
-    // monsters.push_back(new GreenSlime());
-    // monsters.push_back(new BlueSlime());
-    monsters.push_back(new BlueSlime());
-    // monsters.push_back(new RedBat());
-    main_character = new MainCharacter("assets/main/TEMP_medic.png");
 }
 
 void GameWindow::game_destroy()
@@ -242,7 +283,7 @@ void GameWindow::game_destroy()
     // al_destroy_font(Medium_font);
     // al_destroy_font(Large_font);
     al_destroy_timer(quater_timer);
-    al_destroy_timer(basic_timer);
+    al_destroy_timer(refresh_timer);
 
     // al_destroy_bitmap(icon);
     // al_destroy_bitmap(background);
@@ -267,11 +308,13 @@ int GameWindow::process_event()
         if (event.timer.source == quater_timer){
             redraw = true;
             beat_cnt ++ ;
-            // monster's animation
+            // passing beat to every object that can move with tempo.
             for (auto monster : monsters){
-                monster->change_action();
+                monster->pass_beat();
             }
-            if (beat_cnt == 4) { // 4 beat move once
+            tempo_heart->pass_beat();
+
+            if (beat_cnt == BEAT_PER_TEMPO) { // 8 beat move once
                 // monsters early move
                 for (auto monster : monsters){
                     monster->early_move();
@@ -282,6 +325,9 @@ int GameWindow::process_event()
                 //main_character->change_dir(NON);
             }
         }
+        // else if (event.timer.source == refresh_timer){
+        //     redraw = true;
+        // }
     }
     else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
         return GAME_EXIT;
@@ -349,14 +395,15 @@ void GameWindow::draw_running_map()
     al_scale_transform(&trans, 4, 4);
     al_use_transform(&trans);
     al_clear_to_color(al_map_rgb(0, 0, 0));
-    game_map -> draw();
+    game_map->draw();
     for (auto monster : monsters){
-        monster -> draw();
+        monster->draw();
     }
     main_character -> draw();
-    for (auto reward : rewards){
-        reward -> draw();
+    for (auto coin : coins){
+        coin->draw();
     }
+    tempo_heart->draw();
     al_use_transform(&prev);
 
     // al_draw_filled_rectangle(FIELD_HEIGHT, 0, WINDOW_WIDTH, WINDOW_HEIGHT, al_map_rgb(100, 100, 100));

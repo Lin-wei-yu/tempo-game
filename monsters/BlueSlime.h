@@ -5,10 +5,10 @@
 #include <string>
 class BlueSlime:public Monster{
 public: 
-    BlueSlime();
+    BlueSlime(ALLEGRO_BITMAP* img);
     ~BlueSlime();
-    void move();
-    void early_move();
-    void get_reward(){};
+    void move() override;
+    void early_move() override;
+    void get_reward() override{};
 };
 #endif
