@@ -9,7 +9,6 @@ Zombie::Zombie(ALLEGRO_BITMAP* img):Monster(img){
     lives = 1;
     drop_money = 1;
     beat_of_change = (BEAT_PER_TEMPO*tempo)/num_action;
-
     // 
     // cur_dir = (DIR)(rand() % DIR_KINDS);
     cur_dir = RIGHT;
@@ -65,12 +64,12 @@ void Zombie::draw() {
     int sh = h / 2;
     int offset_y = (!hidden) ? 0 : sh;
     if (cur_dir == UP){
-        al_draw_scaled_bitmap(img, sw*cur_action, offset_y, sw, sh, pos_x, pos_y, sw, sh, 0);
+        al_draw_scaled_bitmap(img, sw*cur_action, offset_y, sw, sh, pos_x, pos_y - CHARACTER_OFFSET, sw, sh, 0);
     }else if (cur_dir == LEFT){
-        al_draw_scaled_bitmap(img, sw*(cur_action+8), offset_y, sw, sh, pos_x, pos_y, sw, sh, 0);
+        al_draw_scaled_bitmap(img, sw*(cur_action+8), offset_y, sw, sh, pos_x, pos_y - CHARACTER_OFFSET, sw, sh, 0);
     }else if (cur_dir == RIGHT){
-        al_draw_scaled_bitmap(img, sw*(cur_action+8), offset_y, sw, sh, pos_x, pos_y, sw, sh, ALLEGRO_FLIP_HORIZONTAL);
+        al_draw_scaled_bitmap(img, sw*(cur_action+8), offset_y, sw, sh, pos_x, pos_y - CHARACTER_OFFSET, sw, sh, ALLEGRO_FLIP_HORIZONTAL);
     }else {
-        al_draw_scaled_bitmap(img, sw*(cur_action+16), offset_y, sw, sh, pos_x, pos_y, sw, sh, 0);
+        al_draw_scaled_bitmap(img, sw*(cur_action+16), offset_y, sw, sh, pos_x, pos_y - CHARACTER_OFFSET, sw, sh, 0);
     }
 }
