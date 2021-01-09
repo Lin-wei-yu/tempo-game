@@ -123,6 +123,9 @@ private:
     int mouse_x, mouse_y;
     bool redraw = false;
     bool mute = false;
+
+    // FBO
+    ALLEGRO_BITMAP *tmp_bitmap;
 };
 
 #endif // MAINWINDOW_H_INCLUDED

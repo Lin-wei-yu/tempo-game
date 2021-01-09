@@ -5,8 +5,8 @@ Map::Map(){
         block_vec.push_back(NULL);
     }
     block_vec[BlockType::BACKGROUND] = al_load_bitmap("assets/block/floor2.png");
-    block_vec[BlockType::WALL] = al_load_bitmap("assets/block/end_of_world.png");
-    block_vec[BlockType::ROAD] = al_load_bitmap("assets/block/floor1.png");
+    block_vec[BlockType::WALL] = al_load_bitmap("assets/block/zone4_wall_catacomb_B.png");
+    block_vec[BlockType::ROAD] = al_load_bitmap("assets/block/boss_floor_A.png");
     block_vec[BlockType::BREAKABLE_ONE] = al_load_bitmap("assets/block/wall_dirt_crypt_diamond2.png");
     block_vec[BlockType::SHOP] = al_load_bitmap("assets/block/wall_shop_crypt.png");
     block_vec[BlockType::DOOR] = al_load_bitmap("assets/block/door_front.png");
@@ -41,6 +41,11 @@ Map::~Map(){
 void Map::draw(){
     for (auto b: blocks){
         b.draw();
+    }
+}
+void Map::pass_beat() {
+    for(auto& b: blocks) {
+        b.pass_beat();
     }
 }
 

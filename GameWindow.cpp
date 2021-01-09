@@ -74,6 +74,8 @@ void GameWindow::game_init()
     // backgroundSound = al_create_sample_instance(sample);
     // al_set_sample_instance_playmode(backgroundSound, ALLEGRO_PLAYMODE_ONCE);
     // al_attach_sample_instance_to_mixer(backgroundSound, al_get_default_mixer());
+    al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR | ALLEGRO_NO_PRESERVE_TEXTURE);
+    tmp_bitmap = al_create_bitmap(WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 bool GameWindow::mouse_hover(int startx, int starty, int width, int height)
@@ -323,7 +325,7 @@ int GameWindow::process_event()
                 monster->pass_beat();
             }
             tempo_heart->pass_beat();
-
+            game_map->pass_beat();
             if (beat_cnt == BEAT_PER_TEMPO) { // 8 beat move once
                 // monsters early move
                 for (auto monster : monsters){
@@ -368,8 +370,6 @@ int GameWindow::process_event()
             case ALLEGRO_KEY_RIGHT:
                 main_character->change_dir(RIGHT);
                 break;
-
-      
         }
     }
     else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
@@ -395,37 +395,22 @@ int GameWindow::process_event()
 
 void GameWindow::draw_running_map()
 {
-
+    ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
     
-    unsigned int i, j;
+    // al_set_target_bitmap(tmp_bitmap);
     al_clear_to_color(al_map_rgb(0, 0, 0));
     
-    // 2 times bigger
-    // ALLEGRO_TRANSFORM prev, trans;
-    // al_copy_transform(&prev, al_get_current_transform());
-    // al_identity_transform(&trans);
-    // al_scale_transform(&trans, 4, 4);
-    // al_use_transform(&trans);
-    // al_clear_to_color(al_map_rgb(100, 100, 100));
     game_map -> draw();
     for (auto monster : monsters){
         monster->draw();
     }
     main_character -> draw();
-    // int character_y, character_x;
-    // character_y = main_character -> get_y() / GRID_SIZE;
-    // character_x = main_character -> get_x() / GRID_SIZE;
-    // printf("%d %d\n", character_y, character_x);
-    // if(game_map->map_type[character_y-1][character_x] != BlockType::FLOOR_ONE 
-    // || game_map->map_type[character_y-1][character_x] != BlockType::FLOOR_TWO) {
-    //     main_character -> draw();
-    // }
     for (auto coin : coins){
         coin->draw();
     }
     tempo_heart->draw();
-    // al_use_transform(&prev);
-
-    // al_draw_filled_rectangle(FIELD_HEIGHT, 0, WINDOW_WIDTH, WINDOW_HEIGHT, al_map_rgb(100, 100, 100));
+    // al_set_target_bitmap(origin_bitmap);
+    // al_clear_to_color(al_map_rgb(0, 0, 0));
+    // al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 4, main_character->get_y() - WINDOW_HEIGHT / 4, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     al_flip_display();
 }
