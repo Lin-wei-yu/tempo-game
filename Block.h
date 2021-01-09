@@ -5,7 +5,7 @@
 #include "Object.h"
 #include "global.h"
 enum BlockType {
-    WALL, SHOP, FLOOR_ONE, FLOOR_TWO
+    BACKGROUND, WALL, ROAD, BREAKABLE_ONE, SHOP, DOOR, BREAKABLE_TWO, GOAL
 };
 
 

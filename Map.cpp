@@ -4,62 +4,43 @@ Map::Map(){
     for(int i = 0; i < NUM_OF_BLOCK_TYPE; i++) {
         block_vec.push_back(NULL);
     }
-    block_vec[BlockType::FLOOR_ONE] = al_load_bitmap("assets/block/floor1.png");
-    block_vec[BlockType::FLOOR_TWO] = al_load_bitmap("assets/block/floor2.png");
+    block_vec[BlockType::BACKGROUND] = al_load_bitmap("assets/block/floor2.png");
     block_vec[BlockType::WALL] = al_load_bitmap("assets/block/end_of_world.png");
+    block_vec[BlockType::ROAD] = al_load_bitmap("assets/block/floor1.png");
+    block_vec[BlockType::BREAKABLE_ONE] = al_load_bitmap("assets/block/wall_dirt_crypt_diamond2.png");
     block_vec[BlockType::SHOP] = al_load_bitmap("assets/block/wall_shop_crypt.png");
-    // floor
-    for(int width_iter = 0; width_iter < NUM_OF_WIDTH; width_iter++) {
-        for(int height_iter = 0; height_iter < NUM_OF_HEIGHT; height_iter++) {
-            if((width_iter + height_iter) % 2 == 0) {
-                floors.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter, BlockType::FLOOR_ONE, block_vec[BlockType::FLOOR_ONE]));
-                map_type[height_iter][width_iter] = BlockType::FLOOR_ONE;
+    block_vec[BlockType::DOOR] = al_load_bitmap("assets/block/door_front.png");
+    block_vec[BlockType::BREAKABLE_TWO] = al_load_bitmap("assets/block/wall_dirt_zone2_diamond1.png");
+    block_vec[BlockType::GOAL] = al_load_bitmap("assets/block/stairs.png");
+
+    ifstream input_file;
+    string s;
+    int width_iter = 0, height_iter = 0;
+    input_file.open("map.txt");
+    while(getline(input_file, s)) {
+        // std::cout << s << std::endl;
+        width_iter = 0;
+        for(auto symbol: s) {
+            if((BlockType)(symbol - '0') == BlockType::ROAD || (BlockType)(symbol - '0') == BlockType::GOAL) {
+                blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')]));
             }
             else {
-                floors.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter, BlockType::FLOOR_TWO, block_vec[BlockType::FLOOR_TWO]));
-                map_type[height_iter][width_iter] = BlockType::FLOOR_TWO;
+                blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter - GRID_OFFSET, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')]));
             }
+            map_type[height_iter][width_iter] = (BlockType)(symbol - '0');
+            width_iter++;
         }
+        height_iter++;
     }
-    // wall
-    for(int width_iter = 0; width_iter < NUM_OF_WIDTH; width_iter++) {
-        for(int height_iter = 0; height_iter < NUM_OF_HEIGHT; height_iter++) {
-            if(height_iter == 0 || height_iter == NUM_OF_HEIGHT - 1) {
-                blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter - GRID_OFFSET, BlockType::WALL, block_vec[BlockType::WALL]));
-                map_type[height_iter][width_iter] = BlockType::WALL;
-            }
-            else if(width_iter == 0 || width_iter == NUM_OF_WIDTH - 1) {
-                blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter - GRID_OFFSET, BlockType::WALL, block_vec[BlockType::WALL]));
-                map_type[height_iter][width_iter] = BlockType::WALL;
-            }
-        }
-    }
-    // shop
-    for(int width_iter = 10; width_iter < 20; width_iter++) {
-        for(int height_iter = 10; height_iter < 20; height_iter++) {
-            if(height_iter == 10 || height_iter == 20 - 1) {
-                blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter - GRID_OFFSET, BlockType::SHOP, block_vec[BlockType::SHOP]));
-                map_type[height_iter][width_iter] = BlockType::SHOP;
-            }
-            else if(width_iter == 10 || width_iter == 20 - 1) {
-                blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter - GRID_OFFSET, BlockType::SHOP, block_vec[BlockType::SHOP]));
-                map_type[height_iter][width_iter] = BlockType::SHOP;
-            }
-        }
-    }
+    input_file.close();
 }
 Map::~Map(){
 
 }
 
-void Map::draw_floor(){
-    for (auto f: floors){
-        f.draw();
-    }
-}
-
-void Map::draw_block(){
+void Map::draw(){
     for (auto b: blocks){
         b.draw();
     }
 }
+

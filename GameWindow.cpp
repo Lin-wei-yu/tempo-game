@@ -126,7 +126,7 @@ GameWindow::GameWindow()
     event_queue = al_create_event_queue();
 
     refresh_timer = al_create_timer(1.0 / FPS);
-    quater_timer = al_create_timer(8.0 / FPS);
+    quater_timer = al_create_timer(1.0 / FPS);
     if(refresh_timer == NULL || quater_timer == NULL)
         show_err_msg(-1);
 
@@ -228,9 +228,14 @@ int GameWindow::game_update()
             }
         }
         for (auto monster : monsters){
-            monster->move();
+            if(game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::ROAD) {
+                monster->move();
+            }
         }
-        main_character->move();
+        if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD) {
+            main_character->move();
+        }
+
         // find coin;
         for (auto it=coins.begin(); it!=coins.end(); ){
             if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
@@ -402,19 +407,19 @@ void GameWindow::draw_running_map()
     // al_scale_transform(&trans, 4, 4);
     // al_use_transform(&trans);
     // al_clear_to_color(al_map_rgb(100, 100, 100));
-    game_map -> draw_floor();
+    game_map -> draw();
     for (auto monster : monsters){
         monster->draw();
     }
     main_character -> draw();
-    game_map -> draw_block();
-    int character_y, character_x;
-    character_y = main_character -> get_y() / GRID_SIZE;
-    character_x = main_character -> get_x() / GRID_SIZE;
-    printf("%d %d\n", character_y, character_x);
-    if(game_map->map_type[character_y-1][character_x] != BlockType::FLOOR_ONE && game_map->map_type[character_y-1][character_x] != BlockType::FLOOR_TWO) {
-        main_character -> draw();
-    }
+    // int character_y, character_x;
+    // character_y = main_character -> get_y() / GRID_SIZE;
+    // character_x = main_character -> get_x() / GRID_SIZE;
+    // printf("%d %d\n", character_y, character_x);
+    // if(game_map->map_type[character_y-1][character_x] != BlockType::FLOOR_ONE 
+    // || game_map->map_type[character_y-1][character_x] != BlockType::FLOOR_TWO) {
+    //     main_character -> draw();
+    // }
     for (auto coin : coins){
         coin->draw();
     }

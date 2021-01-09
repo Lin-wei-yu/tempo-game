@@ -2,8 +2,8 @@
 
 MainCharacter::MainCharacter(const char* path){
     img = al_load_bitmap(path);
-    pos_x = 0;
-    pos_y = 0;
+    pos_x = GRID_SIZE * 24;
+    pos_y = GRID_SIZE * 3;
     power = 1;
     lives = 5;
     move_status = stay;
@@ -36,7 +36,7 @@ void MainCharacter::draw(){
     // draw chracter
     int w = al_get_bitmap_width(img);
     int h = al_get_bitmap_height(img);
-    al_draw_scaled_bitmap(img, 0, 0, w/2, h/2, pos_x, pos_y, w/2, h/2, 0);
+    al_draw_scaled_bitmap(img, 0, 0, w/2, h/2, pos_x, pos_y - CHARACTER_OFFSET, w/2, h/2, 0);
     // draw lives
     w = al_get_bitmap_width(heart_imgs[0]);
     int remain = lives;
@@ -85,7 +85,8 @@ void MainCharacter::early_move(){
         }
         tmp_dir = NON;
         cur_tempo = 0;
-    }else {
+    }
+    else {
         move_status = stay;
     }
 
