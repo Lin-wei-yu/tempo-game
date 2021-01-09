@@ -62,15 +62,15 @@ void GameWindow::game_init()
 
     // load window
     // al_set_display_icon(display, icon);
-    // al_reserve_samples(3);
+    al_reserve_samples(3);
 
-    // load music
-    // sample = al_load_sample("growl.wav");
+    //load music
+    // sample = al_load_sample("assets/music/zone5_2_2.ogg");
     // startSound = al_create_sample_instance(sample);
     // al_set_sample_instance_playmode(startSound, ALLEGRO_PLAYMODE_ONCE);
     // al_attach_sample_instance_to_mixer(startSound, al_get_default_mixer());
 
-    // sample = al_load_sample("BackgroundMusic.ogg");
+    // sample = al_load_sample("assets/music/zone5_2_2.ogg");
     // backgroundSound = al_create_sample_instance(sample);
     // al_set_sample_instance_playmode(backgroundSound, ALLEGRO_PLAYMODE_ONCE);
     // al_attach_sample_instance_to_mixer(backgroundSound, al_get_default_mixer());
@@ -121,7 +121,7 @@ GameWindow::GameWindow()
         show_err_msg(-1);
 
     printf("Game Initializing...\n");
-    //al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
+    // al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
     display = al_create_display(WINDOW_WIDTH, WINDOW_HEIGHT);
     event_queue = al_create_event_queue();
 
@@ -272,7 +272,7 @@ void GameWindow::game_reset()
     monster_imgs.clear();
     // stop sample instance
     // al_stop_sample_instance(backgroundSound);
-    // al_stop_sample_instance(startSound);
+    al_stop_sample_instance(startSound);
     
     // stop timer
     al_stop_timer(refresh_timer);

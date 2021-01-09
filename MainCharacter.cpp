@@ -118,5 +118,13 @@ int MainCharacter::get_next_y(){
 void MainCharacter::find_money(int num){
     num_coin += num;
 }
+void MainCharacter::find_item(Item* item){
+    item_list[item->get_type()].push_back(item);
+}
+void MainCharacter::shovel_level(Block* block){
+    for (auto shovel : item_list[shovel]){
+        shovel
+    }
+}
 
 

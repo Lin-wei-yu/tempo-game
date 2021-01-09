@@ -5,6 +5,7 @@ Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP* img) {
     pos_y = y;
     this->type = type;
     this->img = img; 
+    
 }
 
 void Block::draw() {

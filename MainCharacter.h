@@ -3,8 +3,11 @@
 #include <allegro5/allegro.h>
 #include <vector>
 #include <string>
+#include <map>
 #include "global.h"
 #include "Object.h"
+#include "Item.h"
+#include "Block.h"
 using namespace std;
 class MainCharacter : public Object{
 public:
@@ -23,7 +26,8 @@ public:
     int get_next_y();
     void find_money(int num);
     void draw_text(string str,int x, int y);
-
+    void find_item(Item* item);
+    void shovel_level();
 private:
     DIR tmp_dir;
     float lives;
@@ -38,5 +42,6 @@ private:
     int num_coin;
     int next_x;
     int next_y;
+    map<ItemType, vector<Item*>> item_list;
 };
 #endif

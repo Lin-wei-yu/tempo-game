@@ -2,12 +2,13 @@
 #define DAGGER_H_INCLUDED
 #include "../Item.h"
 
-class Dagger: public Object{
+class Dagger: public Item{
 public:
-    Dagger(){}
-    ~Dagger(){}
+    Dagger(ALLEGRO_BITMAP* img);
+    ~Dagger(){};
 protected:
     ItemFunc item_func;
+    int power;
 };
 
 #endif
