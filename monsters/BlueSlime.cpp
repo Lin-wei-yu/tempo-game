@@ -31,15 +31,15 @@ void BlueSlime::early_move(){
         {
         case UP:
             tmp_dir = DOWN;
-            next_y = pos_y - GRID_HEIGHT;
+            next_y = pos_y - GRID_SIZE;
             break;
         case DOWN:
             tmp_dir = UP;
-            next_y = pos_y + GRID_HEIGHT;
+            next_y = pos_y + GRID_SIZE;
             break;
         default:
             tmp_dir = DOWN;
-            next_y = pos_y - GRID_HEIGHT;
+            next_y = pos_y - GRID_SIZE;
             break;
         }
         cur_tempo = 0;

@@ -14,6 +14,8 @@ allegro*
 *.otf
 *.txt
 *.db
+game
+.DS*
 assets/bestiary/*
 assets/entities/*
 assets/gui/*
@@ -28,7 +30,7 @@ assets/spells/*
 assets/swipes/*
 assets/text/*
 assets/traps/*
-
 Makefile*
 *.out
 *.o
+*.cbp

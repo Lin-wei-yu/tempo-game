@@ -31,19 +31,19 @@ void RedBat::early_move(){
         switch (temp_dir)
         {
         case UP:
-            next_y = pos_y - GRID_HEIGHT;
+            next_y = pos_y - GRID_SIZE;
             break;
         case DOWN:
-            next_y = pos_y + GRID_HEIGHT;
+            next_y = pos_y + GRID_SIZE;
             break;
         case LEFT:
-            next_x = pos_x - GRID_WIDTH;
+            next_x = pos_x - GRID_SIZE;
             break;
         case RIGHT:
-            next_x = pos_x - GRID_WIDTH;
+            next_x = pos_x - GRID_SIZE;
             break;
         default:
-            next_y = pos_y - GRID_HEIGHT;
+            next_y = pos_y - GRID_SIZE;
             break;
         }
         cur_tempo = 0;

@@ -34,23 +34,23 @@ void Zombie::early_move(){
         switch(cur_dir){
             case UP:
                 tmp_dir = UP;
-                next_y = pos_y - GRID_HEIGHT;
+                next_y = pos_y - GRID_SIZE;
                 break;
             case DOWN:
                 tmp_dir = DOWN;
-                next_y = pos_y + GRID_HEIGHT;
+                next_y = pos_y + GRID_SIZE;
                 break;
             case LEFT:
                 tmp_dir = LEFT;;
-                next_x = pos_x - GRID_HEIGHT;
+                next_x = pos_x - GRID_SIZE;
                 break;
             case RIGHT:
                 tmp_dir = RIGHT;;
-                next_x = pos_x + GRID_HEIGHT;           
+                next_x = pos_x + GRID_SIZE;           
                 break;
             default:
                 tmp_dir = UP;
-                next_y = pos_y - GRID_HEIGHT;
+                next_y = pos_y - GRID_SIZE;
                 break;
         }
         cur_tempo = 0;

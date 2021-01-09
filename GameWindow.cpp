@@ -273,7 +273,7 @@ void GameWindow::game_reset()
     // stop sample instance
     // al_stop_sample_instance(backgroundSound);
     // al_stop_sample_instance(startSound);
-
+    
     // stop timer
     al_stop_timer(refresh_timer);
     al_stop_timer(quater_timer);
@@ -304,7 +304,6 @@ int GameWindow::process_event()
 {
     int i;
     int instruction = GAME_CONTINUE;
-
 
 
     al_wait_for_event(event_queue, &event);
@@ -391,26 +390,36 @@ int GameWindow::process_event()
 
 void GameWindow::draw_running_map()
 {
+
+    
     unsigned int i, j;
     al_clear_to_color(al_map_rgb(0, 0, 0));
-
+    
     // 2 times bigger
-    ALLEGRO_TRANSFORM prev, trans;
-    al_copy_transform(&prev, al_get_current_transform());
-    al_identity_transform(&trans);
-    al_scale_transform(&trans, 4, 4);
-    al_use_transform(&trans);
-    al_clear_to_color(al_map_rgb(0, 0, 0));
-    game_map->draw();
+    // ALLEGRO_TRANSFORM prev, trans;
+    // al_copy_transform(&prev, al_get_current_transform());
+    // al_identity_transform(&trans);
+    // al_scale_transform(&trans, 4, 4);
+    // al_use_transform(&trans);
+    // al_clear_to_color(al_map_rgb(100, 100, 100));
+    game_map -> draw_floor();
     for (auto monster : monsters){
         monster->draw();
     }
     main_character -> draw();
+    game_map -> draw_block();
+    int character_y, character_x;
+    character_y = main_character -> get_y() / GRID_SIZE;
+    character_x = main_character -> get_x() / GRID_SIZE;
+    printf("%d %d\n", character_y, character_x);
+    if(game_map->map_type[character_y-1][character_x] != BlockType::FLOOR_ONE && game_map->map_type[character_y-1][character_x] != BlockType::FLOOR_TWO) {
+        main_character -> draw();
+    }
     for (auto coin : coins){
         coin->draw();
     }
     tempo_heart->draw();
-    al_use_transform(&prev);
+    // al_use_transform(&prev);
 
     // al_draw_filled_rectangle(FIELD_HEIGHT, 0, WINDOW_WIDTH, WINDOW_HEIGHT, al_map_rgb(100, 100, 100));
     al_flip_display();

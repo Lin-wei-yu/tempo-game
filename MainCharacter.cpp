@@ -67,16 +67,16 @@ void MainCharacter::early_move(){
         switch (tmp_dir)
         {
             case UP:
-                next_y = pos_y - GRID_HEIGHT;
+                next_y = pos_y - GRID_SIZE;
                 break;
             case DOWN:
-                next_y = pos_y + GRID_HEIGHT;
+                next_y = pos_y + GRID_SIZE;
                 break;
             case LEFT:
-                next_x = pos_x - GRID_WIDTH;
+                next_x = pos_x - GRID_SIZE;
                 break;
             case RIGHT:
-                next_x = pos_x + GRID_WIDTH;
+                next_x = pos_x + GRID_SIZE;
                 break;
             default:
                 next_x = pos_x;

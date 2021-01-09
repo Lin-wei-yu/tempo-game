@@ -2,6 +2,10 @@
 #define MAINWINDOW_H_INCLUDED
 
 #include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_image.h>
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro.h>
@@ -111,7 +115,7 @@ private:
     Map* game_map;
     list<Monster*> monsters;
     MainCharacter* main_character;
-    list<Reward*> coins;
+    list<Coin*> coins;
     TempoHeart* tempo_heart;
     list<Item*> items;
     

@@ -4,7 +4,8 @@
 
 class Dagger: public Object{
 public:
-    
+    Dagger(){}
+    ~Dagger(){}
 protected:
     ItemFunc item_func;
 };
