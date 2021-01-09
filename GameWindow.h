@@ -26,6 +26,7 @@
 #include "Reward.h"
 #include "rewards/Coin.h"
 #include "TempoHeart.h"
+#include "items/Bomb.h"
 
 
 #define GAME_INIT -1
@@ -76,6 +77,7 @@ public:
     // load imgs
     void load_coin_imgs();
     void load_monster_imgs();
+    void load_item_imgs();
 
 public:
     bool initial = true;
@@ -104,12 +106,15 @@ private:
     // object's image
     map<int, ALLEGRO_BITMAP*> coin_imgs;
     map<string, ALLEGRO_BITMAP*> monster_imgs;
+    map<string, ALLEGRO_BITMAP*> item_imgs;
     // games' character and object
     Map* game_map;
     list<Monster*> monsters;
     MainCharacter* main_character;
-    list<Coin*> coins;
+    list<Reward*> coins;
     TempoHeart* tempo_heart;
+    list<Item*> items;
+    
     // utility variable
     int mouse_x, mouse_y;
     bool redraw = false;

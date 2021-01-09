@@ -24,6 +24,7 @@ void monster_attack(Monster* monster, MainCharacter* main_character){
     main_character->be_attacked(monster->get_power());
     // exit(0);
 }
+
 void GameWindow::load_monster_imgs(){
     monster_imgs["green_slime"] = al_load_bitmap("assets/monster/slime_green.png");
     monster_imgs["blue_slime"] = al_load_bitmap("assets/monster/slime_blue.png");
@@ -42,6 +43,10 @@ void GameWindow::load_coin_imgs(){
     coin_imgs[9] = al_load_bitmap("assets/reward/resource_coin9.png");
     coin_imgs[10] = al_load_bitmap("assets/reward/resource_coin10.png");
 }
+void GameWindow::load_item_imgs(){
+    item_imgs["bomb"] = al_load_bitmap("assets/item/bomb.png");
+}
+
 void GameWindow::game_init()
 {   
     char buffer[50];
@@ -156,6 +161,7 @@ void GameWindow::game_begin()
     // load images
     load_coin_imgs();
     load_monster_imgs();
+    load_item_imgs();
     // init game objects
     game_map = new Map();
 
@@ -165,7 +171,7 @@ void GameWindow::game_begin()
     monsters.push_back(new Zombie(monster_imgs["zombie"]));
     main_character = new MainCharacter("assets/main/TEMP_medic.png");
     tempo_heart = new TempoHeart();
-
+    items.push_back(new Bomb(item_imgs["bomb"]));
     
     draw_running_map();
 

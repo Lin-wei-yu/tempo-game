@@ -8,6 +8,7 @@ public :
     Reward(); 
     ~Reward(){};
     void draw();
+    virtual int get_value();
 private:
     bool hidden;
 };
