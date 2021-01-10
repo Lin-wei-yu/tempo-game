@@ -11,7 +11,7 @@
 
 
 /*
-GameWindow() -> game_init() -> 
+GameWindow() -> game_init() ->
 game_play() -> game_begin() -> game_run()
 */
 
@@ -47,8 +47,8 @@ void GameWindow::load_item_imgs(){
     item_imgs["bomb"] = al_load_bitmap("assets/item/bomb.png");
     item_imgs["shovel"] = al_load_bitmap("assets/item/shovel_basic.png");
     item_imgs["dagger"] = al_load_bitmap("assets/item/weapon_dagger.png");
-    item_imgs["torch"] = al_load_bitmap("assets/item/torch.png");   
-    item_imgs["bomb_slot"] = al_load_bitmap("assets/item/bomb_slot.png");  
+    item_imgs["torch"] = al_load_bitmap("assets/item/torch.png");
+    item_imgs["bomb_slot"] = al_load_bitmap("assets/item/bomb_slot.png");
     item_imgs["shovel_slot"] = al_load_bitmap("assets/item/shovel_slot.png");
     item_imgs["attack_slot"] = al_load_bitmap("assets/item/attack_slot.png");
     item_imgs["torch_slot"] = al_load_bitmap("assets/item/torch_slot.png");
@@ -64,7 +64,7 @@ void GameWindow::game_init()
     */
     char buffer[50];
 
-    // load image 
+    // load image
     icon = al_load_bitmap("assets/main/icon.png");
     load_monster_imgs();
     load_coin_imgs();
@@ -195,7 +195,7 @@ void GameWindow::game_begin()
 
 
     tempo_heart = new TempoHeart();
-    
+
     draw_running_map();
 
     // al_play_sample_instance(startSound);
@@ -220,9 +220,9 @@ int GameWindow::game_update()
 {   /*
     update the status of every object. lives, position validation ...
     */
-    
+
     if (beat_cnt == BEAT_PER_TEMPO){ // moving tempo
-        
+
         int next_x = main_character->get_next_x();
         int next_y = main_character->get_next_y();
         int pos_x = main_character->get_x();
@@ -266,7 +266,7 @@ int GameWindow::game_update()
             main_character->stuck();
         }
         else {
-            main_character->stuck();   
+            main_character->stuck();
         }
         // find coin;
         for (auto it=coins.begin(); it!=coins.end(); ){
@@ -289,8 +289,8 @@ int GameWindow::game_update()
 
         beat_cnt = 0;
     }
-    
-   
+
+
    return GAME_CONTINUE;
 }
 
@@ -310,7 +310,7 @@ void GameWindow::game_reset()
     // stop sample instance
     // al_stop_sample_instance(backgroundSound);
     // al_stop_sample_instance(startSound);
-    
+
     // stop timer
     al_stop_timer(refresh_timer);
     al_stop_timer(quater_timer);
@@ -434,10 +434,10 @@ int GameWindow::process_event()
 void GameWindow::draw_running_map()
 {
     ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
-    
+
     // al_set_target_bitmap(tmp_bitmap);
     al_clear_to_color(al_map_rgb(0, 0, 0));
-    
+
     game_map -> draw();
     for (auto monster : monsters){
         monster->draw();
@@ -457,9 +457,9 @@ void GameWindow::draw_running_map()
     // al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
 
 
-    // al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8, 
-    //                     main_character->get_y() - WINDOW_HEIGHT / 8, 
-    //                     WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, 
+    // al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8,
+    //                     main_character->get_y() - WINDOW_HEIGHT / 8,
+    //                     WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4,
     //                     0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-    al_flip_display();
+    // al_flip_display();
 }
