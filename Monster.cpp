@@ -6,8 +6,8 @@ using namespace std;
 Monster::Monster(ALLEGRO_BITMAP* img):Object(){
     // declare in object.h
     this -> img = img;
-    pos_x = (rand()%5 )* 24;
-    pos_y = (rand()%5 )* 24;
+    pos_x = (rand()%5 )* GRID_SIZE + 5 * GRID_SIZE;
+    pos_y = (rand()%5 )* GRID_SIZE + 5 * GRID_SIZE;
 
     // declare in monster.h
     cur_dir = NON;

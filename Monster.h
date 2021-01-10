@@ -18,7 +18,7 @@ public:
     void attack();
     void be_attacked(int power);
     void move();
-    virtual void early_move() = 0;
+    virtual void early_move(int character_pos_x, int character_pos_y) = 0;
     virtual void get_reward() = 0;
     float get_power();
     int get_next_x();

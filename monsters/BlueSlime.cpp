@@ -12,7 +12,7 @@ BlueSlime::BlueSlime(ALLEGRO_BITMAP* img):Monster(img){
 }
 BlueSlime::~BlueSlime(){}
 
-void BlueSlime::early_move(){
+void BlueSlime::early_move(int character_pos_x, int character_pos_y){
     cur_tempo++;
     if (cur_tempo == tempo){
         body_status = healthy;
@@ -22,14 +22,17 @@ void BlueSlime::early_move(){
         {
         case UP:
             tmp_dir = DOWN;
+            next_x = pos_x;
             next_y = pos_y - GRID_SIZE;
             break;
         case DOWN:
             tmp_dir = UP;
+            next_x = pos_x;
             next_y = pos_y + GRID_SIZE;
             break;
         default:
             tmp_dir = DOWN;
+            next_x = pos_x;
             next_y = pos_y - GRID_SIZE;
             break;
         }

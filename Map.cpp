@@ -12,7 +12,7 @@ Map::Map(){
     block_vec[BlockType::DOOR] = al_load_bitmap("assets/block/door_front.png");
     block_vec[BlockType::BREAKABLE_TWO] = al_load_bitmap("assets/block/wall_dirt_zone2_diamond1.png");
     block_vec[BlockType::GOAL] = al_load_bitmap("assets/block/stairs.png");
-
+    block_vec[BlockType::SHOP_FLAG] = al_load_bitmap("assets/block/TEMP_shop_floor.png");
     ifstream input_file;
     string s;
     int width_iter = 0, height_iter = 0;
@@ -21,7 +21,7 @@ Map::Map(){
         // std::cout << s << std::endl;
         width_iter = 0;
         for(auto symbol: s) {
-            if((BlockType)(symbol - '0') == BlockType::ROAD || (BlockType)(symbol - '0') == BlockType::GOAL) {
+            if((BlockType)(symbol - '0') == BlockType::ROAD || (BlockType)(symbol - '0') == BlockType::GOAL || (BlockType)(symbol - '0') == BlockType::SHOP_FLAG) {
                 blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')]));
             }
             else {
@@ -48,4 +48,11 @@ void Map::pass_beat() {
         b.pass_beat();
     }
 }
+Block Map::get_block(int x, int y) {
+    return blocks[y * 60 + x];
+}
+void Map::delete_wall(int x, int y) {
+    blocks[y * 60 + x].delete_wall();
+    map_type[y][x] = BlockType::ROAD;
+} 
 

@@ -15,7 +15,7 @@ GreenSlime::GreenSlime(ALLEGRO_BITMAP* img):Monster(img){
 GreenSlime::~GreenSlime(){}
 
 
-void GreenSlime::early_move(){
+void GreenSlime::early_move(int character_pos_x, int character_pos_y){
     cur_tempo ++;
     if (cur_tempo == tempo) {
         move_status = leave;

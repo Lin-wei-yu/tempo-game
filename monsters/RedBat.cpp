@@ -13,7 +13,7 @@ RedBat::RedBat(ALLEGRO_BITMAP* img):Monster(img){
 }
 RedBat::~RedBat(){}
 
-void RedBat::early_move(){
+void RedBat::early_move(int character_pos_x, int character_pos_y){
     cur_tempo ++;
     if (cur_tempo == tempo) {
         body_status = healthy;
@@ -22,18 +22,23 @@ void RedBat::early_move(){
         switch (temp_dir)
         {
         case UP:
+            next_x = pos_x;
             next_y = pos_y - GRID_SIZE;
             break;
         case DOWN:
+            next_x = pos_x;
             next_y = pos_y + GRID_SIZE;
             break;
         case LEFT:
             next_x = pos_x - GRID_SIZE;
+            next_y = pos_y;
             break;
         case RIGHT:
-            next_x = pos_x - GRID_SIZE;
+            next_x = pos_x + GRID_SIZE;
+            next_y = pos_y;
             break;
         default:
+            next_x = pos_x;
             next_y = pos_y - GRID_SIZE;
             break;
         }

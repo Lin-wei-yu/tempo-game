@@ -10,36 +10,42 @@ Zombie::Zombie(ALLEGRO_BITMAP* img):Monster(img){
     drop_money = 1;
     beat_of_change = (BEAT_PER_TEMPO*tempo)/num_action;
     // 
-    // cur_dir = (DIR)(rand() % DIR_KINDS);
-    cur_dir = RIGHT;
+    cur_dir = (DIR)(rand() % DIR_KINDS);
+    //cur_dir = RIGHT;
 }
 Zombie::~Zombie(){
 
 }
-void Zombie::early_move(){
+void Zombie::early_move(int character_pos_x, int character_pos_y){
     cur_tempo++;
     if (cur_tempo == tempo){
         body_status = healthy;
         move_status = leave;
+        // walking path
         switch(cur_dir){
             case UP:
                 tmp_dir = UP;
+                next_x = pos_x;
                 next_y = pos_y - GRID_SIZE;
                 break;
             case DOWN:
                 tmp_dir = DOWN;
+                next_x = pos_x;
                 next_y = pos_y + GRID_SIZE;
                 break;
             case LEFT:
                 tmp_dir = LEFT;;
                 next_x = pos_x - GRID_SIZE;
+                next_y = pos_y;
                 break;
             case RIGHT:
                 tmp_dir = RIGHT;;
-                next_x = pos_x + GRID_SIZE;           
+                next_x = pos_x + GRID_SIZE; 
+                next_y = pos_y;          
                 break;
             default:
                 tmp_dir = UP;
+                next_x = pos_x;
                 next_y = pos_y - GRID_SIZE;
                 break;
         }

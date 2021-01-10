@@ -30,6 +30,8 @@ void GameWindow::load_monster_imgs(){
     monster_imgs["blue_slime"] = al_load_bitmap("assets/monster/slime_blue.png");
     monster_imgs["red_bat"] = al_load_bitmap("assets/monster/bat_red.png");
     monster_imgs["zombie"] = al_load_bitmap("assets/monster/zombie.png");
+    monster_imgs["skeleton"] = al_load_bitmap("assets/monster/skeleton.png");
+    monster_imgs["black_skeleton"] = al_load_bitmap("assets/monster/skeleton_black.png");
 }
 void GameWindow::load_coin_imgs(){
     coin_imgs[1] = al_load_bitmap("assets/reward/resource_coin1.png");
@@ -136,12 +138,12 @@ GameWindow::GameWindow()
 
     printf("Game Initializing...\n");
     // for full window
-    // al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
+    al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
     display = al_create_display(WINDOW_WIDTH, WINDOW_HEIGHT);
     event_queue = al_create_event_queue();
 
     refresh_timer = al_create_timer(1.0 / FPS);
-    quater_timer = al_create_timer(4.0 / FPS);
+    quater_timer = al_create_timer(8.0 / FPS);
     if(refresh_timer == NULL || quater_timer == NULL)
         show_err_msg(-1);
 
@@ -184,6 +186,9 @@ void GameWindow::game_begin()
     monsters.push_back(new BlueSlime(monster_imgs["blue_slime"]));
     monsters.push_back(new RedBat(monster_imgs["red_bat"]));
     monsters.push_back(new Zombie(monster_imgs["zombie"]));
+    monsters.push_back(new Skeleton(monster_imgs["skeleton"]));
+    monsters.push_back(new BlackSkeleton(monster_imgs["black_skeleton"]));
+    
     main_character = new Aria(character_imgs["aria"]);
 
     //test
@@ -220,11 +225,20 @@ int GameWindow::game_update()
     */
     
     if (beat_cnt == BEAT_PER_TEMPO){ // moving tempo
-        
+
+        int pos_x = main_character->get_x();
+        int pos_y = main_character->get_y();
+
+        // monsters early move
+        for (auto monster : monsters){
+            monster->early_move(pos_x, pos_y);
+        }
+        // main character early move
+        main_character->early_move();
+
         int next_x = main_character->get_next_x();
         int next_y = main_character->get_next_y();
-        int pos_x = main_character->get_x();
-        int pos_y = main_character->get_x();
+
         for(auto it=monsters.begin(); it!=monsters.end(); ) {
             Monster* monster = (*it);
 
@@ -251,14 +265,21 @@ int GameWindow::game_update()
         }
         // check whether there is a wall.
         for (auto monster : monsters){
-            if(game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::ROAD) {
+            if(game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::ROAD
+            || game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::SHOP_FLAG) {
                  monster->move();
             }
         }
-        if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD) {
-            main_character->move();
+        if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD || game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::SHOP_FLAG) {
+             main_character->move();
         }
-
+        else if(main_character->shovable(game_map->get_block(next_x / GRID_SIZE, next_y / GRID_SIZE))) {
+            game_map->delete_wall(next_x / GRID_SIZE, next_y / GRID_SIZE);
+            main_character->stuck();
+        }
+        else {
+            main_character->stuck();   
+        }
         // find coin;
         for (auto it=coins.begin(); it!=coins.end(); ){
             if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
@@ -358,14 +379,9 @@ int GameWindow::process_event()
             tempo_heart->pass_beat();
             game_map->pass_beat();
             main_character->pass_beat();
-            if (beat_cnt == BEAT_PER_TEMPO) { // 8 beat move once
-                // monsters early move
-                for (auto monster : monsters){
-                    monster->early_move();
-                }
-                // main character early move
-                main_character->early_move();
-            }else {
+            if (beat_cnt != BEAT_PER_TEMPO) { 
+                // this region determine how good the player should match the tempo,
+                // such that the main_character can move
                 // main_character->change_dir(NON);
             }
         }
@@ -424,19 +440,19 @@ int GameWindow::process_event()
 
 void GameWindow::draw_running_map()
 {
+    // for camera.
     // ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
-    // // for camera.
-    // // al_set_target_bitmap(tmp_bitmap);
+    // al_set_target_bitmap(tmp_bitmap);
 
-    // // 2 times bigger
-    // ALLEGRO_TRANSFORM prev, trans;
-    // al_copy_transform(&prev, al_get_current_transform());
-    // al_identity_transform(&trans);
-    // al_scale_transform(&trans, 1.9, 1.9);
-    // al_use_transform(&trans);
-    // al_clear_to_color(BLACK);
+    // for 2 times bigger.
+    ALLEGRO_TRANSFORM prev, trans;
+    al_copy_transform(&prev, al_get_current_transform());
+    al_identity_transform(&trans);
+    al_scale_transform(&trans, 1.9, 1.9);
+    al_use_transform(&trans);
+    al_clear_to_color(BLACK);
 
-
+    
     al_clear_to_color(al_map_rgb(0, 0, 0));
     game_map -> draw();
     for (auto monster : monsters){
@@ -454,7 +470,8 @@ void GameWindow::draw_running_map()
     }
     tempo_heart->draw();
 
-    // al_use_transform(&prev);
+    // for 2 times bigger.
+    al_use_transform(&prev);
 
     // for camera.
     // al_set_target_bitmap(origin_bitmap);
