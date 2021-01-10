@@ -1,7 +1,7 @@
 #ifndef MAP_H_INCLUDED
 #define MAP_H_INCLUDED
 
-#define NUM_OF_BLOCK_TYPE 8
+#define NUM_OF_BLOCK_TYPE 9
 
 #include <allegro5/allegro.h>
 #include <vector>

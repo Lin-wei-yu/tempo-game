@@ -34,7 +34,7 @@ void RedBat::early_move(){
             next_y = pos_y;
             break;
         case RIGHT:
-            next_x = pos_x - GRID_SIZE;
+            next_x = pos_x + GRID_SIZE;
             next_y = pos_y;
             break;
         default:

@@ -141,7 +141,7 @@ GameWindow::GameWindow()
     event_queue = al_create_event_queue();
 
     refresh_timer = al_create_timer(1.0 / FPS);
-    quater_timer = al_create_timer(4.0 / FPS);
+    quater_timer = al_create_timer(1.0 / FPS);
     if(refresh_timer == NULL || quater_timer == NULL)
         show_err_msg(-1);
 
@@ -253,11 +253,12 @@ int GameWindow::game_update()
         }
         // check whether there is a wall.
         for (auto monster : monsters){
-            if(game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::ROAD) {
+            if(game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::ROAD
+            || game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::SHOP_FLAG) {
                  monster->move();
             }
         }
-        if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD) {
+        if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD || game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::SHOP_FLAG) {
              main_character->move();
         }
         else if(main_character->shovable(game_map->get_block(next_x / GRID_SIZE, next_y / GRID_SIZE))) {

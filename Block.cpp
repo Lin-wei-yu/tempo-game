@@ -15,6 +15,7 @@ Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img)
         break;
     case WALL:
     case SHOP:
+    case SHOP_FLAG:
     case GOAL:
         level = 100;
         break;
@@ -75,4 +76,5 @@ void Block::delete_wall()
 {
     img = al_load_bitmap("assets/block/boss_floor_A.png");
     type = BlockType::ROAD;
+    pos_y += GRID_OFFSET;
 }
