@@ -87,8 +87,8 @@ void GameWindow::game_init()
     // al_attach_sample_instance_to_mixer(backgroundSound, al_get_default_mixer());
 
     // create new bitmap for camera
-    // al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR | ALLEGRO_NO_PRESERVE_TEXTURE);
-    // tmp_bitmap = al_create_bitmap(WINDOW_WIDTH, WINDOW_HEIGHT);
+    al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR | ALLEGRO_NO_PRESERVE_TEXTURE);
+    tmp_bitmap = al_create_bitmap(WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 bool GameWindow::mouse_hover(int startx, int starty, int width, int height)
@@ -192,8 +192,6 @@ void GameWindow::game_begin()
     main_character->find_item(new Shovel(item_imgs["dagger"],item_imgs["attack_slot"]));
     main_character->find_item(new Shovel(item_imgs["torch"],item_imgs["torch_slot"]));
 
-
-
     tempo_heart = new TempoHeart();
     
     draw_running_map();
@@ -253,13 +251,13 @@ int GameWindow::game_update()
         }
         // check whether there is a wall.
         for (auto monster : monsters){
-        //     if(game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::ROAD) {
+            if(game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::ROAD) {
                  monster->move();
-        //     }
+            }
         }
-        // if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD) {
-             main_character->move();
-        // }
+        if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD) {
+            main_character->move();
+        }
 
         // find coin;
         for (auto it=coins.begin(); it!=coins.end(); ){
