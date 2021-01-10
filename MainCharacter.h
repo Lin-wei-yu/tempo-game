@@ -31,6 +31,7 @@ public:
     void draw_life_and_coin();
     void change_action();
     void pass_beat();
+    void stuck();
 protected:
     //define in subclass
     int num_action;

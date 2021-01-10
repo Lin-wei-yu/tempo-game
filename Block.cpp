@@ -30,14 +30,6 @@ Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img)
         beat_cnt = 0;
         beat_of_change = BEAT_PER_TEMPO;
         beat = false;
-        if (((pos_y / GRID_SIZE) + (pos_x / GRID_SIZE)) % 2 == 0)
-        {
-            is_odd = true;
-        }
-        else
-        {
-            is_odd = false;
-        }
     }
 }
 
@@ -48,7 +40,7 @@ void Block::draw() {
         }
         else
         { // if door, put floor first then put door
-            al_draw_scaled_bitmap(al_load_bitmap("assets/block/floor1.png"), 0, 0, GRID_SIZE, GRID_SIZE, pos_x, pos_y, GRID_SIZE, GRID_SIZE, 0);
+            al_draw_scaled_bitmap(al_load_bitmap("assets/block/boss_floor_A.png"), 0, 0, GRID_SIZE, GRID_SIZE, pos_x, pos_y, GRID_SIZE, GRID_SIZE, 0);
             al_draw_scaled_bitmap(img, 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
         }
     }
@@ -78,4 +70,9 @@ void Block::change_animation()
     {
         beat = true;
     }
+}
+void Block::delete_wall()
+{
+    img = al_load_bitmap("assets/block/boss_floor_A.png");
+    type = BlockType::ROAD;
 }

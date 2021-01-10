@@ -87,8 +87,8 @@ void GameWindow::game_init()
     // al_attach_sample_instance_to_mixer(backgroundSound, al_get_default_mixer());
 
     // create new bitmap for camera
-    // al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR | ALLEGRO_NO_PRESERVE_TEXTURE);
-    // tmp_bitmap = al_create_bitmap(WINDOW_WIDTH, WINDOW_HEIGHT);
+    al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR | ALLEGRO_NO_PRESERVE_TEXTURE);
+    tmp_bitmap = al_create_bitmap(WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 bool GameWindow::mouse_hover(int startx, int starty, int width, int height)
@@ -253,14 +253,20 @@ int GameWindow::game_update()
         }
         // check whether there is a wall.
         for (auto monster : monsters){
-        //     if(game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::ROAD) {
+            if(game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::ROAD) {
                  monster->move();
-        //     }
+            }
         }
-        // if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD) {
+        if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD) {
              main_character->move();
-        // }
-
+        }
+        else if(main_character->shovable(game_map->get_block(next_x / GRID_SIZE, next_y / GRID_SIZE))) {
+            game_map->delete_wall(next_x / GRID_SIZE, next_y / GRID_SIZE);
+            main_character->stuck();
+        }
+        else {
+            main_character->stuck();   
+        }
         // find coin;
         for (auto it=coins.begin(); it!=coins.end(); ){
             if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
@@ -428,7 +434,7 @@ void GameWindow::draw_running_map()
 {
     ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
     
-    al_set_target_bitmap(tmp_bitmap);
+    // al_set_target_bitmap(tmp_bitmap);
     al_clear_to_color(al_map_rgb(0, 0, 0));
     
     game_map -> draw();
@@ -445,14 +451,14 @@ void GameWindow::draw_running_map()
     for (auto item: items){
         item->draw();
     }
-    tempo_heart->draw();
-    al_set_target_bitmap(origin_bitmap);
-    al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
+    // tempo_heart->draw();
+    // al_set_target_bitmap(origin_bitmap);
+    // al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
 
 
-    al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8, 
-                        main_character->get_y() - WINDOW_HEIGHT / 8, 
-                        WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, 
-                        0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+    // al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8, 
+    //                     main_character->get_y() - WINDOW_HEIGHT / 8, 
+    //                     WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, 
+    //                     0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     al_flip_display();
 }

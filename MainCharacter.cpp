@@ -58,6 +58,11 @@ void MainCharacter::move(){
     body_status = healthy;
     tmp_dir = NON;
 }
+void MainCharacter::stuck(){
+    move_status = stay;
+    body_status = healthy;
+    tmp_dir = NON;
+}
 void MainCharacter::early_move(){
     cur_tempo ++;
     if (cur_tempo == tempo){
@@ -67,16 +72,20 @@ void MainCharacter::early_move(){
         switch (tmp_dir)
         {
             case UP:
+                next_x = pos_x;
                 next_y = pos_y - GRID_SIZE;
                 break;
             case DOWN:
+                next_x = pos_x;
                 next_y = pos_y + GRID_SIZE;
                 break;
             case LEFT:
                 next_x = pos_x - GRID_SIZE;
+                next_y = pos_y;
                 break;
             case RIGHT:
                 next_x = pos_x + GRID_SIZE;
+                next_y = pos_y;
                 break;
             default:
                 next_x = pos_x;

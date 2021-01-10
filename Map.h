@@ -19,6 +19,8 @@ public:
 
     void draw();
     void pass_beat();
+    Block get_block(int x, int y);
+    void delete_wall(int x, int y);
     BlockType map_type[NUM_OF_HEIGHT][NUM_OF_WIDTH];
 private:
     vector<Block> blocks;

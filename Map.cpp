@@ -48,4 +48,11 @@ void Map::pass_beat() {
         b.pass_beat();
     }
 }
+Block Map::get_block(int x, int y) {
+    return blocks[y * 60 + x];
+}
+void Map::delete_wall(int x, int y) {
+    blocks[y * 60 + x].delete_wall();
+    map_type[y][x] = BlockType::ROAD;
+} 
 
