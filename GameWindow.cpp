@@ -424,9 +424,18 @@ int GameWindow::process_event()
 
 void GameWindow::draw_running_map()
 {
-    ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
-    // for camera.
-    // al_set_target_bitmap(tmp_bitmap);
+    // ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
+    // // for camera.
+    // // al_set_target_bitmap(tmp_bitmap);
+
+    // // 2 times bigger
+    // ALLEGRO_TRANSFORM prev, trans;
+    // al_copy_transform(&prev, al_get_current_transform());
+    // al_identity_transform(&trans);
+    // al_scale_transform(&trans, 1.9, 1.9);
+    // al_use_transform(&trans);
+    // al_clear_to_color(BLACK);
+
 
     al_clear_to_color(al_map_rgb(0, 0, 0));
     game_map -> draw();
@@ -444,6 +453,9 @@ void GameWindow::draw_running_map()
         item->draw();
     }
     tempo_heart->draw();
+
+    // al_use_transform(&prev);
+
     // for camera.
     // al_set_target_bitmap(origin_bitmap);
     // al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
