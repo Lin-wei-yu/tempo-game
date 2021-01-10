@@ -7,7 +7,6 @@ class GreenSlime:public Monster{
 public: 
     GreenSlime(ALLEGRO_BITMAP* img);
     ~GreenSlime();
-    void move() override;
     void early_move() override;
     void get_reward() override{};
 };

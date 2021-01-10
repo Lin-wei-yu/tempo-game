@@ -16,15 +16,6 @@ Zombie::Zombie(ALLEGRO_BITMAP* img):Monster(img){
 Zombie::~Zombie(){
 
 }
-void Zombie::move(){
-    if (move_status == leave && body_status == healthy){
-        pos_x = next_x;
-        pos_y = next_y;
-        cur_dir = tmp_dir;
-    }
-    move_status = stay;
-    body_status = healthy;
-}  
 void Zombie::early_move(){
     cur_tempo++;
     if (cur_tempo == tempo){
@@ -62,14 +53,19 @@ void Zombie::draw() {
     int h = al_get_bitmap_height(img);
     int sw = w / (num_action*3); 
     int sh = h / 2;
-    int offset_y = (!hidden) ? 0 : sh;
+    int sh_offset = (!hidden) ? 0 : sh;
+
+    int offset_y = (jumping==true) ? JUMP_HIEIGHT: 0;
+    offset_y += CHARACTER_OFFSET;
+
     if (cur_dir == UP){
-        al_draw_scaled_bitmap(img, sw*cur_action, offset_y, sw, sh, pos_x, pos_y - CHARACTER_OFFSET, sw, sh, 0);
+        al_draw_scaled_bitmap(img, sw*cur_action, sh_offset, sw, sh, pos_x, pos_y-offset_y, sw, sh, 0);
     }else if (cur_dir == LEFT){
-        al_draw_scaled_bitmap(img, sw*(cur_action+8), offset_y, sw, sh, pos_x, pos_y - CHARACTER_OFFSET, sw, sh, 0);
+        al_draw_scaled_bitmap(img, sw*(cur_action+8), sh_offset, sw, sh, pos_x, pos_y-offset_y, sw, sh, 0);
     }else if (cur_dir == RIGHT){
-        al_draw_scaled_bitmap(img, sw*(cur_action+8), offset_y, sw, sh, pos_x, pos_y - CHARACTER_OFFSET, sw, sh, ALLEGRO_FLIP_HORIZONTAL);
+        al_draw_scaled_bitmap(img, sw*(cur_action+8), sh_offset, sw, sh, pos_x, pos_y-offset_y, sw, sh, ALLEGRO_FLIP_HORIZONTAL);
     }else {
-        al_draw_scaled_bitmap(img, sw*(cur_action+16), offset_y, sw, sh, pos_x, pos_y - CHARACTER_OFFSET, sw, sh, 0);
+        al_draw_scaled_bitmap(img, sw*(cur_action+16), sh_offset, sw, sh, pos_x, pos_y-offset_y, sw, sh, 0);
     }
+    jumping = false;
 }

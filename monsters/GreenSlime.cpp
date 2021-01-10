@@ -14,16 +14,6 @@ GreenSlime::GreenSlime(ALLEGRO_BITMAP* img):Monster(img){
 }
 GreenSlime::~GreenSlime(){}
 
-void GreenSlime::move(){
-    // green slime cant move
-    if (move_status == leave && body_status == healthy){
-        pos_x = next_x;
-        pos_y = next_y;
-        cur_dir = tmp_dir;
-    }
-    move_status = stay;
-    body_status = healthy;
-}
 
 void GreenSlime::early_move(){
     cur_tempo ++;

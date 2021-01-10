@@ -7,7 +7,6 @@ class RedBat:public Monster{
 public: 
     RedBat(ALLEGRO_BITMAP* img);
     ~RedBat();
-    void move() override;   
     void early_move() override; 
     void get_reward() override{};
 };

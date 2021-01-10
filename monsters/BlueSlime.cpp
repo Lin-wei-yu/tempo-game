@@ -12,15 +12,6 @@ BlueSlime::BlueSlime(ALLEGRO_BITMAP* img):Monster(img){
 }
 BlueSlime::~BlueSlime(){}
 
-void BlueSlime::move() {
-    if (move_status == leave && body_status == healthy){
-        pos_x = next_x;
-        pos_y = next_y;
-        cur_dir = tmp_dir;
-    }
-    move_status = stay;
-    body_status = healthy;
-}
 void BlueSlime::early_move(){
     cur_tempo++;
     if (cur_tempo == tempo){

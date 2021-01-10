@@ -20,6 +20,7 @@ Monster::Monster(ALLEGRO_BITMAP* img):Object(){
     next_y = pos_y;
     hidden = false;
     beat_cnt = 0;
+    jumping = false;
 }
 Monster::~Monster(){}
 void Monster::draw(){
@@ -27,12 +28,15 @@ void Monster::draw(){
     int h = al_get_bitmap_height(img);
     int sw = w / num_action; 
     int sh = h / 2;
+    int offset_y = (jumping==true) ? JUMP_HIEIGHT: 0;
+    offset_y += CHARACTER_OFFSET;
 
     if (hidden == false){
-        al_draw_scaled_bitmap(img, sw*cur_action, 0, sw, sh, pos_x, pos_y, sw, sh, 0);
+        al_draw_scaled_bitmap(img, sw*cur_action, 0, sw, sh, pos_x, pos_y-offset_y, sw, sh, 0);
     }else {
-        al_draw_scaled_bitmap(img, sw*cur_action, sh, sw, sh, pos_x, pos_y, sw, sh, 0);
+        al_draw_scaled_bitmap(img, sw*cur_action, sh, sw, sh, pos_x, pos_y-offset_y, sw, sh, 0);
     }
+    jumping = false;
 }
 void Monster::change_action(){
     cur_action = cur_action + 1;
@@ -67,6 +71,17 @@ void Monster::pass_beat(){
         beat_cnt = 0;
     }
 }
-
+void Monster::move() {
+    if (move_status == leave && body_status == healthy){
+        //if (pos_x != next_x || pos_y != next_y){
+            jumping = true;
+        //}
+        pos_x = next_x;
+        pos_y = next_y;
+        cur_dir = tmp_dir;
+    }
+    move_status = stay;
+    body_status = healthy;
+}
 
 

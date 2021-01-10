@@ -8,7 +8,6 @@ class Zombie:public Monster{
 public: 
     Zombie(ALLEGRO_BITMAP* img);
     ~Zombie();
-    void move() override;   
     void early_move() override; 
     void get_reward() override{};
     void draw() override;

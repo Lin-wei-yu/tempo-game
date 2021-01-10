@@ -2,15 +2,22 @@
 #define ITEM_H_INCLUDED
 #include "Object.h"
 #include "global.h"
-typedef enum _ItemFunc{attack, shovel, bomb, torch} ItemFunc;
+typedef enum _ItemType{attack_tool, shovel, bomb, torch} ItemType;
 class Item: public Object{
 public:
-    virtual void attack(){};
-    virtual void draw() = 0;
-    void show();
-    
-protected:
-    ItemFunc item_func;
-};
+    Item(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img );
+    virtual void draw();
+    void show(int x, int y);
+    ItemType get_type();
+    int get_level();
 
+protected:
+    // define in this class
+    ALLEGRO_BITMAP* slot_img;
+    // define in sub-class
+    ItemType item_type;
+    int item_level;
+    int num_animation;
+
+};
 #endif

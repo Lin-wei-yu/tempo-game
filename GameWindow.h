@@ -31,6 +31,11 @@
 #include "rewards/Coin.h"
 #include "TempoHeart.h"
 #include "items/Bomb.h"
+#include "items/Shovel.h"
+#include "items/Torch.h"
+#include "items/Dagger.h"
+#include "characters/Aria.h"
+#include "characters/Cadencce.h"
 
 
 #define GAME_INIT -1
@@ -82,13 +87,13 @@ public:
     void load_coin_imgs();
     void load_monster_imgs();
     void load_item_imgs();
+    void load_character_imgs();
 
 public:
     bool initial = true;
 
 private:
     ALLEGRO_BITMAP *icon;
-    ALLEGRO_BITMAP *background = NULL;
 
     ALLEGRO_DISPLAY* display = NULL;
     ALLEGRO_FONT *font = NULL;
@@ -111,6 +116,7 @@ private:
     map<int, ALLEGRO_BITMAP*> coin_imgs;
     map<string, ALLEGRO_BITMAP*> monster_imgs;
     map<string, ALLEGRO_BITMAP*> item_imgs;
+    map<string, ALLEGRO_BITMAP*> character_imgs;
     // games' character and object
     Map* game_map;
     list<Monster*> monsters;
@@ -128,4 +134,4 @@ private:
     ALLEGRO_BITMAP *tmp_bitmap;
 };
 
-#endif // MAINWINDOW_H_INCLUDED
+#endif

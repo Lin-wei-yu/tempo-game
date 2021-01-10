@@ -17,7 +17,7 @@ public:
     bool is_dead();
     void attack();
     void be_attacked(int power);
-    virtual void move() = 0;
+    void move();
     virtual void early_move() = 0;
     virtual void get_reward() = 0;
     float get_power();
@@ -46,6 +46,7 @@ protected:
     int next_y;
     bool hidden;
     int beat_cnt;
+    bool jumping;
 };
 
 #endif
