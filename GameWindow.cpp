@@ -425,10 +425,10 @@ int GameWindow::process_event()
 void GameWindow::draw_running_map()
 {
     ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
-    
-    al_set_target_bitmap(tmp_bitmap);
+    // for camera.
+    // al_set_target_bitmap(tmp_bitmap);
+
     al_clear_to_color(al_map_rgb(0, 0, 0));
-    
     game_map -> draw();
     for (auto monster : monsters){
         monster->draw();
@@ -444,13 +444,13 @@ void GameWindow::draw_running_map()
         item->draw();
     }
     tempo_heart->draw();
-    al_set_target_bitmap(origin_bitmap);
-    al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
+    // for camera.
+    // al_set_target_bitmap(origin_bitmap);
+    // al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
+    // al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8, 
+    //                     main_character->get_y() - WINDOW_HEIGHT / 8, 
+    //                     WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, 
+    //                     0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
 
-
-    al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8, 
-                        main_character->get_y() - WINDOW_HEIGHT / 8, 
-                        WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, 
-                        0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     al_flip_display();
 }
