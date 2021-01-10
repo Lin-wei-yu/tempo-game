@@ -34,6 +34,8 @@
 #include "items/Shovel.h"
 #include "items/Torch.h"
 #include "items/Dagger.h"
+#include "characters/Aria.h"
+#include "characters/Cadencce.h"
 
 
 #define GAME_INIT -1
@@ -85,6 +87,7 @@ public:
     void load_coin_imgs();
     void load_monster_imgs();
     void load_item_imgs();
+    void load_character_imgs();
 
 public:
     bool initial = true;
@@ -113,6 +116,7 @@ private:
     map<int, ALLEGRO_BITMAP*> coin_imgs;
     map<string, ALLEGRO_BITMAP*> monster_imgs;
     map<string, ALLEGRO_BITMAP*> item_imgs;
+    map<string, ALLEGRO_BITMAP*> character_imgs;
     // games' character and object
     Map* game_map;
     list<Monster*> monsters;
@@ -125,6 +129,9 @@ private:
     int mouse_x, mouse_y;
     bool redraw = false;
     bool mute = false;
+
+    // FBO
+    ALLEGRO_BITMAP *tmp_bitmap;
 };
 
 #endif // MAINWINDOW_H_INCLUDED

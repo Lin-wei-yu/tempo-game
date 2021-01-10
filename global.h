@@ -9,6 +9,7 @@
 
 #define FONT_SIZE 12
 #define CHARACTER_OFFSET 12
+#define JUMP_HIEIGHT 10
 #define GRID_OFFSET 16
 #define GRID_SIZE 24
 

@@ -7,7 +7,6 @@ class BlueSlime:public Monster{
 public: 
     BlueSlime(ALLEGRO_BITMAP* img);
     ~BlueSlime();
-    void move() override;
     void early_move() override;
     void get_reward() override{};
 };

@@ -53,15 +53,23 @@ void GameWindow::load_item_imgs(){
     item_imgs["attack_slot"] = al_load_bitmap("assets/item/attack_slot.png");
     item_imgs["torch_slot"] = al_load_bitmap("assets/item/torch_slot.png");
 }
+void GameWindow::load_character_imgs(){
+    character_imgs["aria"] = al_load_bitmap("assets/main/clone_aria.png");
+    character_imgs["cadencce"] = al_load_bitmap("assets/main/clone_cadencce.png");
+}
 
 void GameWindow::game_init()
-{   
+{   /*
+    load stuff from memory
+    */
     char buffer[50];
+
     // load image 
     icon = al_load_bitmap("assets/main/icon.png");
     load_monster_imgs();
     load_coin_imgs();
     load_item_imgs();
+    load_character_imgs();
 
     // load window
     al_set_display_icon(display, icon);
@@ -77,6 +85,10 @@ void GameWindow::game_init()
     // backgroundSound = al_create_sample_instance(sample);
     // al_set_sample_instance_playmode(backgroundSound, ALLEGRO_PLAYMODE_ONCE);
     // al_attach_sample_instance_to_mixer(backgroundSound, al_get_default_mixer());
+
+    // create new bitmap for camera
+    // al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR | ALLEGRO_NO_PRESERVE_TEXTURE);
+    // tmp_bitmap = al_create_bitmap(WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 bool GameWindow::mouse_hover(int startx, int starty, int width, int height)
@@ -124,12 +136,12 @@ GameWindow::GameWindow()
 
     printf("Game Initializing...\n");
     // for full window
-    //al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
+    al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
     display = al_create_display(WINDOW_WIDTH, WINDOW_HEIGHT);
     event_queue = al_create_event_queue();
 
     refresh_timer = al_create_timer(1.0 / FPS);
-    quater_timer = al_create_timer(1.0 / FPS);
+    quater_timer = al_create_timer(4.0 / FPS);
     if(refresh_timer == NULL || quater_timer == NULL)
         show_err_msg(-1);
 
@@ -161,10 +173,10 @@ GameWindow::GameWindow()
 
 void GameWindow::game_begin()
 {
-    // load images
-    load_coin_imgs();
-    load_monster_imgs();
-    load_item_imgs();
+    /*
+    create every object
+    */
+
     // init game objects
     game_map = new Map();
 
@@ -172,7 +184,7 @@ void GameWindow::game_begin()
     monsters.push_back(new BlueSlime(monster_imgs["blue_slime"]));
     monsters.push_back(new RedBat(monster_imgs["red_bat"]));
     monsters.push_back(new Zombie(monster_imgs["zombie"]));
-    main_character = new MainCharacter("assets/main/TEMP_medic.png");
+    main_character = new Aria(character_imgs["aria"]);
 
     //test
     main_character->find_item(new Shovel(item_imgs["shovel"],item_imgs["shovel_slot"]));
@@ -239,14 +251,15 @@ int GameWindow::game_update()
                 it++;
             }
         }
+        // check whether there is a wall.
         for (auto monster : monsters){
-            if(game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::ROAD) {
-                monster->move();
-            }
+        //     if(game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::ROAD) {
+                 monster->move();
+        //     }
         }
-        if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD) {
-            main_character->move();
-        }
+        // if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD) {
+             main_character->move();
+        // }
 
         // find coin;
         for (auto it=coins.begin(); it!=coins.end(); ){
@@ -258,8 +271,14 @@ int GameWindow::game_update()
 
             }else it++;
         }
-        // find 
-        
+        // find item;
+        for (auto it=items.begin(); it!=items.end(); it++){
+            if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
+                main_character->find_item((*it));
+                it = items.erase(it);
+            }
+        }
+
 
         beat_cnt = 0;
     }
@@ -280,14 +299,7 @@ void GameWindow::game_reset()
         delete coin;
     }
     coins.clear();
-    for (auto&& coin_img : coin_imgs){
-        al_destroy_bitmap(coin_img.second);
-    }
-    coin_imgs.clear();
-    for (auto&& monster_img :monster_imgs){
-        al_destroy_bitmap(monster_img.second);
-    }
-    monster_imgs.clear();
+
     // stop sample instance
     // al_stop_sample_instance(backgroundSound);
     // al_stop_sample_instance(startSound);
@@ -315,6 +327,17 @@ void GameWindow::game_destroy()
     // al_destroy_sample_instance(startSound);
     // al_destroy_sample_instance(backgroundSound);
 
+
+    // free image
+    for (auto&& coin_img : coin_imgs){
+        al_destroy_bitmap(coin_img.second);
+    }
+    coin_imgs.clear();
+    for (auto&& monster_img :monster_imgs){
+        al_destroy_bitmap(monster_img.second);
+    }
+    monster_imgs.clear();
+
 }
 
 int GameWindow::process_event()
@@ -335,7 +358,8 @@ int GameWindow::process_event()
                 monster->pass_beat();
             }
             tempo_heart->pass_beat();
-
+            game_map->pass_beat();
+            main_character->pass_beat();
             if (beat_cnt == BEAT_PER_TEMPO) { // 8 beat move once
                 // monsters early move
                 for (auto monster : monsters){
@@ -344,7 +368,7 @@ int GameWindow::process_event()
                 // main character early move
                 main_character->early_move();
             }else {
-                //main_character->change_dir(NON);
+                // main_character->change_dir(NON);
             }
         }
     }
@@ -365,20 +389,18 @@ int GameWindow::process_event()
                 else
                     al_play_sample_instance(backgroundSound);
                 break;
-            // case ALLEGRO_KEY_UP:
-            //     main_character->change_dir(UP);
-            //     break;
-            // case ALLEGRO_KEY_DOWN:
-            //     main_character->change_dir(DOWN);
-            //     break;
-            // case ALLEGRO_KEY_LEFT:
-            //     main_character->change_dir(LEFT);
-            //     break;
-            // case ALLEGRO_KEY_RIGHT:
-            //     main_character->change_dir(RIGHT);
-            //     break;
-
-      
+            case ALLEGRO_KEY_UP:
+                main_character->change_dir(UP);
+                break;
+            case ALLEGRO_KEY_DOWN:
+                main_character->change_dir(DOWN);
+                break;
+            case ALLEGRO_KEY_LEFT:
+                main_character->change_dir(LEFT);
+                break;
+            case ALLEGRO_KEY_RIGHT:
+                main_character->change_dir(RIGHT);
+                break;
         }
     }
     else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
@@ -404,19 +426,22 @@ int GameWindow::process_event()
 
 void GameWindow::draw_running_map()
 {
-
+    ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
     
     unsigned int i, j;
     al_clear_to_color(BLACK);
     
     // 2 times bigger
-    // ALLEGRO_TRANSFORM prev, trans;
-    // al_copy_transform(&prev, al_get_current_transform());
-    // al_identity_transform(&trans);
-    // al_scale_transform(&trans, 4, 4);
-    // al_use_transform(&trans);
-    // al_clear_to_color(BLACK);
+    ALLEGRO_TRANSFORM prev, trans;
+    al_copy_transform(&prev, al_get_current_transform());
+    al_identity_transform(&trans);
+    al_scale_transform(&trans, 4, 4);
+    al_use_transform(&trans);
+    al_clear_to_color(BLACK);
 
+    // al_set_target_bitmap(tmp_bitmap);
+    al_clear_to_color(BLACK);
+    
     game_map -> draw();
     for (auto monster : monsters){
         monster->draw();
@@ -433,7 +458,10 @@ void GameWindow::draw_running_map()
     }
     tempo_heart->draw();
     
-    // al_use_transform(&prev);
+    al_use_transform(&prev);
 
+    // al_set_target_bitmap(origin_bitmap);
+    // al_clear_to_color(al_map_rgb(0, 0, 0));
+    // al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 4, main_character->get_y() - WINDOW_HEIGHT / 4, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
     al_flip_display();
 }

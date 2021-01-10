@@ -13,11 +13,17 @@ class Block:public Object{
 public:
     Block(int, int, BlockType, ALLEGRO_BITMAP*);
     ~Block(){};
+    void pass_beat();
+    void change_animation();
     void draw();
     int get_level();
 private:
     BlockType type;
     int level;
+    int beat_of_change;
+    int beat_cnt;
+    bool is_odd;
+    bool beat;
 };
 
 

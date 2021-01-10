@@ -18,6 +18,7 @@ public:
     ~Map();
 
     void draw();
+    void pass_beat();
     BlockType map_type[NUM_OF_HEIGHT][NUM_OF_WIDTH];
 private:
     vector<Block> blocks;
