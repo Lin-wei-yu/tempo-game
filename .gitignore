@@ -34,3 +34,4 @@ Makefile*
 *.out
 *.o
 *.cbp
+!map.txt

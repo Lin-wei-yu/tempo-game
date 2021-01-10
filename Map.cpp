@@ -16,7 +16,7 @@ Map::Map(){
     ifstream input_file;
     string s;
     int width_iter = 0, height_iter = 0;
-    input_file.open("map.txt");
+    input_file.open("map/map.txt");
     while(getline(input_file, s)) {
         // std::cout << s << std::endl;
         width_iter = 0;
