@@ -13,7 +13,7 @@ RedBat::RedBat(ALLEGRO_BITMAP* img):Monster(img){
 }
 RedBat::~RedBat(){}
 
-void RedBat::early_move(){
+void RedBat::early_move(int character_pos_x, int character_pos_y){
     cur_tempo ++;
     if (cur_tempo == tempo) {
         body_status = healthy;

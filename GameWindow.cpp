@@ -30,6 +30,8 @@ void GameWindow::load_monster_imgs(){
     monster_imgs["blue_slime"] = al_load_bitmap("assets/monster/slime_blue.png");
     monster_imgs["red_bat"] = al_load_bitmap("assets/monster/bat_red.png");
     monster_imgs["zombie"] = al_load_bitmap("assets/monster/zombie.png");
+    monster_imgs["skeleton"] = al_load_bitmap("assets/monster/skeleton.png");
+    monster_imgs["black_skeleton"] = al_load_bitmap("assets/monster/skeleton_black.png");
 }
 void GameWindow::load_coin_imgs(){
     coin_imgs[1] = al_load_bitmap("assets/reward/resource_coin1.png");
@@ -141,7 +143,7 @@ GameWindow::GameWindow()
     event_queue = al_create_event_queue();
 
     refresh_timer = al_create_timer(1.0 / FPS);
-    quater_timer = al_create_timer(1.0 / FPS);
+    quater_timer = al_create_timer(8.0 / FPS);
     if(refresh_timer == NULL || quater_timer == NULL)
         show_err_msg(-1);
 
@@ -184,6 +186,9 @@ void GameWindow::game_begin()
     monsters.push_back(new BlueSlime(monster_imgs["blue_slime"]));
     monsters.push_back(new RedBat(monster_imgs["red_bat"]));
     monsters.push_back(new Zombie(monster_imgs["zombie"]));
+    monsters.push_back(new Skeleton(monster_imgs["skeleton"]));
+    monsters.push_back(new BlackSkeleton(monster_imgs["black_skeleton"]));
+    
     main_character = new Aria(character_imgs["aria"]);
 
     //test
@@ -191,8 +196,6 @@ void GameWindow::game_begin()
     main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"]));
     main_character->find_item(new Shovel(item_imgs["dagger"],item_imgs["attack_slot"]));
     main_character->find_item(new Shovel(item_imgs["torch"],item_imgs["torch_slot"]));
-
-
 
     tempo_heart = new TempoHeart();
 
@@ -223,10 +226,19 @@ int GameWindow::game_update()
 
     if (beat_cnt == BEAT_PER_TEMPO){ // moving tempo
 
+        int pos_x = main_character->get_x();
+        int pos_y = main_character->get_y();
+
+        // monsters early move
+        for (auto monster : monsters){
+            monster->early_move(pos_x, pos_y);
+        }
+        // main character early move
+        main_character->early_move();
+
         int next_x = main_character->get_next_x();
         int next_y = main_character->get_next_y();
-        int pos_x = main_character->get_x();
-        int pos_y = main_character->get_x();
+
         for(auto it=monsters.begin(); it!=monsters.end(); ) {
             Monster* monster = (*it);
 
@@ -367,14 +379,9 @@ int GameWindow::process_event()
             tempo_heart->pass_beat();
             game_map->pass_beat();
             main_character->pass_beat();
-            if (beat_cnt == BEAT_PER_TEMPO) { // 8 beat move once
-                // monsters early move
-                for (auto monster : monsters){
-                    monster->early_move();
-                }
-                // main character early move
-                main_character->early_move();
-            }else {
+            if (beat_cnt != BEAT_PER_TEMPO) { 
+                // this region determine how good the player should match the tempo,
+                // such that the main_character can move
                 // main_character->change_dir(NON);
             }
         }
@@ -433,11 +440,20 @@ int GameWindow::process_event()
 
 void GameWindow::draw_running_map()
 {
-    ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
-
+    // for camera.
+    // ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
     // al_set_target_bitmap(tmp_bitmap);
-    al_clear_to_color(al_map_rgb(0, 0, 0));
 
+    // for 2 times bigger.
+    // ALLEGRO_TRANSFORM prev, trans;
+    // al_copy_transform(&prev, al_get_current_transform());
+    // al_identity_transform(&trans);
+    // al_scale_transform(&trans, 1.9, 1.9);
+    // al_use_transform(&trans);
+    // al_clear_to_color(BLACK);
+
+    
+    al_clear_to_color(al_map_rgb(0, 0, 0));
     game_map -> draw();
     for (auto monster : monsters){
         monster->draw();
@@ -453,13 +469,17 @@ void GameWindow::draw_running_map()
         item->draw();
     }
     tempo_heart->draw();
+
+    // for 2 times bigger.
+    // al_use_transform(&prev);
+
+    // for camera.
     // al_set_target_bitmap(origin_bitmap);
     // al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
-
-
-    // al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8,
-    //                     main_character->get_y() - WINDOW_HEIGHT / 8,
-    //                     WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4,
+    // al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8, 
+    //                     main_character->get_y() - WINDOW_HEIGHT / 8, 
+    //                     WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, 
     //                     0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+
     al_flip_display();
 }

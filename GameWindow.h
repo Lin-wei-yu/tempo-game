@@ -27,6 +27,8 @@
 #include "monsters/BlueSlime.h"
 #include "monsters/RedBat.h"
 #include "monsters/Zombie.h"
+#include "monsters/Skeleton.h"
+#include "monsters/BlackSkeleton.h"
 #include "Reward.h"
 #include "rewards/Coin.h"
 #include "TempoHeart.h"
@@ -49,7 +51,7 @@
 #define GAME_EXIT 7
  
 // clock rate
-const float FPS = 60;
+const float FPS = 120;
 
 // total number of level
 const int LevelNum = 4;
