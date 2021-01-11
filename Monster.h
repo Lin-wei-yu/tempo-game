@@ -2,6 +2,7 @@
 #define MONSTER_H_INCLUDED
 #include <allegro5/allegro.h>
 #include <string>
+#include <map>
 #include "Object.h"
 #include "global.h"
 using namespace std;
@@ -10,13 +11,13 @@ using namespace std;
 
 class Monster: public Object{
 public:
-    Monster(ALLEGRO_BITMAP* img);
+    Monster(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs);
     virtual ~Monster();
     virtual void draw();
     void change_action();
     bool is_dead();
     void attack();
-    void be_attacked(int power);
+    void be_attacked(float harm);
     void move();
     virtual void early_move(int character_pos_x, int character_pos_y) = 0;
     virtual void get_reward() = 0;
@@ -32,7 +33,8 @@ protected:
     int tempo;
     int num_action;
     float power;
-    float lives;
+    float starting_lives;
+    float remaining_lives;
     int drop_money;
     int beat_of_change;
     // define in current class
@@ -47,6 +49,7 @@ protected:
     bool hidden;
     int beat_cnt;
     bool jumping;
+    map<string, ALLEGRO_BITMAP*> heart_imgs;
     
 };
 

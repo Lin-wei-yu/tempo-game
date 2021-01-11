@@ -1,7 +1,11 @@
 #include "MainCharacter.h"
-MainCharacter::MainCharacter(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& number_imgs){
+MainCharacter::MainCharacter(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& number_imgs,
+                                map<string, ALLEGRO_BITMAP*>& heart_imgs, map<string, ALLEGRO_BITMAP*>& other_imgs){
     this -> img = img;
     this -> number_imgs = number_imgs;
+    this -> heart_imgs = heart_imgs;
+    this -> coin_img = other_imgs["coin_icon"];
+    this -> alphabet_img = other_imgs["alphabet"];
     pos_x = GRID_SIZE * 24;
     pos_y = GRID_SIZE * 3;
     power = 1;
@@ -15,21 +19,8 @@ MainCharacter::MainCharacter(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& numbe
     tmp_dir = NON;
     move_status = stay;
     body_status = healthy;
-
-    heart_imgs.push_back(al_load_bitmap("assets/main/heart_empty.png"));
-    heart_imgs.push_back(al_load_bitmap("assets/main/heart_half.png"));
-    heart_imgs.push_back(al_load_bitmap("assets/main/heart.png"));
-    coin_img = al_load_bitmap("assets/main/hud_coins.png");
-
-    alphabet_img = al_load_bitmap("assets/font/alphabet_white.png");
 }
 MainCharacter::~MainCharacter(){
-    for (auto&& heart_img : heart_imgs){
-        al_destroy_bitmap(heart_img);
-    }
-    heart_imgs.clear();
-    al_destroy_bitmap(coin_img);
-    al_destroy_bitmap(alphabet_img);
 }
 
 void MainCharacter::draw(){
@@ -108,14 +99,14 @@ void MainCharacter::attack(){
 void MainCharacter::change_dir(DIR dir){
     tmp_dir = dir; 
 }
-void MainCharacter::be_attacked(float power){
-    lives = lives - power;
+void MainCharacter::be_attacked(float harm){
+    remaining_lives = remaining_lives - harm;
     body_status = injured;
 }
 bool MainCharacter::is_dead(){
-    return (lives <= 0);
+    return (remaining_lives <= 0);
 }
-int MainCharacter::get_power(){
+float MainCharacter::get_power(){
     return power;
 }
 int MainCharacter::get_next_x(){
@@ -163,27 +154,47 @@ void MainCharacter::draw_items(){
     }
 }
 void MainCharacter::draw_life_and_coin(){
+    float enlarge_ratio = 2.5;
     int life_coin_pos_y = 20;
-    int life_x = 500;
-    int coin_x = 620;
-    int num_x = 650;
+    int life_x = WINDOW_WIDTH - 480;
+    int coin_x = WINDOW_WIDTH - 180;
+    int num_x = WINDOW_WIDTH - 100;
     // draw lives
-    int w = al_get_bitmap_width(heart_imgs[0]);
-    int remain = lives;
-    for (int i=0; i<5; i++){
-        if (remain <= 0) al_draw_bitmap(heart_imgs[0], life_x+i*w, life_coin_pos_y ,0);
-        else if (remain < 1) al_draw_bitmap(heart_imgs[1], life_x+i*w, life_coin_pos_y ,0);
-        else al_draw_bitmap(heart_imgs[2], life_x+i*w, life_coin_pos_y ,0);
+    int w = al_get_bitmap_width(heart_imgs["empty"]);
+    int h = al_get_bitmap_height(heart_imgs["empty"]);
+    float sw = w*enlarge_ratio;
+    float sh = h*enlarge_ratio;
+
+    float remain = remaining_lives;
+
+    for (int i=0; i<starting_lives; i++){
+        if (remain <= 0){
+            al_draw_scaled_bitmap(heart_imgs["empty"], 0 , 0, w, h, life_x+i*sw, life_coin_pos_y, sw, sh, 0);
+        }else if (remain < 1){
+            al_draw_scaled_bitmap(heart_imgs["half"], 0 , 0, w, h, life_x+i*sw, life_coin_pos_y, sw, sh, 0);
+        }else {
+            al_draw_scaled_bitmap(heart_imgs["full"], 0 , 0, w, h, life_x+i*sw, life_coin_pos_y, sw, sh, 0);
+        }
         remain --;
     }
+    
     // draw coin
-    al_draw_bitmap(coin_img, coin_x, life_coin_pos_y,0);
+    w = al_get_bitmap_width(coin_img);
+    h = al_get_bitmap_height(coin_img);
+    sw = w*enlarge_ratio;
+    sh = h*enlarge_ratio;
+    al_draw_scaled_bitmap(coin_img, 0, 0, w, h, coin_x, life_coin_pos_y, sw, sh, 0); 
+
+    // draw coin num
     w = al_get_bitmap_width(number_imgs[0]);
+    h = al_get_bitmap_height(number_imgs[0]);
+    sw = w*enlarge_ratio;
+    sh = h*enlarge_ratio;
     int gap = 2;
     string coin_str = to_string(num_coin);
     for (int i=0; i<coin_str.size(); i++){
         int num_idx = coin_str[i] - '0';
-        al_draw_bitmap(number_imgs[num_idx], num_x+i*(w+gap), life_coin_pos_y, 0);
+        al_draw_scaled_bitmap(number_imgs[num_idx], 0, 0, w, h, num_x+i*(sw+gap), life_coin_pos_y+15, sw, sh, 0);
     }
 
 }

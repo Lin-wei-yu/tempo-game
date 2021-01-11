@@ -1,12 +1,12 @@
 #include "RedBat.h"
 
-RedBat::RedBat(ALLEGRO_BITMAP* img):Monster(img){
+RedBat::RedBat(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs):Monster(img,heart_imgs){
     // red bat profile 
     name = "red_bet";
     tempo = 1;
     num_action = 4;
     power = 0.5;
-    lives = 1;
+    starting_lives = remaining_lives = 1;
     drop_money = 3;
     beat_of_change = BEAT_PER_TEMPO/num_action;
 

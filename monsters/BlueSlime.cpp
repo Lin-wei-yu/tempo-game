@@ -1,12 +1,12 @@
 #include "BlueSlime.h"
 
-BlueSlime::BlueSlime(ALLEGRO_BITMAP* img):Monster(img){
+BlueSlime::BlueSlime(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs):Monster(img,heart_imgs){
     // blue slime profile 
     name = "blue_slime";
     tempo = 2;
     num_action = 8;
     power = 1;
-    lives = 2;
+    starting_lives = remaining_lives = 2;
     drop_money = 2;
     beat_of_change = (BEAT_PER_TEMPO*tempo)/num_action;
 }

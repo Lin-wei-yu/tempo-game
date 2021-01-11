@@ -11,16 +11,17 @@
 using namespace std;
 class MainCharacter : public Object{
 public:
-    MainCharacter(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& number_imgs);
+    MainCharacter(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& number_imgs, 
+                map<string, ALLEGRO_BITMAP*>& heart_imgs, map<string, ALLEGRO_BITMAP*>& other_imgs);
     ~MainCharacter();
     void draw();
     void move();
     void early_move();
     bool is_dead();
     void attack();
-    void be_attacked(float power);
+    void be_attacked(float harm);
     void change_dir(DIR dir);
-    int get_power();
+    float get_power();
     int get_next_x();
     int get_next_y();
     void find_money(int num);
@@ -33,14 +34,15 @@ public:
     void pass_beat();
     void stuck();
 protected:
-    //define in subclass
+    // define in subclass
     int num_action;
-    float lives;
+    float starting_lives;
+    float remaining_lives;
     int tempo;
     int beat_of_change;
 
     // define in current class
-    int power;
+    float power;
     int num_coin;
     int next_x;
     int next_y;
@@ -52,10 +54,10 @@ protected:
     MoveStatus move_status;
     BodyStatus body_status;
     map<ItemType, vector<Item*>> item_list;
-    vector<ALLEGRO_BITMAP*> heart_imgs;
+    // imgs
+    map<string, ALLEGRO_BITMAP*> heart_imgs;
     ALLEGRO_BITMAP* coin_img;
     vector<ALLEGRO_BITMAP*> number_imgs;
     ALLEGRO_BITMAP* alphabet_img;
-
 };
 #endif

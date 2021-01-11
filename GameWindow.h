@@ -95,6 +95,8 @@ public:
     void load_item_imgs();
     void load_character_imgs();
     void load_number_imgs();
+    void load_heart_imgs();
+    void load_other_imgs();
 
 public:
     bool initial = true;
@@ -125,6 +127,9 @@ private:
     map<string, ALLEGRO_BITMAP*> item_imgs;
     map<string, ALLEGRO_BITMAP*> character_imgs;
     vector<ALLEGRO_BITMAP*> number_imgs;
+    map<string, ALLEGRO_BITMAP*> heart_imgs;
+    map<string, ALLEGRO_BITMAP*> other_imgs;
+
     // games' character and object
     Map* game_map;
     list<Monster*> monsters;

@@ -3,9 +3,10 @@
 using namespace std;
 // monster manual
 // static MonsterDOC monster_manual;
-Monster::Monster(ALLEGRO_BITMAP* img):Object(){
+Monster::Monster(ALLEGRO_BITMAP* img,map<string, ALLEGRO_BITMAP*>& heart_imgs):Object(){
     // declare in object.h
     this -> img = img;
+    this -> heart_imgs = heart_imgs;
     pos_x = (rand()%5 )* GRID_SIZE + 5 * GRID_SIZE;
     pos_y = (rand()%5 )* GRID_SIZE + 5 * GRID_SIZE;
 
@@ -24,18 +25,42 @@ Monster::Monster(ALLEGRO_BITMAP* img):Object(){
 }
 Monster::~Monster(){}
 void Monster::draw(){
+
+    // draw monster.
     int w = al_get_bitmap_width(img);
     int h = al_get_bitmap_height(img);
     int sw = w / num_action; 
     int sh = h / 2;
     int offset_y = (jumping==true) ? JUMP_HIEIGHT: 0;
     offset_y += CHARACTER_OFFSET;
+    int offset_x = (sw/2) - (GRID_SIZE/2);
 
     if (hidden == false){
-        al_draw_scaled_bitmap(img, sw*cur_action, 0, sw, sh, pos_x, pos_y-offset_y, sw, sh, 0);
+        al_draw_scaled_bitmap(img, sw*cur_action, 0, sw, sh, pos_x-offset_x, pos_y-offset_y, sw, sh, 0);
     }else {
         al_draw_scaled_bitmap(img, sw*cur_action, sh, sw, sh, pos_x, pos_y-offset_y, sw, sh, 0);
     }
+    // draw monster remaining lives.
+    w = al_get_bitmap_width(heart_imgs["empty"]);
+    h = al_get_bitmap_height(heart_imgs["empty"]);
+    sw = w * 0.8; 
+    sh = h * 0.8;
+    if (remaining_lives != starting_lives){
+        float remain = remaining_lives;
+
+        for (int i=0; i<starting_lives; i++){
+            if (remain <= 0){
+                al_draw_scaled_bitmap(heart_imgs["empty"], 0 , 0, w, h, pos_x+i*sw, pos_y-sw, sw, sh, 0);
+            }else if (remain < 1){
+                al_draw_scaled_bitmap(heart_imgs["half"], 0 , 0, w, h, pos_x+i*sw, pos_y-sw, sw, sh, 0);
+            }else {
+                al_draw_scaled_bitmap(heart_imgs["full"], 0 , 0, w, h, pos_x+i*sw, pos_y-sw, sw, sh, 0);
+            }
+            remain --;
+        }
+    }
+
+
     jumping = false;
 }
 void Monster::change_action(){
@@ -43,13 +68,13 @@ void Monster::change_action(){
     if (cur_action == num_action) cur_action = 0;
 }
 bool Monster::is_dead(){
-    return (lives <= 0);
+    return (remaining_lives <= 0);
 }
 void Monster::attack(){
     move_status = stay;
 }
-void Monster::be_attacked(int power){
-    lives = lives - power;
+void Monster::be_attacked(float harm){
+    remaining_lives = remaining_lives - harm;
     body_status = injured;
 }
 float Monster::get_power(){
