@@ -66,7 +66,18 @@ void GameWindow::load_character_imgs(){
     character_imgs["aria"] = al_load_bitmap("assets/main/clone_aria.png");
     character_imgs["cadencce"] = al_load_bitmap("assets/main/clone_cadencce.png");
 }
-
+void GameWindow::load_number_imgs(){
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_0.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_1.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_2.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_3.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_4.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_5.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_6.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_7.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_8.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_9.png"));
+}
 void GameWindow::game_init()
 {   /*
     load stuff from memory
@@ -79,6 +90,7 @@ void GameWindow::game_init()
     load_coin_imgs();
     load_item_imgs();
     load_character_imgs();
+    load_number_imgs();
 
     // load window
     al_set_display_icon(display, icon);
@@ -197,7 +209,7 @@ void GameWindow::game_begin()
     monsters.push_back(new BlackSkeleton(monster_imgs["black_skeleton"]));
     monsters.push_back(new StoneGolem(monster_imgs["stone_golem"]));
     
-    main_character = new Aria(character_imgs["aria"]);
+    main_character = new Aria(character_imgs["aria"], number_imgs);
 
     //test
     main_character->find_item(new Shovel(item_imgs["shovel"],item_imgs["shovel_slot"]));
@@ -371,7 +383,18 @@ void GameWindow::game_destroy()
         al_destroy_bitmap(monster_img.second);
     }
     monster_imgs.clear();
-
+    for (auto&& item_img: item_imgs){
+        al_destroy_bitmap(item_img.second);
+    }
+    item_imgs.clear();
+    for (auto&& character_img: character_imgs){
+        al_destroy_bitmap(character_img.second);
+    }
+    character_imgs.clear();
+    for (auto&& number_img : number_imgs){
+        al_destroy_bitmap(number_img);
+    }
+    number_imgs.clear();
 }
 
 int GameWindow::process_event()

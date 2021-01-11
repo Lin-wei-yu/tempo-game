@@ -11,7 +11,7 @@
 using namespace std;
 class MainCharacter : public Object{
 public:
-    MainCharacter(ALLEGRO_BITMAP* img);
+    MainCharacter(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& number_imgs);
     ~MainCharacter();
     void draw();
     void move();
@@ -54,6 +54,8 @@ protected:
     map<ItemType, vector<Item*>> item_list;
     vector<ALLEGRO_BITMAP*> heart_imgs;
     ALLEGRO_BITMAP* coin_img;
-    ALLEGRO_BITMAP* text_img;
+    vector<ALLEGRO_BITMAP*> number_imgs;
+    ALLEGRO_BITMAP* alphabet_img;
+
 };
 #endif

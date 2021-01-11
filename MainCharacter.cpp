@@ -1,7 +1,7 @@
 #include "MainCharacter.h"
-
-MainCharacter::MainCharacter(ALLEGRO_BITMAP* img){
+MainCharacter::MainCharacter(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& number_imgs){
     this -> img = img;
+    this -> number_imgs = number_imgs;
     pos_x = GRID_SIZE * 24;
     pos_y = GRID_SIZE * 3;
     power = 1;
@@ -20,7 +20,8 @@ MainCharacter::MainCharacter(ALLEGRO_BITMAP* img){
     heart_imgs.push_back(al_load_bitmap("assets/main/heart_half.png"));
     heart_imgs.push_back(al_load_bitmap("assets/main/heart.png"));
     coin_img = al_load_bitmap("assets/main/hud_coins.png");
-    text_img = al_load_bitmap("assets/text/necrosans_12.png");
+
+    alphabet_img = al_load_bitmap("assets/font/alphabet_white.png");
 }
 MainCharacter::~MainCharacter(){
     for (auto&& heart_img : heart_imgs){
@@ -28,11 +29,9 @@ MainCharacter::~MainCharacter(){
     }
     heart_imgs.clear();
     al_destroy_bitmap(coin_img);
-    al_destroy_bitmap(text_img);
+    al_destroy_bitmap(alphabet_img);
 }
-void MainCharacter::draw_text(string str,int x, int y){
 
-}
 void MainCharacter::draw(){
     // draw chracter
     int w = al_get_bitmap_width(img);
@@ -164,17 +163,32 @@ void MainCharacter::draw_items(){
     }
 }
 void MainCharacter::draw_life_and_coin(){
+    int life_coin_pos_y = 20;
+    int life_x = 500;
+    int coin_x = 620;
+    int num_x = 650;
     // draw lives
     int w = al_get_bitmap_width(heart_imgs[0]);
     int remain = lives;
     for (int i=0; i<5; i++){
-        if (remain <= 0) al_draw_bitmap(heart_imgs[0], 500+i*w, 20 ,0);
-        else if (remain < 1) al_draw_bitmap(heart_imgs[1], 500+i*w, 20 ,0);
-        else al_draw_bitmap(heart_imgs[2], 500+i*w, 20 ,0);
+        if (remain <= 0) al_draw_bitmap(heart_imgs[0], life_x+i*w, life_coin_pos_y ,0);
+        else if (remain < 1) al_draw_bitmap(heart_imgs[1], life_x+i*w, life_coin_pos_y ,0);
+        else al_draw_bitmap(heart_imgs[2], life_x+i*w, life_coin_pos_y ,0);
         remain --;
     }
     // draw coin
-    al_draw_bitmap(coin_img, 620, 20,0);
+    al_draw_bitmap(coin_img, coin_x, life_coin_pos_y,0);
+    w = al_get_bitmap_width(number_imgs[0]);
+    int gap = 2;
+    string coin_str = to_string(num_coin);
+    for (int i=0; i<coin_str.size(); i++){
+        int num_idx = coin_str[i] - '0';
+        al_draw_bitmap(number_imgs[num_idx], num_x+i*(w+gap), life_coin_pos_y, 0);
+    }
+
+}
+void MainCharacter::draw_text(string str,int x, int y){
+
 }
 void MainCharacter::pass_beat(){
     beat_cnt++;

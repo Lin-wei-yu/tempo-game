@@ -4,7 +4,7 @@
 
 class Cadencce:public MainCharacter{
 public:
-    Cadencce(ALLEGRO_BITMAP* img);
+    Cadencce(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& number_imgs);
     ~Cadencce();
 private:
 };

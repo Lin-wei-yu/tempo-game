@@ -4,7 +4,7 @@
 
 class Aria:public MainCharacter{
 public:
-    Aria(ALLEGRO_BITMAP* img);
+    Aria(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& number_imgs);
     ~Aria();
 private:
 };

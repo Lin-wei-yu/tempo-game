@@ -1,6 +1,6 @@
 #include "Aria.h"
 
-Aria::Aria(ALLEGRO_BITMAP* img):MainCharacter(img){
+Aria::Aria(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& number_imgs):MainCharacter(img, number_imgs){
     lives = 5;
     num_action = 4;
     tempo = 1;
