@@ -194,8 +194,8 @@ void GameWindow::game_begin()
     //test
     main_character->find_item(new Shovel(item_imgs["shovel"],item_imgs["shovel_slot"]));
     main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"]));
-    main_character->find_item(new Shovel(item_imgs["dagger"],item_imgs["attack_slot"]));
-    main_character->find_item(new Shovel(item_imgs["torch"],item_imgs["torch_slot"]));
+    main_character->find_item(new Dagger(item_imgs["dagger"],item_imgs["attack_slot"]));
+    main_character->find_item(new Torch(item_imgs["torch"],item_imgs["torch_slot"]));
 
     tempo_heart = new TempoHeart();
 
