@@ -1,12 +1,12 @@
 #include "BlackSkeleton.h"
 
-BlackSkeleton::BlackSkeleton(ALLEGRO_BITMAP* img):Monster(img){
+BlackSkeleton::BlackSkeleton(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs):Monster(img,heart_imgs){
     // skeleton profile.
     name =  "black skeleton";
     tempo = 1;
     num_action = 8;
     power = 2;
-    lives = 3;
+    starting_lives = remaining_lives = 3;
     drop_money = 4;
     beat_of_change = (BEAT_PER_TEMPO*tempo)/num_action;
     sense_range = 4;

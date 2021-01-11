@@ -1,12 +1,12 @@
 #include "Zombie.h"
 
-Zombie::Zombie(ALLEGRO_BITMAP* img):Monster(img){
+Zombie::Zombie(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs):Monster(img,heart_imgs){
     // zombie profile
     name = "zombie";
     tempo = 1;
     num_action = 8;
     power = 1;
-    lives = 1;
+    starting_lives = remaining_lives = 1;
     drop_money = 1;
     beat_of_change = (BEAT_PER_TEMPO*tempo)/num_action;
     // 

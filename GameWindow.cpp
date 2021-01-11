@@ -66,7 +66,27 @@ void GameWindow::load_character_imgs(){
     character_imgs["aria"] = al_load_bitmap("assets/main/clone_aria.png");
     character_imgs["cadencce"] = al_load_bitmap("assets/main/clone_cadencce.png");
 }
-
+void GameWindow::load_number_imgs(){
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_0.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_1.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_2.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_3.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_4.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_5.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_6.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_7.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_8.png"));
+    number_imgs.push_back(al_load_bitmap("assets/font/number_white_9.png"));
+}
+void GameWindow::load_heart_imgs(){
+    heart_imgs["empty"] = al_load_bitmap("assets/main/heart_empty.png");
+    heart_imgs["half"] = al_load_bitmap("assets/main/heart_half.png");
+    heart_imgs["full"] = al_load_bitmap("assets/main/heart.png");
+}
+void GameWindow::load_other_imgs(){
+    other_imgs["coin_icon"] = al_load_bitmap("assets/main/hud_coins.png");
+    other_imgs["alphabet"] = al_load_bitmap("assets/font/alphabet_white.png");
+}
 void GameWindow::game_init()
 {   /*
     load stuff from memory
@@ -79,6 +99,9 @@ void GameWindow::game_init()
     load_coin_imgs();
     load_item_imgs();
     load_character_imgs();
+    load_number_imgs();
+    load_heart_imgs();
+    load_other_imgs();
 
     // load window
     al_set_display_icon(display, icon);
@@ -185,15 +208,15 @@ void GameWindow::game_begin()
     // init game objects
     game_map = new Map();
 
-    monsters.push_back(new GreenSlime(monster_imgs["green_slime"]));
-    monsters.push_back(new BlueSlime(monster_imgs["blue_slime"]));
-    monsters.push_back(new RedBat(monster_imgs["red_bat"]));
-    monsters.push_back(new Zombie(monster_imgs["zombie"]));
-    monsters.push_back(new Skeleton(monster_imgs["skeleton"]));
-    monsters.push_back(new BlackSkeleton(monster_imgs["black_skeleton"]));
-    monsters.push_back(new StoneGolem(monster_imgs["stone_golem"]));
+    monsters.push_back(new GreenSlime(monster_imgs["green_slime"], heart_imgs));
+    monsters.push_back(new BlueSlime(monster_imgs["blue_slime"], heart_imgs));
+    monsters.push_back(new RedBat(monster_imgs["red_bat"], heart_imgs));
+    monsters.push_back(new Zombie(monster_imgs["zombie"], heart_imgs));
+    monsters.push_back(new Skeleton(monster_imgs["skeleton"], heart_imgs));
+    monsters.push_back(new BlackSkeleton(monster_imgs["black_skeleton"], heart_imgs));
+    monsters.push_back(new StoneGolem(monster_imgs["stone_golem"], heart_imgs));
     
-    main_character = new Aria(character_imgs["aria"]);
+    main_character = new Aria(character_imgs["aria"], number_imgs, heart_imgs, other_imgs);
 
     //test
     main_character->find_item(new Shovel(item_imgs["shovel"],item_imgs["shovel_slot"]));
@@ -373,7 +396,26 @@ void GameWindow::game_destroy()
         al_destroy_bitmap(monster_img.second);
     }
     monster_imgs.clear();
-
+    for (auto&& item_img: item_imgs){
+        al_destroy_bitmap(item_img.second);
+    }
+    item_imgs.clear();
+    for (auto&& character_img: character_imgs){
+        al_destroy_bitmap(character_img.second);
+    }
+    character_imgs.clear();
+    for (auto&& number_img : number_imgs){
+        al_destroy_bitmap(number_img);
+    }
+    number_imgs.clear();
+    for (auto&& heart_img : heart_imgs){
+        al_destroy_bitmap(heart_img.second);
+    }
+    heart_imgs.clear();
+    for (auto&& other_img: other_imgs){
+        al_destroy_bitmap(other_img.second);
+    }
+    other_imgs.clear();
 }
 
 int GameWindow::process_event()

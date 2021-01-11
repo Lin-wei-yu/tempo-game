@@ -1,12 +1,12 @@
 #include "Skeleton.h"
 
-Skeleton::Skeleton(ALLEGRO_BITMAP* img):Monster(img){
+Skeleton::Skeleton(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs):Monster(img,heart_imgs){
     // skeleton profile.
     name =  "skeleton";
     tempo = 1;
     num_action = 8;
     power = 0.5;
-    lives = 1;
+    starting_lives = remaining_lives = 1;
     drop_money = 2;
     beat_of_change = (BEAT_PER_TEMPO*tempo)/num_action;
     sense_range = 5;

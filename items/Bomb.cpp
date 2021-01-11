@@ -9,6 +9,7 @@ Bomb::Bomb(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img, int x, int y):Item(img
     num_animation = 5;
     //
     power = 1;
+    using_command = "space";
     start_count = false;
     beat_cnt = 0;
 }
@@ -19,6 +20,7 @@ Bomb::Bomb(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img ):Item(img, slot_img){
     num_animation = 5;
     //
     power = 1;
+    using_command = "space";
     start_count = false;
     beat_cnt = 0;
 

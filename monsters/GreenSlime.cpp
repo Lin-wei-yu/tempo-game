@@ -1,13 +1,13 @@
 #include "GreenSlime.h"
 #include <iostream>
 using namespace std;
-GreenSlime::GreenSlime(ALLEGRO_BITMAP* img):Monster(img){
+GreenSlime::GreenSlime(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs):Monster(img,heart_imgs){
     // green slime profile
     name = "green_slime";
     tempo = 1;
     num_action = 4;
-    power = 1;
-    lives = 1;
+    power = 50;
+    starting_lives = remaining_lives = 1;
     drop_money = 1;
     beat_of_change = (BEAT_PER_TEMPO*tempo)/num_action;
 

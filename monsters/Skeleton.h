@@ -7,7 +7,7 @@
 using namespace std;
 class Skeleton:public Monster{
 public: 
-    Skeleton(ALLEGRO_BITMAP* img);
+    Skeleton(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs);
     ~Skeleton();
     void early_move(int character_pos_x, int character_pos_y) override;
     void draw() override;
