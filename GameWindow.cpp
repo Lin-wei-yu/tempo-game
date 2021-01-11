@@ -295,7 +295,7 @@ int GameWindow::game_update()
              main_character->move();
         }
         else if(main_character->shovable(game_map->get_block(next_x / GRID_SIZE, next_y / GRID_SIZE))) {
-            game_map->delete_wall(next_x / GRID_SIZE, next_y / GRID_SIZE);
+            game_map->delete_wall(next_x / GRID_SIZE, next_y / GRID_SIZE, main_character->get_shovel_img());
             main_character->stuck();
         }
         else {

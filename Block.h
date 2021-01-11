@@ -16,7 +16,7 @@ public:
     void pass_beat();
     void change_animation();
     void draw();
-    void delete_wall();
+    void delete_wall(ALLEGRO_BITMAP* shovel_img);
     int get_level();
 private:
     BlockType type;
@@ -28,6 +28,8 @@ private:
     int num_action = 4;
     int cur_action;
     bool have_torch = false;
+    bool is_shovel = false;
+    ALLEGRO_BITMAP* shovel_img;
     ALLEGRO_BITMAP* torch_in_wall;
 };
 

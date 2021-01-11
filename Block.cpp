@@ -52,6 +52,11 @@ void Block::draw() {
             al_draw_scaled_bitmap(img, 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
         }
     }
+    // draw shovel
+    if(is_shovel) {
+        al_draw_scaled_bitmap(shovel_img, 0, 0, GRID_SIZE, GRID_SIZE, pos_x, pos_y, GRID_SIZE, GRID_SIZE, 0);
+        is_shovel = false;
+    }
 }
 
 
@@ -73,9 +78,11 @@ void Block::change_animation()
     cur_action = cur_action + 1;
     if (cur_action == num_action) cur_action = 0;
 }
-void Block::delete_wall()
+void Block::delete_wall(ALLEGRO_BITMAP* shovel_img)
 {
     img = al_load_bitmap("assets/block/boss_floor_A.png");
+    this->shovel_img = shovel_img;
+    is_shovel = true;
     type = BlockType::ROAD;
     pos_y += GRID_OFFSET;
 }

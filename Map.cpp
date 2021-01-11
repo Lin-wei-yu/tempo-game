@@ -40,7 +40,7 @@ Map::~Map(){
 }
 
 void Map::draw(){
-    for (auto b: blocks){
+    for (auto &b: blocks){
         b.draw();
     }
 }
@@ -52,8 +52,8 @@ void Map::pass_beat() {
 Block Map::get_block(int x, int y) {
     return blocks[y * 60 + x];
 }
-void Map::delete_wall(int x, int y) {
-    blocks[y * 60 + x].delete_wall();
+void Map::delete_wall(int x, int y, ALLEGRO_BITMAP* shovel_img) {
+    blocks[y * 60 + x].delete_wall(shovel_img);
     map_type[y][x] = BlockType::ROAD;
 } 
 

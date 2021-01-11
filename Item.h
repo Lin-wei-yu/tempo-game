@@ -13,7 +13,7 @@ public:
     int get_level();
     virtual float get_power();
     virtual Range get_range();
-
+    ALLEGRO_BITMAP* get_img(){ return img; };
 protected:
     // define in this class
     ALLEGRO_BITMAP* slot_img;
