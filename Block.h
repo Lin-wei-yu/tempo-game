@@ -11,7 +11,7 @@ enum BlockType {
 
 class Block:public Object{
 public:
-    Block(int, int, BlockType, ALLEGRO_BITMAP*);
+    Block(int, int, BlockType, ALLEGRO_BITMAP*, ALLEGRO_BITMAP*);
     ~Block(){};
     void pass_beat();
     void change_animation();
@@ -24,6 +24,10 @@ private:
     int beat_of_change;
     int beat_cnt;
     bool beat;
+    int tempo;
+    int num_of_action = 4;
+    int cur_action;
+    ALLEGRO_BITMAP* torch_in_wall;
 };
 
 
