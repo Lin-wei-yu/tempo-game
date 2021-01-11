@@ -149,9 +149,8 @@ GameWindow::GameWindow()
     display = al_create_display(WINDOW_WIDTH, WINDOW_HEIGHT);
     event_queue = al_create_event_queue();
 
-    refresh_timer = al_create_timer(1.0 / FPS);
     quater_timer = al_create_timer(8.0 / FPS);
-    if(refresh_timer == NULL || quater_timer == NULL)
+    if(quater_timer == NULL)
         show_err_msg(-1);
 
     if (display == NULL || event_queue == NULL)
@@ -167,15 +166,12 @@ GameWindow::GameWindow()
     al_install_mouse();    // install mouse event
     al_install_audio();    // install audio event
 
-    // font = al_load_ttf_font("Caviar_Dreams_Bold.ttf",12,0); // load small font
-    // Medium_font = al_load_ttf_font("Caviar_Dreams_Bold.ttf",24,0); //load medium font
-    // Large_font = al_load_ttf_font("Caviar_Dreams_Bold.ttf",36,0); //load large font
+    font = al_load_ttf_font("Caviar_Dreams_Bold.ttf", 72, 0); 
 
     al_register_event_source(event_queue, al_get_display_event_source(display));
     al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_mouse_event_source());
 
-    al_register_event_source(event_queue, al_get_timer_event_source(refresh_timer));
     al_register_event_source(event_queue, al_get_timer_event_source(quater_timer));
     game_init();
 }
@@ -220,8 +216,7 @@ void GameWindow::game_begin()
     // while(al_get_sample_instance_playing(startSound));
     // al_play_sample_instance(backgroundSound);
 
-    al_start_timer(refresh_timer);
-    al_start_timer(quater_timer);
+    // al_start_timer(quater_timer);
 }
 
 int GameWindow::game_run()
@@ -294,6 +289,9 @@ int GameWindow::game_update()
         if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD || game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::SHOP_FLAG) {
              main_character->move();
         }
+        else if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::GOAL) {
+            game_status = GAME_OVER;
+        }
         else if(main_character->shovable(game_map->get_block(next_x / GRID_SIZE, next_y / GRID_SIZE))) {
             game_map->delete_wall(next_x / GRID_SIZE, next_y / GRID_SIZE, main_character->get_shovel_img());
             main_character->stuck();
@@ -345,7 +343,6 @@ void GameWindow::game_reset()
     // al_stop_sample_instance(startSound);
 
     // stop timer
-    al_stop_timer(refresh_timer);
     al_stop_timer(quater_timer);
 }
 
@@ -359,7 +356,6 @@ void GameWindow::game_destroy()
     // al_destroy_font(Medium_font);
     // al_destroy_font(Large_font);
     al_destroy_timer(quater_timer);
-    al_destroy_timer(refresh_timer);
 
     al_destroy_bitmap(icon);
 
@@ -415,7 +411,16 @@ int GameWindow::process_event()
         switch(event.keyboard.keycode) {
 
             case ALLEGRO_KEY_P:
-                /*TODO: handle pause event here*/
+                if(game_status == GAME_RUN) {
+                    game_status = GAME_PAUSE;
+                    al_draw_text(font, al_map_rgb_f(1, 1, 1), 350, 480, 0, "PRESS \"P\" TO CONTINUE");
+                    al_flip_display();
+                    al_stop_timer(quater_timer);
+                }
+                else if(game_status == GAME_PAUSE) {
+                    game_status = GAME_RUN;
+                    al_start_timer(quater_timer);
+                }
                 break;
             case ALLEGRO_KEY_M:
                 mute = !mute;
@@ -425,16 +430,27 @@ int GameWindow::process_event()
                     al_play_sample_instance(backgroundSound);
                 break;
             case ALLEGRO_KEY_UP:
-                main_character->change_dir(UP);
+                if(game_status == GAME_RUN) main_character->change_dir(UP);
                 break;
             case ALLEGRO_KEY_DOWN:
-                main_character->change_dir(DOWN);
+                if(game_status == GAME_RUN) main_character->change_dir(DOWN);
                 break;
             case ALLEGRO_KEY_LEFT:
-                main_character->change_dir(LEFT);
+                if(game_status == GAME_RUN) main_character->change_dir(LEFT);
                 break;
             case ALLEGRO_KEY_RIGHT:
-                main_character->change_dir(RIGHT);
+                if(game_status == GAME_RUN) main_character->change_dir(RIGHT);
+                break;
+            case ALLEGRO_KEY_SPACE:
+                break;
+            case ALLEGRO_KEY_ENTER:
+                if(game_status == GAME_BEGIN) {
+                    game_status = GAME_RUN;
+                    al_start_timer(quater_timer);
+                }
+                else if(game_status == GAME_OVER) {
+                    exit(0);
+                }
                 break;
         }
     }
@@ -461,46 +477,59 @@ int GameWindow::process_event()
 
 void GameWindow::draw_running_map()
 {
-    // for camera.
-    // ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
-    // al_set_target_bitmap(tmp_bitmap);
-
-    // for 2 times bigger.
-    // ALLEGRO_TRANSFORM prev, trans;
-    // al_copy_transform(&prev, al_get_current_transform());
-    // al_identity_transform(&trans);
-    // al_scale_transform(&trans, 1.9, 1.9);
-    // al_use_transform(&trans);
-    // al_clear_to_color(BLACK);
-
-    
-    al_clear_to_color(al_map_rgb(0, 0, 0));
-    game_map -> draw();
-    for (auto monster : monsters){
-        monster->draw();
+    if(game_status == GAME_BEGIN) {
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        al_draw_scaled_bitmap(al_load_bitmap("assets/mainmenu/mainmenu.png"), 0, 0, 480, 270,  0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+        al_draw_text(font, al_map_rgb_f(1, 1, 1), 350, 800, 0, "PRESS \"ENTER\" TO START");
+        al_flip_display();
     }
-    main_character -> draw();
-    main_character -> draw_life_and_coin();
-    main_character -> draw_items();
+    else if(game_status == GAME_RUN) {
 
-    for (auto coin : coins){
-        coin->draw();
+        // for camera.
+        // ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
+        // al_set_target_bitmap(tmp_bitmap);
+
+        // for 2 times bigger.
+        // ALLEGRO_TRANSFORM prev, trans;
+        // al_copy_transform(&prev, al_get_current_transform());
+        // al_identity_transform(&trans);
+        // al_scale_transform(&trans, 1.9, 1.9);
+        // al_use_transform(&trans);
+        // al_clear_to_color(BLACK);
+
+        
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        game_map -> draw();
+        for (auto monster : monsters){
+            monster->draw();
+        }
+        main_character -> draw();
+        main_character -> draw_life_and_coin();
+        main_character -> draw_items();
+
+        for (auto coin : coins){
+            coin->draw();
+        }
+        for (auto item: items){
+            item->draw();
+        }
+        tempo_heart->draw();
+
+        // for 2 times bigger.
+        // al_use_transform(&prev);
+
+        // for camera.
+        // al_set_target_bitmap(origin_bitmap);
+        // al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
+        // al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8, 
+        //                     main_character->get_y() - WINDOW_HEIGHT / 8, 
+        //                     WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, 
+        //                     0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+
+        al_flip_display();
     }
-    for (auto item: items){
-        item->draw();
+    else if(game_status == GAME_OVER) {
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        al_flip_display();
     }
-    tempo_heart->draw();
-
-    // for 2 times bigger.
-    // al_use_transform(&prev);
-
-    // for camera.
-    // al_set_target_bitmap(origin_bitmap);
-    // al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
-    // al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8, 
-    //                     main_character->get_y() - WINDOW_HEIGHT / 8, 
-    //                     WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, 
-    //                     0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-
-    al_flip_display();
 }

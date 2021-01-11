@@ -45,15 +45,13 @@
 
 
 #define GAME_INIT -1
-#define GAME_SETTING 0
-#define GAME_SELECT 1
-#define GAME_BEGIN 2
-#define GAME_CONTINUE 3
-#define GAME_FAIL 4
-#define GAME_TERMINATE 5
-#define GAME_NEXT_LEVEL 6
-#define GAME_EXIT 7
- 
+#define GAME_BEGIN 1
+#define GAME_PAUSE 2
+#define GAME_OVER 3
+#define GAME_RUN 4
+#define GAME_EXIT 5
+#define GAME_TERMINATE 6
+#define GAME_CONTINUE 7
 // clock rate
 const float FPS = 120;
 
@@ -108,7 +106,6 @@ private:
 
     ALLEGRO_EVENT_QUEUE *event_queue = NULL;
     ALLEGRO_EVENT event;
-    ALLEGRO_TIMER *refresh_timer = NULL;
     int refresh_cycle = 0;
     ALLEGRO_TIMER *quater_timer = NULL; // 1/4 tempo.
     int beat_cnt = 0; // four tempo count = 1 tempo
@@ -138,6 +135,9 @@ private:
 
     // FBO
     ALLEGRO_BITMAP *tmp_bitmap;
+
+    // record game status
+    int game_status = GAME_BEGIN;
 };
 
 #endif
