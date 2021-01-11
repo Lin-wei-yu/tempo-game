@@ -452,7 +452,7 @@ void GameWindow::draw_running_map()
     for (auto item: items){
         item->draw();
     }
-    // tempo_heart->draw();
+    tempo_heart->draw();
     // al_set_target_bitmap(origin_bitmap);
     // al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
 
@@ -461,5 +461,5 @@ void GameWindow::draw_running_map()
     //                     main_character->get_y() - WINDOW_HEIGHT / 8,
     //                     WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4,
     //                     0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-    // al_flip_display();
+    al_flip_display();
 }
