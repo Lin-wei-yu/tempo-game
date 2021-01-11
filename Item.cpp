@@ -5,7 +5,9 @@ Item::Item(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img ){
     this -> slot_img = slot_img;
 }
 void Item::draw(){
-    al_draw_bitmap(img, pos_x, pos_y, 0);
+    int w = al_get_bitmap_width(img);
+    int h = al_get_bitmap_height(img);
+    al_draw_scaled_bitmap(img, 0, 0, w, h/2, pos_x, pos_y, w, h/2, 0);
 }
 void Item::show(int x, int y){
     int sw = al_get_bitmap_width(img)/num_animation;
@@ -20,4 +22,10 @@ ItemType Item::get_type(){
 }
 int Item::get_level(){
     return item_level;
+}
+float Item::get_power(){
+    return power;
+}
+Range Item::get_range(){
+    return range;
 }

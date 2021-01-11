@@ -29,6 +29,7 @@
 #include "monsters/Zombie.h"
 #include "monsters/Skeleton.h"
 #include "monsters/BlackSkeleton.h"
+#include "monsters/StoneGolem.h"
 #include "Reward.h"
 #include "rewards/Coin.h"
 #include "TempoHeart.h"
@@ -36,6 +37,9 @@
 #include "items/Shovel.h"
 #include "items/Torch.h"
 #include "items/Dagger.h"
+#include "items/AdvancedShovel.h"
+#include "items/AdvancedTorch.h"
+#include "items/LongSword.h"
 #include "characters/Aria.h"
 #include "characters/Cadencce.h"
 

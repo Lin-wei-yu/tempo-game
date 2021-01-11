@@ -4,6 +4,7 @@
 
 class Torch: public Item{
 public:
+    Torch(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img, int x, int y);
     Torch(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img );
     ~Torch(){};
 private:

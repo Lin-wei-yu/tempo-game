@@ -32,6 +32,7 @@ void GameWindow::load_monster_imgs(){
     monster_imgs["zombie"] = al_load_bitmap("assets/monster/zombie.png");
     monster_imgs["skeleton"] = al_load_bitmap("assets/monster/skeleton.png");
     monster_imgs["black_skeleton"] = al_load_bitmap("assets/monster/skeleton_black.png");
+    monster_imgs["stone_golem"] = al_load_bitmap("assets/monster/golem_stone.png");
 }
 void GameWindow::load_coin_imgs(){
     coin_imgs[1] = al_load_bitmap("assets/reward/resource_coin1.png");
@@ -46,10 +47,16 @@ void GameWindow::load_coin_imgs(){
     coin_imgs[10] = al_load_bitmap("assets/reward/resource_coin10.png");
 }
 void GameWindow::load_item_imgs(){
+    // item.
     item_imgs["bomb"] = al_load_bitmap("assets/item/bomb.png");
     item_imgs["shovel"] = al_load_bitmap("assets/item/shovel_basic.png");
     item_imgs["dagger"] = al_load_bitmap("assets/item/weapon_dagger.png");
     item_imgs["torch"] = al_load_bitmap("assets/item/torch.png");   
+    item_imgs["advanced_shovel"] = al_load_bitmap("assets/item/shovel_advanced.png");   
+    item_imgs["longsword"] = al_load_bitmap("assets/item/longsword.png");   
+    item_imgs["advanced_torch"] = al_load_bitmap("assets/item/torch_advanced.png");   
+
+    // slot.
     item_imgs["bomb_slot"] = al_load_bitmap("assets/item/bomb_slot.png");  
     item_imgs["shovel_slot"] = al_load_bitmap("assets/item/shovel_slot.png");
     item_imgs["attack_slot"] = al_load_bitmap("assets/item/attack_slot.png");
@@ -188,17 +195,25 @@ void GameWindow::game_begin()
     monsters.push_back(new Zombie(monster_imgs["zombie"]));
     monsters.push_back(new Skeleton(monster_imgs["skeleton"]));
     monsters.push_back(new BlackSkeleton(monster_imgs["black_skeleton"]));
+    monsters.push_back(new StoneGolem(monster_imgs["stone_golem"]));
     
     main_character = new Aria(character_imgs["aria"]);
 
     //test
     main_character->find_item(new Shovel(item_imgs["shovel"],item_imgs["shovel_slot"]));
     main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"]));
-    main_character->find_item(new Shovel(item_imgs["dagger"],item_imgs["attack_slot"]));
-    main_character->find_item(new Shovel(item_imgs["torch"],item_imgs["torch_slot"]));
+    main_character->find_item(new Dagger(item_imgs["dagger"],item_imgs["attack_slot"]));
+    main_character->find_item(new Torch(item_imgs["torch"],item_imgs["torch_slot"]));
+    main_character->find_item(new LongSword(item_imgs["longsword"],item_imgs["attack_slot"]));
+    // main_character->find_item(new AdvancedShovel(item_imgs["advanced_shovel"],item_imgs["shovel_slot"]));
+    main_character->find_item(new AdvancedTorch(item_imgs["advanced_torch"],item_imgs["torch_slot"]));
 
+
+
+    items.push_back(new AdvancedShovel(item_imgs["advanced_shovel"],item_imgs["shovel_slot"], 600, 96));
     tempo_heart = new TempoHeart();
     
+
     draw_running_map();
 
     // al_play_sample_instance(startSound);
@@ -381,7 +396,7 @@ int GameWindow::process_event()
             main_character->pass_beat();
             if (beat_cnt != BEAT_PER_TEMPO) { 
                 // this region determine how good the player should match the tempo,
-                // such that the main_character can move
+                // so that the main_character can move
                 // main_character->change_dir(NON);
             }
         }
