@@ -3,25 +3,31 @@
 #include "Object.h"
 #include "global.h"
 #include "Range.h"
+#include <iostream>
+using namespace std;
 typedef enum _ItemType{attack_tool, shovel, bomb, torch} ItemType;
 class Item: public Object{
 public:
-    Item(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img );
+    Item(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img);
     virtual void draw();
-    void show(int x, int y);
+    void show(int x, int y, float enlarge_ratio);
     ItemType get_type();
     int get_level();
     virtual float get_power();
     virtual Range get_range();
-
+    ALLEGRO_BITMAP* get_img(){ return img;};
+    string get_command();
+    
 protected:
     // define in this class
     ALLEGRO_BITMAP* slot_img;
+    string using_command;
     // define in sub-class
     ItemType item_type;
     int item_level;
     int num_animation;
     float power;
     Range range;
+    ALLEGRO_BITMAP* alphabet_img;
 };
 #endif

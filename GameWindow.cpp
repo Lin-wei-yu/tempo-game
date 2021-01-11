@@ -11,7 +11,7 @@
 
 
 /*
-GameWindow() -> game_init() -> 
+GameWindow() -> game_init() ->
 game_play() -> game_begin() -> game_run()
 */
 
@@ -93,7 +93,7 @@ void GameWindow::game_init()
     */
     char buffer[50];
 
-    // load image 
+    // load image
     icon = al_load_bitmap("assets/main/icon.png");
     load_monster_imgs();
     load_coin_imgs();
@@ -261,7 +261,7 @@ int GameWindow::game_update()
 {   /*
     update the status of every object. lives, position validation ...
     */
-    
+
     if (beat_cnt == BEAT_PER_TEMPO){ // moving tempo
 
         int pos_x = main_character->get_x();
@@ -307,16 +307,22 @@ int GameWindow::game_update()
             || game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::SHOP_FLAG) {
                  monster->move();
             }
+            else {
+                // zombie need to change direction if hit wall
+                if(monster->get_name() == "zombie") {
+                    monster->change_direction();
+                }
+            }
         }
         if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD || game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::SHOP_FLAG) {
              main_character->move();
         }
         else if(main_character->shovable(game_map->get_block(next_x / GRID_SIZE, next_y / GRID_SIZE))) {
-            game_map->delete_wall(next_x / GRID_SIZE, next_y / GRID_SIZE);
+            game_map->delete_wall(next_x / GRID_SIZE, next_y / GRID_SIZE, main_character->get_shovel_img());
             main_character->stuck();
         }
         else {
-            main_character->stuck();   
+            main_character->stuck();
         }
         // find coin;
         for (auto it=coins.begin(); it!=coins.end(); ){
@@ -339,8 +345,8 @@ int GameWindow::game_update()
 
         beat_cnt = 0;
     }
-    
-   
+
+
    return GAME_CONTINUE;
 }
 
@@ -360,7 +366,7 @@ void GameWindow::game_reset()
     // stop sample instance
     // al_stop_sample_instance(backgroundSound);
     // al_stop_sample_instance(startSound);
-    
+
     // stop timer
     al_stop_timer(refresh_timer);
     al_stop_timer(quater_timer);

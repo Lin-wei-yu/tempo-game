@@ -33,6 +33,7 @@ public:
     void change_action();
     void pass_beat();
     void stuck();
+    ALLEGRO_BITMAP* get_shovel_img() { return item_list[ItemType::shovel][0]->get_img();};
 protected:
     // define in subclass
     int num_action;

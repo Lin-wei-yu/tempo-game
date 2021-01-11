@@ -1,6 +1,6 @@
 #include "Block.h"
-
-Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img)
+#include <stdlib.h>
+Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img, ALLEGRO_BITMAP *torch_img)
 {
     pos_x = x;
     pos_y = y;
@@ -27,23 +27,35 @@ Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img)
         break;
     default:
         break;
-
-        beat_cnt = 0;
-        beat_of_change = BEAT_PER_TEMPO;
-        beat = false;
     }
+    torch_in_wall = torch_img;
+    cur_action = 0;
+    beat_cnt = 0;
+    tempo = 2;
+    beat_of_change = (BEAT_PER_TEMPO*tempo)/num_action;
+    num_action = 4;
+    if((rand() % 100 )< 5) have_torch = true;
 }
 
 void Block::draw() {
     if(type != BlockType::BACKGROUND) {
         if(type != BlockType::DOOR) {
             al_draw_scaled_bitmap(img, 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
+            // draw torch
+            if(type != BlockType::ROAD && type != BlockType::SHOP_FLAG) {
+                if(have_torch) al_draw_scaled_bitmap(torch_in_wall, 0 + 12 * cur_action, 0, TORCH_SIZE, GRID_SIZE, pos_x + TORCH_OFFSET, pos_y - GRID_OFFSET / 2, TORCH_SIZE, GRID_SIZE, 0);
+            }
         }
         else
         { // if door, put floor first then put door
             al_draw_scaled_bitmap(al_load_bitmap("assets/block/boss_floor_A.png"), 0, 0, GRID_SIZE, GRID_SIZE, pos_x, pos_y, GRID_SIZE, GRID_SIZE, 0);
             al_draw_scaled_bitmap(img, 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
         }
+    }
+    // draw shovel
+    if(is_shovel) {
+        al_draw_scaled_bitmap(shovel_img, 0, 0, GRID_SIZE, GRID_SIZE, pos_x, pos_y, GRID_SIZE, GRID_SIZE, 0);
+        is_shovel = false;
     }
 }
 
@@ -63,18 +75,14 @@ void Block::pass_beat()
 }
 void Block::change_animation()
 {
-    if (beat == true)
-    {
-        beat = false;
-    }
-    else if (beat == false)
-    {
-        beat = true;
-    }
+    cur_action = cur_action + 1;
+    if (cur_action == num_action) cur_action = 0;
 }
-void Block::delete_wall()
+void Block::delete_wall(ALLEGRO_BITMAP* shovel_img)
 {
     img = al_load_bitmap("assets/block/boss_floor_A.png");
+    this->shovel_img = shovel_img;
+    is_shovel = true;
     type = BlockType::ROAD;
     pos_y += GRID_OFFSET;
 }

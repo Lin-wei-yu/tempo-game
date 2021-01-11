@@ -132,24 +132,25 @@ bool MainCharacter::shovable(Block block){
 
 void MainCharacter::draw_items(){
     // draw
+    float enlarge_ratio = 2.5;
     int offset_x = 10;
     int offset_y = 10;
     int item_idx = 0;
-    int item_width = 40;
+    int item_height = 40*enlarge_ratio;
     for (auto shovel: item_list[shovel]){
-        shovel -> show(offset_x, offset_y+item_idx*item_width);
+        shovel -> show(offset_x, offset_y+item_idx*item_height, enlarge_ratio);
         item_idx ++;
     }
     for (auto bomb: item_list[bomb]){
-        bomb -> show(offset_x, offset_y+item_idx*item_width);
+        bomb -> show(offset_x, offset_y+item_idx*item_height, enlarge_ratio);
         item_idx ++;
     }
     for (auto attack_tool: item_list[attack_tool]){
-        attack_tool -> show(offset_x, offset_y+item_idx*item_width);
+        attack_tool -> show(offset_x, offset_y+item_idx*item_height, enlarge_ratio);
         item_idx ++;
     }
     for (auto torch: item_list[torch]){
-        torch -> show(offset_x, offset_y+item_idx*item_width);
+        torch -> show(offset_x, offset_y+item_idx*item_height, enlarge_ratio);
         item_idx ++;
     }
 }
@@ -199,7 +200,7 @@ void MainCharacter::draw_life_and_coin(){
 
 }
 void MainCharacter::draw_text(string str,int x, int y){
-
+    
 }
 void MainCharacter::pass_beat(){
     beat_cnt++;

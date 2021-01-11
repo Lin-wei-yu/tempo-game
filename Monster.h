@@ -25,6 +25,8 @@ public:
     int get_next_x();
     int get_next_y();
     int get_drop_money();
+    string get_name(){return name;};
+    void change_direction();
     void pass_beat();
 
 protected:
