@@ -1,13 +1,26 @@
 #include "Bomb.h"
+
+Bomb::Bomb(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img, int x, int y):Item(img, slot_img){
+    //
+    pos_x = x;
+    pos_y = y;
+    item_type = bomb;
+    item_level = 1;
+    num_animation = 5;
+    //
+    power = 1;
+    start_count = false;
+    beat_cnt = 0;
+}
 Bomb::Bomb(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img ):Item(img, slot_img){
     //
     item_type = bomb;
     item_level = 1;
     num_animation = 5;
     //
+    power = 1;
     start_count = false;
     beat_cnt = 0;
-    power = 1;
 
 }
 void Bomb::release(){

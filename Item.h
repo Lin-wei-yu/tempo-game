@@ -2,6 +2,7 @@
 #define ITEM_H_INCLUDED
 #include "Object.h"
 #include "global.h"
+#include "Range.h"
 typedef enum _ItemType{attack_tool, shovel, bomb, torch} ItemType;
 class Item: public Object{
 public:
@@ -10,7 +11,8 @@ public:
     void show(int x, int y);
     ItemType get_type();
     int get_level();
-    ALLEGRO_BITMAP* get_img() {return slot_img;};
+    virtual float get_power();
+    virtual Range get_range();
 
 protected:
     // define in this class
@@ -19,6 +21,7 @@ protected:
     ItemType item_type;
     int item_level;
     int num_animation;
-
+    float power;
+    Range range;
 };
 #endif

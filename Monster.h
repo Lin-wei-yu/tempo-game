@@ -49,6 +49,7 @@ protected:
     bool hidden;
     int beat_cnt;
     bool jumping;
+    
 };
 
 #endif
