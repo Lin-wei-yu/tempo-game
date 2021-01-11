@@ -25,8 +25,9 @@ private:
     int beat_cnt;
     bool beat;
     int tempo;
-    int num_of_action = 4;
+    int num_action = 4;
     int cur_action;
+    bool have_torch = false;
     ALLEGRO_BITMAP* torch_in_wall;
 };
 

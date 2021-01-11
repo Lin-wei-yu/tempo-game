@@ -13,6 +13,8 @@
 #define GRID_OFFSET 16
 #define GRID_SIZE 24
 
+#define TORCH_OFFSET 4
+#define TORCH_SIZE 12
 #define ENLARGE_PARAM 4
 // direction
 typedef enum _DIR {UP, DOWN, LEFT, RIGHT, NON} DIR;

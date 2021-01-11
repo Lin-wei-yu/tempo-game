@@ -1,5 +1,5 @@
 #include "Block.h"
-
+#include <stdlib.h>
 Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img, ALLEGRO_BITMAP *torch_img)
 {
     pos_x = x;
@@ -31,9 +31,10 @@ Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img, ALLEGRO_BITMAP *
     torch_in_wall = torch_img;
     cur_action = 0;
     beat_cnt = 0;
-    tempo = 1;
+    tempo = 2;
     beat_of_change = (BEAT_PER_TEMPO*tempo)/num_action;
     num_action = 4;
+    if((rand() % 100 )< 5) have_torch = true;
 }
 
 void Block::draw() {
@@ -42,7 +43,7 @@ void Block::draw() {
             al_draw_scaled_bitmap(img, 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
             // draw torch
             if(type != BlockType::ROAD && type != BlockType::SHOP_FLAG) {
-                al_draw_scaled_bitmap(torch_in_wall, 0 + 26 * cur_action, 0, TORCH_SIZE, GRID_SIZE, pos_x + TORCH_OFFSET, pos_y - GRID_OFFSET / 2, TORCH_SIZE, GRID_SIZE, 0);
+                if(have_torch) al_draw_scaled_bitmap(torch_in_wall, 0 + 12 * cur_action, 0, TORCH_SIZE, GRID_SIZE, pos_x + TORCH_OFFSET, pos_y - GRID_OFFSET / 2, TORCH_SIZE, GRID_SIZE, 0);
             }
         }
         else
