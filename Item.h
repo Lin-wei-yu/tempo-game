@@ -10,6 +10,7 @@ public:
     void show(int x, int y);
     ItemType get_type();
     int get_level();
+    ALLEGRO_BITMAP* get_img() {return slot_img;};
 
 protected:
     // define in this class

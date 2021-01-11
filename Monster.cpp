@@ -83,5 +83,19 @@ void Monster::move() {
     move_status = stay;
     body_status = healthy;
 }
+void Monster::change_direction() {
+    if (cur_dir == UP){
+        cur_dir = DOWN;
+    }
+    else if (cur_dir == LEFT){
+        cur_dir = RIGHT;
+    }
+    else if (cur_dir == RIGHT){
+        cur_dir = LEFT;
+    }
+    else if (cur_dir == DOWN){
+        cur_dir = UP;
+    }
+}
 
 

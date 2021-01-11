@@ -186,8 +186,8 @@ void GameWindow::game_begin()
     monsters.push_back(new BlueSlime(monster_imgs["blue_slime"]));
     monsters.push_back(new RedBat(monster_imgs["red_bat"]));
     monsters.push_back(new Zombie(monster_imgs["zombie"]));
-    monsters.push_back(new Skeleton(monster_imgs["skeleton"]));
-    monsters.push_back(new BlackSkeleton(monster_imgs["black_skeleton"]));
+    // monsters.push_back(new Skeleton(monster_imgs["skeleton"]));
+    // monsters.push_back(new BlackSkeleton(monster_imgs["black_skeleton"]));
     
     main_character = new Aria(character_imgs["aria"]);
 
@@ -268,6 +268,12 @@ int GameWindow::game_update()
             if(game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::ROAD
             || game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::SHOP_FLAG) {
                  monster->move();
+            }
+            else {
+                // zombie need to change direction if hit wall
+                if(monster->get_name() == "zombie") {
+                    monster->change_direction();
+                }
             }
         }
         if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD || game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::SHOP_FLAG) {
