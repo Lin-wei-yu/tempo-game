@@ -216,9 +216,10 @@ void MainCharacter::change_action(){
 Item* MainCharacter::release_bomb(string command){
     for (auto it=item_list[bomb].begin(); it!=item_list[bomb].end(); ){
         if ((*it)->get_command() == command){
-            (*it)->release(pos_x, pos_y);
+            Item * released_bomb = (*it);
+            (released_bomb)->release(pos_x, pos_y);
             it = item_list[bomb].erase(it);
-            return (*it);
+            return released_bomb;
         }else it++;
     }
     return NULL;

@@ -18,14 +18,14 @@ void Range::build_range(int up, int down, int left, int right){
     this -> right = right;    
 }
 int Range::get_up(){
-    return up;
+    return up*GRID_SIZE;
 }
 int Range::get_down(){
-    return down;
+    return down*GRID_SIZE;
 }
 int Range::get_left(){
-    return left;
+    return left*GRID_SIZE;
 }
 int Range::get_right(){
-    return right;
+    return right*GRID_SIZE;
 }

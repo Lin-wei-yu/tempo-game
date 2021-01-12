@@ -1,6 +1,6 @@
 #ifndef RANGE_H_INCLUDED
 #define RANGE_H_INCLUDED
-
+#include "global.h"
 class Range{
 public:
     Range();

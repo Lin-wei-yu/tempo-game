@@ -8,11 +8,12 @@
 using namespace std;
 class TempoHeart: public Object{
 public:
-    TempoHeart();
+    TempoHeart(ALLEGRO_BITMAP* heart_img, ALLEGRO_BITMAP* beat_marker_img, ALLEGRO_BITMAP* missed_img);
     ~TempoHeart();
     void change_animation();
     void pass_beat();
     void draw();
+    void miss_tempo();
 private:
     int num_animation;
     int cur_animation;
@@ -20,6 +21,8 @@ private:
     int beat_cnt;
     int beat_marker_range;
     ALLEGRO_BITMAP* beat_marker_img;
+    ALLEGRO_BITMAP* missed_img;
     vector<int> beat_marker_pos;
+    bool missed_tempo;
 };
 #endif

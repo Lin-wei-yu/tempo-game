@@ -43,12 +43,13 @@ void Bomb::release(int x, int y){
     start_count = true;
 }
 void Bomb::draw(){
-
     int bomb_w = al_get_bitmap_width(img);
     int bomb_h = al_get_bitmap_height(img);
     int bomb_sw = (bomb_w/num_animation);
     int bomb_sh = bomb_h/2;
     if (start_count && !end_count){
+        // exit(0);
+
         if (cur_animation < num_animation){
             // draw bomb.
             al_draw_scaled_bitmap(img, bomb_sw*(cur_animation), 0, bomb_sw, bomb_sh, pos_x, pos_y, bomb_sw, bomb_sh, 0);

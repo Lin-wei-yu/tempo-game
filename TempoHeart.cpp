@@ -1,7 +1,7 @@
 #include "TempoHeart.h"
 
-TempoHeart::TempoHeart(){
-    img = al_load_bitmap("assets/heart/TEMP_beat_heart.png");
+TempoHeart::TempoHeart(ALLEGRO_BITMAP* heart_img, ALLEGRO_BITMAP* beat_marker_img, ALLEGRO_BITMAP* missed_img){
+    this -> img = heart_img;
     pos_x = WINDOW_WIDTH/2;
     pos_y = WINDOW_HEIGHT - 180;
 
@@ -9,7 +9,8 @@ TempoHeart::TempoHeart(){
     cur_animation = 0;
     beat_of_change = BEAT_PER_TEMPO / num_animation;
     beat_cnt = 0;
-    beat_marker_img = al_load_bitmap("assets/heart/TEMP_beat_marker.png");
+    this -> beat_marker_img = beat_marker_img;
+    this -> missed_img = missed_img;
 
     beat_marker_range = 192;
     for (int i=0; i<4; i++){
@@ -19,6 +20,14 @@ TempoHeart::TempoHeart(){
 TempoHeart::~TempoHeart(){}
 
 void TempoHeart::draw(){
+    // draw missed.
+    if (missed_tempo){
+        int scaled_ratio = 3;
+        int miss_w = al_get_bitmap_width(missed_img);
+        int miss_h = al_get_bitmap_height(missed_img);
+        al_draw_scaled_bitmap(missed_img, 0, 0, miss_w, miss_h, pos_x-(miss_w/2), pos_y-miss_h*3, miss_w*3, miss_h*3, 0);
+    }
+
     // draw bumping heart
     int heart_w = al_get_bitmap_width(img)/2;
     int heart_h = al_get_bitmap_width(img);
@@ -39,14 +48,14 @@ void TempoHeart::draw(){
         int half_heart_w = (heart_w*heart_scaled_ratio)/2;
 
         if ( left_bar_pos >= (pos_x - half_heart_w)){
-            al_draw_scaled_bitmap(beat_marker_img, 0, 0, marker_w, marker_h, pos_x - half_heart_w, pos_y+offset_y, marker_w*3, marker_h*4, 0);
+            al_draw_scaled_bitmap(beat_marker_img, 0, 0, marker_w, marker_h, pos_x - half_heart_w, pos_y+offset_y, marker_w*3, marker_h*3, 0);
         }else{
-            al_draw_scaled_bitmap(beat_marker_img, 0, 0, marker_w, marker_h, left_bar_pos, pos_y+offset_y, marker_w*3, marker_h*4, 0);
+            al_draw_scaled_bitmap(beat_marker_img, 0, 0, marker_w, marker_h, left_bar_pos, pos_y+offset_y, marker_w*3, marker_h*3, 0);
         }
         if (right_bar_pos <= pos_x + half_heart_w){
-            al_draw_scaled_bitmap(beat_marker_img, 0, 0, marker_w, marker_h, pos_x+half_heart_w, pos_y+offset_y, marker_w*3, marker_h*4, 0);    
+            al_draw_scaled_bitmap(beat_marker_img, 0, 0, marker_w, marker_h, pos_x+half_heart_w, pos_y+offset_y, marker_w*3, marker_h*3, 0);    
         }else {
-            al_draw_scaled_bitmap(beat_marker_img, 0, 0, marker_w, marker_h, right_bar_pos, pos_y+offset_y, marker_w*3, marker_h*4, 0);    
+            al_draw_scaled_bitmap(beat_marker_img, 0, 0, marker_w, marker_h, right_bar_pos, pos_y+offset_y, marker_w*3, marker_h*3, 0);    
         }
     }
 }
@@ -62,4 +71,7 @@ void TempoHeart::change_animation(){
     if (cur_animation == num_animation){
         cur_animation = 0;
     }
+}
+void TempoHeart::miss_tempo(){
+    missed_tempo = true;
 }

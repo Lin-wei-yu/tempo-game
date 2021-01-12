@@ -22,7 +22,6 @@ void mainCharacter_attack( MainCharacter* main_character, Monster* monster){
 void monster_attack(Monster* monster, MainCharacter* main_character){
     monster->attack();
     main_character->be_attacked(monster->get_power());
-    // exit(0);
 }
 void item_attack_monster(Item* item, Monster* monster){
     monster->be_attacked(item->get_power());
@@ -94,6 +93,8 @@ void GameWindow::load_other_imgs(){
     other_imgs["alphabet"] = al_load_bitmap("assets/font/alphabet_white.png");
     other_imgs["missed"] = al_load_bitmap("assets/font/missed.png");
     other_imgs["explosion"]= al_load_bitmap("assets/item/explosion.png");
+    other_imgs["tempo_heart"] = al_load_bitmap("assets/heart/TEMP_beat_heart.png");
+    other_imgs["beat_marker"] = al_load_bitmap("assets/heart/TEMP_beat_marker.png");
 
 }
 void GameWindow::game_init()
@@ -117,10 +118,10 @@ void GameWindow::game_init()
     al_reserve_samples(3);
 
     //load music
-    // sample = al_load_sample("assets/music/zone5_2_2.ogg");
-    // startSound = al_create_sample_instance(sample);
-    // al_set_sample_instance_playmode(startSound, ALLEGRO_PLAYMODE_ONCE);
-    // al_attach_sample_instance_to_mixer(startSound, al_get_default_mixer());
+    sample = al_load_sample("assets/music/zone1_1_1.ogg");
+    startSound = al_create_sample_instance(sample);
+    al_set_sample_instance_playmode(startSound, ALLEGRO_PLAYMODE_ONCE);
+    al_attach_sample_instance_to_mixer(startSound, al_get_default_mixer());
 
     // sample = al_load_sample("assets/music/zone5_2_2.ogg");
     // backgroundSound = al_create_sample_instance(sample);
@@ -234,20 +235,22 @@ void GameWindow::game_begin()
     //test
     main_character->find_item(new Shovel(item_imgs["shovel"],item_imgs["shovel_slot"]));
     main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"], other_imgs["explosion"]));
-    main_character->find_item(new Dagger(item_imgs["dagger"],item_imgs["attack_slot"]));
-    main_character->find_item(new Torch(item_imgs["torch"],item_imgs["torch_slot"]));
-    main_character->find_item(new LongSword(item_imgs["longsword"],item_imgs["attack_slot"]));
+    main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"], other_imgs["explosion"]));
+
+    // main_character->find_item(new Dagger(item_imgs["dagger"],item_imgs["attack_slot"]));
+    // main_character->find_item(new Torch(item_imgs["torch"],item_imgs["torch_slot"]));
+    // main_character->find_item(new LongSword(item_imgs["longsword"],item_imgs["attack_slot"]));
     // main_character->find_item(new AdvancedShovel(item_imgs["advanced_shovel"],item_imgs["shovel_slot"]));
-    main_character->find_item(new AdvancedTorch(item_imgs["advanced_torch"],item_imgs["torch_slot"]));
+    // main_character->find_item(new AdvancedTorch(item_imgs["advanced_torch"],item_imgs["torch_slot"]));
 
 
 
-    tempo_heart = new TempoHeart();
+    tempo_heart = new TempoHeart(other_imgs["tempo_heart"], other_imgs["beat_marker"], other_imgs["missed"]);
     
 
     draw_running_map();
 
-    // al_play_sample_instance(startSound);
+    al_play_sample_instance(startSound);
     // while(al_get_sample_instance_playing(startSound));
     // al_play_sample_instance(backgroundSound);
 
@@ -291,23 +294,14 @@ int GameWindow::game_update()
             if(next_x == monster->get_x() && next_y == monster->get_y()) {
                 // check if main character kill monsters
                 mainCharacter_attack( main_character, monster);
-                if (monster->is_dead()){
-                    int drop = monster->get_drop_money();
-                    coins.push_back(new Coin(drop, monster->get_x(), monster->get_y(), coin_imgs[drop]));
-                    it = monsters.erase(it);
-                    delete monster;
-
-                }else it++;
             }else if ( next_x == monster->get_next_x() && next_y == monster->get_next_y()){
                 // check if monster kill main character
                 monster_attack(monster, main_character);
                 if (main_character->is_dead()){
                     // exit(0); // game over
                 }
-                it++;
-            }else {
-                it++;
             }
+            it++;
         }
         // check whether there is a wall.
         set<pair<int, int>> pos_set;
@@ -316,10 +310,10 @@ int GameWindow::game_update()
             int idx_y = monster->get_next_y() / GRID_SIZE;
             if(game_map->map_type[idx_y][idx_x] == BlockType::ROAD || game_map->map_type[idx_y][idx_x] == BlockType::SHOP_FLAG) {
                 if (pos_set.find(make_pair(idx_x, idx_y))==pos_set.end()){
-                    // this pos haven‘t be used.
-                    pos_set.insert(make_pair(idx_x, idx_y));
-                    monster->move();
-                }else monster->stuck();
+                     // this pos haven‘t be used.
+                     pos_set.insert(make_pair(idx_x, idx_y));
+                     monster->move();
+                 }else monster->stuck();
             }
             else {
                 // zombie need to change direction if hit wall
@@ -355,36 +349,47 @@ int GameWindow::game_update()
                     it = items.erase(it);
             }
         }
-
         beat_cnt = 0;
     }
+
+
     // bombing items;
     for (auto it=bombing_items.begin(); it!=bombing_items.end();){
         int center_x = (*it)->get_x();
         int center_y = (*it)->get_y();
         Range range = (*it)->get_range();
-        // item kill monster.
-        // for (auto monster : monsters){
-        //     if (monster->get_x() <= center_x+range.get_down() && monster->get_x() >= center_x+range.get_up() 
-        //     && monster->get_y() <= center_y+range.get_right() && monster->get_y() >= center_y+range.get_right()){
-        //         item_attack_monster((*it), monster);
-        //     }
-        // }
-        // item kill main-character.
         if ((*it)->is_attacking()){
+
+            // item attack monster.
+            for(auto monster : monsters) {
+                if ((monster->get_x() <= (center_x+range.get_right())) && (monster->get_x() >= (center_x-range.get_left())) 
+                    && (monster->get_y() <= (center_y+range.get_down())) && (monster->get_y() >= (center_y-range.get_up()))){
+                    item_attack_monster((*it), monster);
+                }
+            }
+            // item attack main-character.
             if (main_character->get_x() <= center_x+range.get_right() && main_character->get_x() >= center_x-range.get_left() 
                 && main_character->get_y() <= center_y+range.get_down() && main_character->get_y() >= center_y-range.get_up()){
-                    item_attack_mainCharacter((*it), main_character);
+                item_attack_mainCharacter((*it), main_character);
             }
         }
 
         if ((*it)->need_recycle()){
-            delete (*it);
+            cout << bombing_items.size() << endl;
             it = bombing_items.erase(it);
         }else it++;
     }
-    
 
+    // check if monster still alive.
+    for(auto it=monsters.begin(); it!=monsters.end(); ) {
+         Monster* monster = (*it);     
+         if (monster->is_dead()){
+             int drop = monster->get_drop_money();
+             coins.push_back(new Coin(drop, monster->get_x(), monster->get_y(), coin_imgs[drop]));
+             it = monsters.erase(it);
+             delete monster;
+         }else it++;
+    }
 
 
    return GAME_CONTINUE;
@@ -402,10 +407,18 @@ void GameWindow::game_reset()
         delete coin;
     }
     coins.clear();
+    for (auto&& item : items){
+        delete item;
+    }
+    items.clear();
+    for (auto&& bombing_item : bombing_items){
+        delete bombing_item;
+    }
+    bombing_items.clear();
 
     // stop sample instance
     // al_stop_sample_instance(backgroundSound);
-    // al_stop_sample_instance(startSound);
+    al_stop_sample_instance(startSound);
 
     // stop timer
     al_stop_timer(refresh_timer);
@@ -426,8 +439,8 @@ void GameWindow::game_destroy()
 
     al_destroy_bitmap(icon);
 
-    // al_destroy_sample(sample);
-    // al_destroy_sample_instance(startSound);
+    al_destroy_sample(sample);
+    al_destroy_sample_instance(startSound);
     // al_destroy_sample_instance(backgroundSound);
 
 
@@ -485,8 +498,8 @@ int GameWindow::process_event()
             // for (auto item : items){
             //     item->pass_beat();
             // }
-            for (auto bombimng_item : bombing_items){
-                bombimng_item->pass_beat();
+            for (auto bombing_item : bombing_items){
+                bombing_item->pass_beat();
             }
             if (beat_cnt != BEAT_PER_TEMPO) { 
                 // this region determine how good the player should match the tempo,
@@ -530,6 +543,7 @@ int GameWindow::process_event()
                     bombing_items.push_back(item);
                 }
                 break;
+
         }
     }
     else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
