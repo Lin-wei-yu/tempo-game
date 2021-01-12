@@ -274,6 +274,7 @@ int GameWindow::game_update()
     */
 
     if (beat_cnt == BEAT_PER_TEMPO){ // moving tempo
+        // character move perfect!
 
         int pos_x = main_character->get_x();
         int pos_y = main_character->get_y();
@@ -350,6 +351,10 @@ int GameWindow::game_update()
             }
         }
         beat_cnt = 0;
+    }else if (beat_cnt >= (BEAT_PER_TEMPO/2)){
+        // character can move!
+    }else {
+        // missed!!
     }
 
 
@@ -512,7 +517,7 @@ int GameWindow::process_event()
         return GAME_EXIT;
     }
     else if(event.type == ALLEGRO_EVENT_KEY_DOWN) {
-        redraw = false;
+        redraw = true;
         switch(event.keyboard.keycode) {
 
             case ALLEGRO_KEY_P:

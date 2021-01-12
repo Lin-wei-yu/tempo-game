@@ -7,7 +7,7 @@ TempoHeart::TempoHeart(ALLEGRO_BITMAP* heart_img, ALLEGRO_BITMAP* beat_marker_im
 
     num_animation = 2;
     cur_animation = 0;
-    beat_of_change = BEAT_PER_TEMPO / num_animation;
+    beat_of_change = BEAT_PER_TEMPO;
     beat_cnt = 0;
     this -> beat_marker_img = beat_marker_img;
     this -> missed_img = missed_img;
@@ -61,9 +61,11 @@ void TempoHeart::draw(){
 }
 void TempoHeart::pass_beat(){
     beat_cnt++;
-    if (beat_cnt % beat_of_change == 0){
+    if (beat_cnt == BEAT_PER_TEMPO){
         change_animation();
-        if (beat_cnt == BEAT_PER_TEMPO) beat_cnt = 0;
+        beat_cnt = 0;
+    }else if (cur_animation == 1){
+        change_animation();
     }
 }
 void TempoHeart::change_animation(){
