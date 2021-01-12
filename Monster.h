@@ -28,6 +28,7 @@ public:
     string get_name(){return name;};
     void change_direction();
     void pass_beat();
+    void stuck();
 
 protected:
     // define in sub-class

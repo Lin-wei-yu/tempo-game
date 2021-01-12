@@ -122,5 +122,9 @@ void Monster::change_direction() {
         cur_dir = UP;
     }
 }
+void Monster::stuck(){
+    move_status = stay;
+    body_status = healthy;
+}
 
 

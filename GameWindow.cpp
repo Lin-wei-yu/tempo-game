@@ -310,10 +310,16 @@ int GameWindow::game_update()
             }
         }
         // check whether there is a wall.
+        set<pair<int, int>> pos_set;
         for (auto monster : monsters){
-            if(game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::ROAD
-            || game_map->map_type[monster->get_next_y() / GRID_SIZE][monster->get_next_x() / GRID_SIZE] == BlockType::SHOP_FLAG) {
-                 monster->move();
+            int idx_x = monster->get_next_x() / GRID_SIZE;
+            int idx_y = monster->get_next_y() / GRID_SIZE;
+            if(game_map->map_type[idx_y][idx_x] == BlockType::ROAD || game_map->map_type[idx_y][idx_x] == BlockType::SHOP_FLAG) {
+                if (pos_set.find(make_pair(idx_x, idx_y))==pos_set.end()){
+                    // this pos haven‘t be used.
+                    pos_set.insert(make_pair(idx_x, idx_y));
+                    monster->move();
+                }else monster->stuck();
             }
             else {
                 // zombie need to change direction if hit wall
