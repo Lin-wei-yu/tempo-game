@@ -197,7 +197,6 @@ void MainCharacter::draw_life_and_coin(){
         int num_idx = coin_str[i] - '0';
         al_draw_scaled_bitmap(number_imgs[num_idx], 0, 0, w, h, num_x+i*(sw+gap), life_coin_pos_y+15, sw, sh, 0);
     }
-
 }
 void MainCharacter::draw_text(string str,int x, int y){
     

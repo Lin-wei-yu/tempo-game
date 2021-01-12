@@ -4,7 +4,7 @@
 
 class Bomb: public Item{
 public:
-    Bomb(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img, int x, int y);
+    Bomb(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img, int x, int y, int value, vector<ALLEGRO_BITMAP*> number_imgs);
     Bomb(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img );
     ~Bomb(){};
     void draw() override;

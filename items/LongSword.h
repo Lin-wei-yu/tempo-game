@@ -5,7 +5,7 @@
 
 class LongSword: public Item{
 public:
-    LongSword(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img, int x, int y);
+    LongSword(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img, int x, int y, int value, vector<ALLEGRO_BITMAP*> number_imgs);
     LongSword(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img );
     ~LongSword();
 

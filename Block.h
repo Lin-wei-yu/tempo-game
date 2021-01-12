@@ -11,11 +11,12 @@ enum BlockType {
 
 class Block:public Object{
 public:
-    Block(int, int, BlockType, ALLEGRO_BITMAP*, ALLEGRO_BITMAP*);
+    Block(int, int, BlockType, ALLEGRO_BITMAP*, ALLEGRO_BITMAP*, bool);
     ~Block(){};
     void pass_beat();
     void change_animation();
     void draw();
+    void draw_shovel();
     void delete_wall(ALLEGRO_BITMAP* shovel_img);
     int get_level();
 private:

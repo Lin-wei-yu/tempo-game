@@ -4,6 +4,7 @@
 #include "global.h"
 #include "Range.h"
 #include <iostream>
+#include <vector>
 using namespace std;
 typedef enum _ItemType{attack_tool, shovel, bomb, torch} ItemType;
 class Item: public Object{
@@ -26,6 +27,8 @@ protected:
     ItemType item_type;
     int item_level;
     int num_animation;
+    int value;
+    vector<ALLEGRO_BITMAP*> number_imgs;
     float power;
     Range range;
     ALLEGRO_BITMAP* alphabet_img;

@@ -1,6 +1,6 @@
 #include "Block.h"
 #include <stdlib.h>
-Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img, ALLEGRO_BITMAP *torch_img)
+Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img, ALLEGRO_BITMAP *torch_img, bool have_torch)
 {
     pos_x = x;
     pos_y = y;
@@ -34,7 +34,7 @@ Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img, ALLEGRO_BITMAP *
     tempo = 2;
     beat_of_change = (BEAT_PER_TEMPO*tempo)/num_action;
     num_action = 4;
-    if((rand() % 100 )< 5) have_torch = true;
+    this->have_torch = have_torch;
 }
 
 void Block::draw() {
@@ -52,13 +52,16 @@ void Block::draw() {
             al_draw_scaled_bitmap(img, 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
         }
     }
+    
+}
+
+void Block::draw_shovel() {
     // draw shovel
     if(is_shovel) {
         al_draw_scaled_bitmap(shovel_img, 0, 0, GRID_SIZE, GRID_SIZE, pos_x, pos_y, GRID_SIZE, GRID_SIZE, 0);
         is_shovel = false;
     }
 }
-
 
 int Block::get_level()
 {

@@ -14,34 +14,53 @@ Map::Map(){
     block_vec[BlockType::GOAL] = al_load_bitmap("assets/block/stairs.png");
     block_vec[BlockType::SHOP_FLAG] = al_load_bitmap("assets/block/TEMP_shop_floor.png");
     ALLEGRO_BITMAP* torch_in_wall = al_load_bitmap("assets/block/wall_torch.png");
-    ifstream input_file;
+    ifstream input_block_type;
+    ifstream input_torch;
+    bool have_torch[WINDOW_HEIGHT][WINDOW_WIDTH];
     string s;
+
+    // input torch
     int width_iter = 0, height_iter = 0;
-    input_file.open("map/map.txt");
-    while(getline(input_file, s)) {
+    input_torch.open("map/torch.txt");
+    while(getline(input_torch, s)) {
+        width_iter = 0;
+        for(auto symbol: s) {
+            if((symbol - '0') == 8) have_torch[height_iter][width_iter] = true;
+            else have_torch[height_iter][width_iter] = false;
+            width_iter++;
+        }
+        height_iter++;
+    }
+    // input block type
+    width_iter = 0, height_iter = 0;
+    input_block_type.open("map/map.txt");
+    while(getline(input_block_type, s)) {
         // std::cout << s << std::endl;
         width_iter = 0;
         for(auto symbol: s) {
             if((BlockType)(symbol - '0') == BlockType::ROAD || (BlockType)(symbol - '0') == BlockType::GOAL || (BlockType)(symbol - '0') == BlockType::SHOP_FLAG) {
-                blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall));
+                blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]));
             }
             else {
-                blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter - GRID_OFFSET, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall));
+                blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter - GRID_OFFSET, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]));
             }
             map_type[height_iter][width_iter] = (BlockType)(symbol - '0');
             width_iter++;
         }
         height_iter++;
     }
-    input_file.close();
+    input_block_type.close();
 }
 Map::~Map(){
 
 }
 
 void Map::draw(){
-    for (auto &b: blocks){
+    for(auto &b: blocks){
         b.draw();
+    }
+    for(auto &b: blocks) {
+        b.draw_shovel();
     }
 }
 void Map::pass_beat() {

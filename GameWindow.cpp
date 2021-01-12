@@ -223,13 +223,14 @@ void GameWindow::game_begin()
     main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"]));
     main_character->find_item(new Dagger(item_imgs["dagger"],item_imgs["attack_slot"]));
     main_character->find_item(new Torch(item_imgs["torch"],item_imgs["torch_slot"]));
-    main_character->find_item(new LongSword(item_imgs["longsword"],item_imgs["attack_slot"]));
+    // main_character->find_item(new LongSword(item_imgs["longsword"],item_imgs["attack_slot"]));
     // main_character->find_item(new AdvancedShovel(item_imgs["advanced_shovel"],item_imgs["shovel_slot"]));
     main_character->find_item(new AdvancedTorch(item_imgs["advanced_torch"],item_imgs["torch_slot"]));
 
 
 
-    items.push_back(new AdvancedShovel(item_imgs["advanced_shovel"],item_imgs["shovel_slot"], 600, 96));
+    items.push_back(new AdvancedShovel(item_imgs["advanced_shovel"],item_imgs["shovel_slot"], GRID_SIZE * 4, GRID_SIZE * 9, 10, number_imgs));
+    items.push_back(new LongSword(item_imgs["longsword"],item_imgs["attack_slot"], GRID_SIZE * 8, GRID_SIZE * 9, 10, number_imgs));
     tempo_heart = new TempoHeart();
     
 
