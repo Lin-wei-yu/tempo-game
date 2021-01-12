@@ -5,6 +5,7 @@ Item::Item(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img ){
     this -> slot_img = slot_img;
     using_command = "";
     alphabet_img = al_load_bitmap("assets/font/alphabet_white.png");
+    is_demaged = false;
 }
 void Item::draw(){
     int w = al_get_bitmap_width(img);
@@ -49,5 +50,14 @@ Range Item::get_range(){
 }
 string Item::get_command(){
     return using_command;
+}
+void Item::release(int x, int y){
+     
+}
+bool Item::need_recycle(){
+    return is_demaged;
+}
+bool Item::is_attacking(){
+   return false; 
 }
 

@@ -24,6 +24,12 @@ void monster_attack(Monster* monster, MainCharacter* main_character){
     main_character->be_attacked(monster->get_power());
     // exit(0);
 }
+void item_attack_monster(Item* item, Monster* monster){
+    monster->be_attacked(item->get_power());
+}
+void item_attack_mainCharacter(Item* item, MainCharacter* main_character){
+    main_character->be_attacked(item->get_power());
+}
 
 void GameWindow::load_monster_imgs(){
     monster_imgs["green_slime"] = al_load_bitmap("assets/monster/slime_green.png");
@@ -86,6 +92,9 @@ void GameWindow::load_heart_imgs(){
 void GameWindow::load_other_imgs(){
     other_imgs["coin_icon"] = al_load_bitmap("assets/main/hud_coins.png");
     other_imgs["alphabet"] = al_load_bitmap("assets/font/alphabet_white.png");
+    other_imgs["missed"] = al_load_bitmap("assets/font/missed.png");
+    other_imgs["explosion"]= al_load_bitmap("assets/item/explosion.png");
+
 }
 void GameWindow::game_init()
 {   /*
@@ -224,7 +233,7 @@ void GameWindow::game_begin()
 
     //test
     main_character->find_item(new Shovel(item_imgs["shovel"],item_imgs["shovel_slot"]));
-    main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"]));
+    main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"], other_imgs["explosion"]));
     main_character->find_item(new Dagger(item_imgs["dagger"],item_imgs["attack_slot"]));
     main_character->find_item(new Torch(item_imgs["torch"],item_imgs["torch_slot"]));
     main_character->find_item(new LongSword(item_imgs["longsword"],item_imgs["attack_slot"]));
@@ -233,7 +242,6 @@ void GameWindow::game_begin()
 
 
 
-    items.push_back(new AdvancedShovel(item_imgs["advanced_shovel"],item_imgs["shovel_slot"], 600, 96));
     tempo_heart = new TempoHeart();
     
 
@@ -337,14 +345,40 @@ int GameWindow::game_update()
         // find item;
         for (auto it=items.begin(); it!=items.end(); it++){
             if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
-                main_character->find_item((*it));
-                it = items.erase(it);
+                    main_character->find_item((*it));
+                    it = items.erase(it);
             }
         }
 
-
         beat_cnt = 0;
     }
+    // bombing items;
+    for (auto it=bombing_items.begin(); it!=bombing_items.end();){
+        int center_x = (*it)->get_x();
+        int center_y = (*it)->get_y();
+        Range range = (*it)->get_range();
+        // item kill monster.
+        // for (auto monster : monsters){
+        //     if (monster->get_x() <= center_x+range.get_down() && monster->get_x() >= center_x+range.get_up() 
+        //     && monster->get_y() <= center_y+range.get_right() && monster->get_y() >= center_y+range.get_right()){
+        //         item_attack_monster((*it), monster);
+        //     }
+        // }
+        // item kill main-character.
+        if ((*it)->is_attacking()){
+            if (main_character->get_x() <= center_x+range.get_right() && main_character->get_x() >= center_x-range.get_left() 
+                && main_character->get_y() <= center_y+range.get_down() && main_character->get_y() >= center_y-range.get_up()){
+                    item_attack_mainCharacter((*it), main_character);
+            }
+        }
+
+        if ((*it)->need_recycle()){
+            delete (*it);
+            it = bombing_items.erase(it);
+        }else it++;
+    }
+    
+
 
 
    return GAME_CONTINUE;
@@ -442,6 +476,12 @@ int GameWindow::process_event()
             tempo_heart->pass_beat();
             game_map->pass_beat();
             main_character->pass_beat();
+            // for (auto item : items){
+            //     item->pass_beat();
+            // }
+            for (auto bombimng_item : bombing_items){
+                bombimng_item->pass_beat();
+            }
             if (beat_cnt != BEAT_PER_TEMPO) { 
                 // this region determine how good the player should match the tempo,
                 // so that the main_character can move
@@ -477,6 +517,12 @@ int GameWindow::process_event()
                 break;
             case ALLEGRO_KEY_RIGHT:
                 main_character->change_dir(RIGHT);
+                break;
+            case ALLEGRO_KEY_SPACE:
+                Item* item = main_character->release_bomb("space");
+                if ( item != NULL){
+                    bombing_items.push_back(item);
+                }
                 break;
         }
     }
@@ -530,6 +576,9 @@ void GameWindow::draw_running_map()
     }
     for (auto item: items){
         item->draw();
+    }
+    for (auto bombing_item: bombing_items){
+        bombing_item->draw();
     }
     tempo_heart->draw();
 

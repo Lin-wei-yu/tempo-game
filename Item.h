@@ -17,11 +17,16 @@ public:
     virtual Range get_range();
     ALLEGRO_BITMAP* get_img(){ return img;};
     string get_command();
-    
+    virtual void release(int x, int y);
+    virtual void pass_beat(){};
+    bool need_recycle();
+    virtual bool is_attacking(); 
+
 protected:
     // define in this class
     ALLEGRO_BITMAP* slot_img;
     string using_command;
+    bool is_demaged;
     // define in sub-class
     ItemType item_type;
     int item_level;
@@ -29,5 +34,6 @@ protected:
     float power;
     Range range;
     ALLEGRO_BITMAP* alphabet_img;
+
 };
 #endif

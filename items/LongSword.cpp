@@ -9,7 +9,7 @@ LongSword::LongSword(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img, int x, int y
     //
     power = 1;
     //
-    range.build_range(1, 1, 2, 2);
+    range.build_range(1, 1, 1, 1);
 }
 
 LongSword::LongSword(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img ):Item(img, slot_img){

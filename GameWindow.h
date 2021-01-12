@@ -137,6 +137,7 @@ private:
     list<Coin*> coins;
     TempoHeart* tempo_heart;
     list<Item*> items;
+    list<Item*> bombing_items;
     
     // utility variable
     int mouse_x, mouse_y;

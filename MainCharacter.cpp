@@ -213,3 +213,13 @@ void MainCharacter::change_action(){
     cur_action = cur_action + 1;
     if (cur_action == num_action) cur_action = 0;
 }
+Item* MainCharacter::release_bomb(string command){
+    for (auto it=item_list[bomb].begin(); it!=item_list[bomb].end(); ){
+        if ((*it)->get_command() == command){
+            (*it)->release(pos_x, pos_y);
+            it = item_list[bomb].erase(it);
+            return (*it);
+        }else it++;
+    }
+    return NULL;
+}
