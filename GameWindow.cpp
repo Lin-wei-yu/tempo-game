@@ -335,8 +335,8 @@ int GameWindow::game_update()
         }
         // find item;
         for (auto it=items.begin(); it!=items.end(); it++){
-            if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
-                main_character->find_item((*it));
+            if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y() && main_character->get_num_coin() >= (*it)->get_value()){
+                main_character->buy_items((*it));
                 it = items.erase(it);
             }
         }

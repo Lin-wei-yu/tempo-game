@@ -29,10 +29,12 @@ public:
     void find_item(Item* item);
     bool shovable(Block block);
     void draw_items();
+    void buy_items(Item* item);
     void draw_life_and_coin();
     void change_action();
     void pass_beat();
     void stuck();
+    int get_num_coin() { return num_coin; };
     ALLEGRO_BITMAP* get_shovel_img() { return item_list[ItemType::shovel][0]->get_img();};
     Item* get_bomb() { return item_list[ItemType::bomb][0]; };
 protected:

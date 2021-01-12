@@ -6,10 +6,10 @@ MainCharacter::MainCharacter(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& numbe
     this -> heart_imgs = heart_imgs;
     this -> coin_img = other_imgs["coin_icon"];
     this -> alphabet_img = other_imgs["alphabet"];
-    pos_x = GRID_SIZE * 24;
-    pos_y = GRID_SIZE * 3;
+    pos_x = GRID_SIZE * 10;
+    pos_y = GRID_SIZE * 10;
     power = 1;
-    num_coin = 0;
+    num_coin = 10;
     next_x = pos_x;
     next_y = pos_y;
     cur_tempo = 0;
@@ -120,6 +120,10 @@ void MainCharacter::find_money(int num){
 }
 void MainCharacter::find_item(Item* item){
     item_list[item->get_type()].push_back(item);
+}
+void MainCharacter::buy_items(Item* item){
+    item_list[item->get_type()].push_back(item);
+    num_coin -= item->get_value();
 }
 bool MainCharacter::shovable(Block block){
     for (auto shovel : item_list[shovel]){
