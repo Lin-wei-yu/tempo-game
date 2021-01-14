@@ -3,12 +3,12 @@
 using namespace std;
 // monster manual
 // static MonsterDOC monster_manual;
-Monster::Monster(ALLEGRO_BITMAP* img,map<string, ALLEGRO_BITMAP*>& heart_imgs):Object(){
+Monster::Monster(ALLEGRO_BITMAP* img,map<string, ALLEGRO_BITMAP*>& heart_imgs, int x, int y):Object(){
     // declare in object.h
     this -> img = img;
     this -> heart_imgs = heart_imgs;
-    pos_x = (rand()%5 )* GRID_SIZE + 5 * GRID_SIZE;
-    pos_y = (rand()%5 )* GRID_SIZE + 5 * GRID_SIZE;
+    pos_x = x;
+    pos_y = y;
 
     // declare in monster.h
     cur_dir = NON;

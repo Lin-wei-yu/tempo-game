@@ -1,6 +1,6 @@
 #include "StoneGolem.h"
 
-StoneGolem::StoneGolem(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs):Monster(img,heart_imgs){
+StoneGolem::StoneGolem(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs, int x, int y):Monster(img,heart_imgs,x,y){
     // stone golem profile.
     name = "stone golem";
     tempo = 4;

@@ -7,7 +7,7 @@
 using namespace std;
 class BlackSkeleton:public Monster{
 public: 
-    BlackSkeleton(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs);
+    BlackSkeleton(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs, int x, int y);
     ~BlackSkeleton();
     void early_move(int character_pos_x, int character_pos_y) override;
     void draw() override;

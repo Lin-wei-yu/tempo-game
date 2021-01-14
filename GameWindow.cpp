@@ -87,6 +87,46 @@ void GameWindow::load_other_imgs(){
     other_imgs["coin_icon"] = al_load_bitmap("assets/main/hud_coins.png");
     other_imgs["alphabet"] = al_load_bitmap("assets/font/alphabet_white.png");
 }
+void GameWindow::init_object_pos(){
+    // monster 
+    ifstream monster_pos;
+    string s;
+    monster_pos.open("map/monster.txt");
+    int w=0, h=0;
+    while(getline(monster_pos, s)) {
+        w = 0;
+        for(auto symbol: s) {
+            switch(symbol){
+                case 'A':
+                    monsters.push_back(new BlackSkeleton(monster_imgs["black_skeleton"], heart_imgs,GRID_SIZE*w,GRID_SIZE* h));
+                    break;
+                case 'B':
+                    monsters.push_back(new BlueSlime(monster_imgs["blue_slime"], heart_imgs, GRID_SIZE*w, GRID_SIZE*h));
+                    break;
+                case 'C':
+                    monsters.push_back(new GreenSlime(monster_imgs["green_slime"], heart_imgs, GRID_SIZE*w, GRID_SIZE*h));
+                    break;
+                case 'D':
+                    monsters.push_back(new RedBat(monster_imgs["red_bat"], heart_imgs, GRID_SIZE*w, GRID_SIZE*h));
+                    break;
+                case 'E':
+                    monsters.push_back(new Skeleton(monster_imgs["skeleton"], heart_imgs, GRID_SIZE*w, GRID_SIZE*h));
+                    break;
+                case 'F':
+                    monsters.push_back(new StoneGolem(monster_imgs["stone_golem"], heart_imgs, GRID_SIZE*w, GRID_SIZE*h));
+                    break;
+                case 'G':
+                    monsters.push_back(new Zombie(monster_imgs["zombie"], heart_imgs, GRID_SIZE*w, GRID_SIZE*h));
+                    break;
+                default :
+                    break;
+            }   
+            w++;
+        }
+        h++;
+    }
+    monster_pos.close();
+}
 void GameWindow::game_init()
 {   /*
     load stuff from memory
@@ -206,16 +246,10 @@ void GameWindow::game_begin()
     */
 
     // init game objects
+    init_object_pos();
     game_map = new Map();
 
-    monsters.push_back(new GreenSlime(monster_imgs["green_slime"], heart_imgs));
-    monsters.push_back(new BlueSlime(monster_imgs["blue_slime"], heart_imgs));
-    monsters.push_back(new RedBat(monster_imgs["red_bat"], heart_imgs));
-    monsters.push_back(new Zombie(monster_imgs["zombie"], heart_imgs));
-    monsters.push_back(new Skeleton(monster_imgs["skeleton"], heart_imgs));
-    monsters.push_back(new BlackSkeleton(monster_imgs["black_skeleton"], heart_imgs));
-    monsters.push_back(new StoneGolem(monster_imgs["stone_golem"], heart_imgs));
-    
+
     main_character = new Aria(character_imgs["aria"], number_imgs, heart_imgs, other_imgs);
 
     //test
@@ -491,6 +525,9 @@ int GameWindow::process_event()
                     game_status = GAME_RUN;
                     al_start_timer(quater_timer);
                 }
+                // else if(game_status == GAME_RUN) {
+                //     game_status = GAME_OVER;
+                // }
                 else if(game_status == GAME_OVER) {
                     exit(0);
                 }
@@ -529,8 +566,8 @@ void GameWindow::draw_running_map()
     else if(game_status == GAME_RUN) {
 
         // for camera.
-        // ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
-        // al_set_target_bitmap(tmp_bitmap);
+        ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
+        al_set_target_bitmap(tmp_bitmap);
 
         // for 2 times bigger.
         // ALLEGRO_TRANSFORM prev, trans;
@@ -547,8 +584,7 @@ void GameWindow::draw_running_map()
             monster->draw();
         }
         main_character -> draw();
-        main_character -> draw_life_and_coin();
-        main_character -> draw_items();
+        
 
         for (auto coin : coins){
             coin->draw();
@@ -556,19 +592,29 @@ void GameWindow::draw_running_map()
         for (auto item: items){
             item->draw();
         }
-        tempo_heart->draw();
+        
 
         // for 2 times bigger.
         // al_use_transform(&prev);
 
         // for camera.
-        // al_set_target_bitmap(origin_bitmap);
-        // al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
-        // al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8, 
-        //                     main_character->get_y() - WINDOW_HEIGHT / 8, 
-        //                     WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, 
-        //                     0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-
+        float VISION_WIDTH = WINDOW_WIDTH / 3;
+        float VISION_HEIGHT = WINDOW_HEIGHT / 3;
+        al_set_target_bitmap(origin_bitmap);
+        al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
+        al_draw_tinted_scaled_bitmap(tmp_bitmap, al_map_rgba_f(1, 1, 1, 1), 
+                            main_character->get_x() - VISION_WIDTH / 2, 
+                            main_character->get_y() - VISION_HEIGHT / 2, 
+                            VISION_WIDTH, VISION_HEIGHT, 
+                            0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+        // small map
+        al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 3, 
+                            main_character->get_y() - WINDOW_HEIGHT / 3, 
+                            WINDOW_WIDTH / 1.5, WINDOW_HEIGHT / 1.5, 
+                            GRID_SIZE * 50, GRID_SIZE * 30, WINDOW_WIDTH / 8, WINDOW_HEIGHT / 8, 0);
+        main_character -> draw_life_and_coin();
+        main_character -> draw_items();
+        tempo_heart->draw();
         al_flip_display();
     }
     else if(game_status == GAME_OVER) {
