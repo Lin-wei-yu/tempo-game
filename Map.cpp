@@ -39,10 +39,12 @@ Map::Map(){
         width_iter = 0;
         for(auto symbol: s) {
             if((BlockType)(symbol - '0') == BlockType::ROAD || (BlockType)(symbol - '0') == BlockType::GOAL || (BlockType)(symbol - '0') == BlockType::SHOP_FLAG) {
-                blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]));
+                // blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]));
+                blocks[height_iter][width_iter] = Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]);
             }
             else {
-                blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter - GRID_OFFSET, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]));
+                // blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter - GRID_OFFSET, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]));
+                blocks[height_iter][width_iter] = Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter - GRID_OFFSET, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]);
             }
             map_type[height_iter][width_iter] = (BlockType)(symbol - '0');
             width_iter++;
@@ -55,24 +57,111 @@ Map::~Map(){
 
 }
 
-void Map::draw(){
-    for(auto &b: blocks){
-        b.draw();
+void Map::draw_block(int character_x, int character_y){
+
+    // reset vision variable
+    for(int height_iter = 0; height_iter < WINDOW_HEIGHT / GRID_SIZE; height_iter++) {
+        for(int width_iter = 0; width_iter < WINDOW_WIDTH / GRID_SIZE; width_iter++) {
+            blocks[height_iter][width_iter].set_vision(false);
+        }
     }
-    for(auto &b: blocks) {
-        b.draw_shovel();
+
+    for(int height_iter = 0; height_iter < WINDOW_HEIGHT / GRID_SIZE; height_iter++) {
+        for(int width_iter = 0; width_iter < WINDOW_WIDTH / GRID_SIZE; width_iter++) {
+            if(abs(width_iter - character_x) + abs(height_iter - character_y) <= 3) {
+                blocks[height_iter][width_iter].set_vision(true);
+            }
+        }
+    }
+    for(int i = 2; i <= 3; i++) {
+        for(int height_iter = 0; height_iter < WINDOW_HEIGHT / GRID_SIZE; height_iter++) {
+            for(int width_iter = 0; width_iter < WINDOW_WIDTH / GRID_SIZE; width_iter++) {
+                if(abs(width_iter - character_x) + abs(height_iter - character_y) == i) {
+                    if(width_iter == character_x || height_iter == character_y) {
+                        if(width_iter == character_x) {
+                            if(height_iter < character_y) {
+                                if((blocks[height_iter+1][width_iter].get_type() != BlockType::ROAD && blocks[height_iter+1][width_iter].get_type() != BlockType::SHOP_FLAG) || blocks[height_iter+1][width_iter].get_vision() == false) {
+                                    blocks[height_iter][width_iter].set_vision(false);
+                                }
+                            } 
+                            else if(height_iter > character_y) {
+                                if((blocks[height_iter-1][width_iter].get_type() != BlockType::ROAD && blocks[height_iter-1][width_iter].get_type() != BlockType::SHOP_FLAG) || blocks[height_iter-1][width_iter].get_vision() == false) {
+                                    blocks[height_iter][width_iter].set_vision(false);
+                                }
+                            }
+                        }
+                        else if(height_iter == character_y) {
+                            if(width_iter < character_x) {
+                                if((blocks[height_iter][width_iter+1].get_type() != BlockType::ROAD && blocks[height_iter][width_iter+1].get_type() != BlockType::SHOP_FLAG) || blocks[height_iter][width_iter+1].get_vision() == false) {
+                                    blocks[height_iter][width_iter].set_vision(false);
+                                }
+                            } 
+                            else if(width_iter > character_x) {
+                                if((blocks[height_iter][width_iter-1].get_type() != BlockType::ROAD && blocks[height_iter][width_iter-1].get_type() != BlockType::SHOP_FLAG) || blocks[height_iter][width_iter-1].get_vision() == false) {
+                                    blocks[height_iter][width_iter].set_vision(false);
+                                }
+                            }
+                        }
+                    }
+                    else if(width_iter < character_x && height_iter < character_y) {
+                        if(((blocks[height_iter+1][width_iter+1].get_type() != BlockType::ROAD && blocks[height_iter+1][width_iter+1].get_type() != BlockType::SHOP_FLAG) || blocks[height_iter+1][width_iter+1].get_vision() == false)
+                        || ((blocks[height_iter+1][width_iter].get_type() != BlockType::ROAD && blocks[height_iter+1][width_iter].get_type() != BlockType::SHOP_FLAG) || blocks[height_iter+1][width_iter].get_vision() == false)) {
+                            blocks[height_iter][width_iter].set_vision(false);
+                        }
+                    }
+                    else if(width_iter < character_x && height_iter > character_y) {
+                        if(((blocks[height_iter-1][width_iter+1].get_type() != BlockType::ROAD && blocks[height_iter-1][width_iter+1].get_type() != BlockType::SHOP_FLAG) || blocks[height_iter-1][width_iter+1].get_vision() == false)
+                        || ((blocks[height_iter-1][width_iter].get_type() != BlockType::ROAD && blocks[height_iter-1][width_iter].get_type() != BlockType::SHOP_FLAG) || blocks[height_iter-1][width_iter].get_vision() == false)) {
+                            blocks[height_iter][width_iter].set_vision(false);
+                        }
+                    }
+                    else if(width_iter > character_x && height_iter < character_y) {
+                        if(((blocks[height_iter+1][width_iter-1].get_type() != BlockType::ROAD && blocks[height_iter+1][width_iter-1].get_type() != BlockType::SHOP_FLAG) || blocks[height_iter+1][width_iter-1].get_vision() == false)
+                        || ((blocks[height_iter+1][width_iter].get_type() != BlockType::ROAD && blocks[height_iter+1][width_iter].get_type() != BlockType::SHOP_FLAG) || blocks[height_iter+1][width_iter].get_vision() == false)) {
+                            blocks[height_iter][width_iter].set_vision(false);
+                        }
+                    }
+                    else if(width_iter > character_x && height_iter > character_y) {
+                        if(((blocks[height_iter-1][width_iter-1].get_type() != BlockType::ROAD && blocks[height_iter-1][width_iter-1].get_type() != BlockType::SHOP_FLAG) || blocks[height_iter-1][width_iter-1].get_vision() == false)
+                        || ((blocks[height_iter-1][width_iter].get_type() != BlockType::ROAD && blocks[height_iter-1][width_iter].get_type() != BlockType::SHOP_FLAG) || blocks[height_iter-1][width_iter].get_vision() == false)) {
+                            blocks[height_iter][width_iter].set_vision(false);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // set vision true in 3 * 3 range
+    for(int height_iter = -1; height_iter <= 1; height_iter++) {
+        for(int width_iter = -1; width_iter <= 1; width_iter++) {
+            blocks[character_y + height_iter][character_x + width_iter].set_vision(true);
+        }
+    }
+    // draw block
+    for(int height_iter = 0; height_iter < WINDOW_HEIGHT / GRID_SIZE; height_iter++) {
+        for(int width_iter = 0; width_iter < WINDOW_WIDTH / GRID_SIZE; width_iter++) {
+            blocks[height_iter][width_iter].draw_block(character_x, character_y);
+        }
+    }
+    // draw shovel
+    for(int height_iter = 0; height_iter < WINDOW_HEIGHT / GRID_SIZE; height_iter++) {
+        for(int width_iter = 0; width_iter < WINDOW_WIDTH / GRID_SIZE; width_iter++) {
+            blocks[height_iter][width_iter].draw_shovel();
+        }
     }
 }
 void Map::pass_beat() {
-    for(auto& b: blocks) {
-        b.pass_beat();
+    for(int height_iter = 0; height_iter < WINDOW_HEIGHT / GRID_SIZE; height_iter++) {
+        for(int width_iter = 0; width_iter < WINDOW_WIDTH / GRID_SIZE; width_iter++) {
+            blocks[height_iter][width_iter].pass_beat();
+        }
     }
 }
 Block Map::get_block(int x, int y) {
-    return blocks[y * 60 + x];
+    return blocks[y][x];
 }
 void Map::delete_wall(int x, int y, ALLEGRO_BITMAP* shovel_img) {
-    blocks[y * 60 + x].delete_wall(shovel_img);
+    blocks[y][x].delete_wall(shovel_img);
     map_type[y][x] = BlockType::ROAD;
 } 
 

@@ -17,6 +17,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <fstream>
 #include <time.h>
 #include <string>
 #include "global.h"
@@ -96,6 +97,10 @@ public:
     void load_heart_imgs();
     void load_other_imgs();
 
+    // 
+    void init_object_pos();
+
+
 public:
     bool initial = true;
 
@@ -104,8 +109,6 @@ private:
 
     ALLEGRO_DISPLAY* display = NULL;
     ALLEGRO_FONT *font = NULL;
-    ALLEGRO_FONT *Medium_font = NULL;
-    ALLEGRO_FONT *Large_font = NULL;
 
     ALLEGRO_EVENT_QUEUE *event_queue = NULL;
     ALLEGRO_EVENT event;

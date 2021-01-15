@@ -10,7 +10,6 @@ allegro*
 *.jpg
 *.wav
 *.ogg
-*.ttf
 *.otf
 *.txt
 *.db

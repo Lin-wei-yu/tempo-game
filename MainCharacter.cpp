@@ -27,11 +27,11 @@ void MainCharacter::draw(){
     // draw chracter
     int w = al_get_bitmap_width(img);
     int h = al_get_bitmap_height(img);
-    int sw = w / num_action; 
+    int sw = w / num_action;
     int sh = h / 2;
     int offset_y = (jumping==true) ? JUMP_HIEIGHT : 0 ;
     offset_y += CHARACTER_OFFSET ;
-    
+
     al_draw_scaled_bitmap(img, sw*cur_action, 0, sw, sh, pos_x, pos_y-offset_y, sw, sh, 0);
     jumping = false;
     // al_draw_scaled_bitmap(img, 0, 0, w/2, h/2, pos_x, pos_y - CHARACTER_OFFSET, w/2, h/2, 0);
@@ -97,11 +97,11 @@ void MainCharacter::attack(){
     move_status = stay;
 }
 void MainCharacter::change_dir(DIR dir){
-    tmp_dir = dir; 
+    tmp_dir = dir;
 }
 void MainCharacter::be_attacked(float harm){
     remaining_lives = remaining_lives - harm;
-    body_status = injured;
+    // body_status = injured;
 }
 bool MainCharacter::is_dead(){
     return (remaining_lives <= 0);
@@ -119,10 +119,24 @@ void MainCharacter::find_money(int num){
     num_coin += num;
 }
 void MainCharacter::find_item(Item* item){
-    item_list[item->get_type()].push_back(item);
+    if (item->get_type() == shovel && item_list[item->get_type()].size() != 0){
+        Item* org_shovel = item_list[item->get_type()][0];
+        if (org_shovel->get_level() < item ->get_level()){
+            item_list[item->get_type()][0] = item;
+        }
+    }else {
+        item_list[item->get_type()].push_back(item);
+    }
 }
 void MainCharacter::buy_items(Item* item){
-    item_list[item->get_type()].push_back(item);
+    if (item->get_type() == shovel && item_list[item->get_type()].size() != 0){
+        Item* org_shovel = item_list[item->get_type()][0];
+        if (org_shovel->get_level() < item ->get_level()){
+            item_list[item->get_type()][0] = item;
+        }
+    }else {
+        item_list[item->get_type()].push_back(item);
+    }
     num_coin -= item->get_value();
 }
 bool MainCharacter::shovable(Block block){
@@ -182,13 +196,13 @@ void MainCharacter::draw_life_and_coin(){
         }
         remain --;
     }
-    
+
     // draw coin
     w = al_get_bitmap_width(coin_img);
     h = al_get_bitmap_height(coin_img);
     sw = w*enlarge_ratio;
     sh = h*enlarge_ratio;
-    al_draw_scaled_bitmap(coin_img, 0, 0, w, h, coin_x, life_coin_pos_y, sw, sh, 0); 
+    al_draw_scaled_bitmap(coin_img, 0, 0, w, h, coin_x, life_coin_pos_y, sw, sh, 0);
 
     // draw coin num
     w = al_get_bitmap_width(number_imgs[0]);
@@ -203,7 +217,7 @@ void MainCharacter::draw_life_and_coin(){
     }
 }
 void MainCharacter::draw_text(string str,int x, int y){
-    
+
 }
 void MainCharacter::pass_beat(){
     beat_cnt++;

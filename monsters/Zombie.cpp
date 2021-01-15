@@ -1,6 +1,6 @@
 #include "Zombie.h"
 
-Zombie::Zombie(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs):Monster(img,heart_imgs){
+Zombie::Zombie(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs, int x, int y):Monster(img,heart_imgs,x,y){
     // zombie profile
     name = "zombie";
     tempo = 1;

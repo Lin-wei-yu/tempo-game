@@ -1,6 +1,6 @@
 #include "RedBat.h"
 
-RedBat::RedBat(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs):Monster(img,heart_imgs){
+RedBat::RedBat(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs, int x, int y):Monster(img,heart_imgs,x,y){
     // red bat profile 
     name = "red_bet";
     tempo = 1;

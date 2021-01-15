@@ -1,6 +1,6 @@
 #include "BlackSkeleton.h"
 
-BlackSkeleton::BlackSkeleton(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs):Monster(img,heart_imgs){
+BlackSkeleton::BlackSkeleton(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs, int x, int y):Monster(img,heart_imgs,x,y){
     // skeleton profile.
     name =  "black skeleton";
     tempo = 1;

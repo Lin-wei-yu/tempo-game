@@ -1,6 +1,6 @@
 #include "BlueSlime.h"
 
-BlueSlime::BlueSlime(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs):Monster(img,heart_imgs){
+BlueSlime::BlueSlime(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs, int x, int y):Monster(img,heart_imgs,x,y){
     // blue slime profile 
     name = "blue_slime";
     tempo = 2;

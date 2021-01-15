@@ -11,12 +11,17 @@ enum BlockType {
 
 class Block:public Object{
 public:
+    Block(){};
     Block(int, int, BlockType, ALLEGRO_BITMAP*, ALLEGRO_BITMAP*, bool);
     ~Block(){};
     void pass_beat();
     void change_animation();
-    void draw();
+    void draw_block(int, int);
     void draw_shovel();
+    void draw(){};
+    void set_vision(bool in_vision) { this->in_vision = in_vision; };
+    bool get_vision() { return in_vision; };
+    BlockType get_type() { return type; };
     void delete_wall(ALLEGRO_BITMAP* shovel_img);
     int get_level();
 private:
@@ -30,6 +35,8 @@ private:
     int cur_action;
     bool have_torch = false;
     bool is_shovel = false;
+    bool is_visited = false;
+    bool in_vision;
     ALLEGRO_BITMAP* shovel_img;
     ALLEGRO_BITMAP* torch_in_wall;
 };

@@ -1,7 +1,7 @@
 #include "GreenSlime.h"
 #include <iostream>
 using namespace std;
-GreenSlime::GreenSlime(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs):Monster(img,heart_imgs){
+GreenSlime::GreenSlime(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs, int x, int y):Monster(img,heart_imgs,x,y){
     // green slime profile
     name = "green_slime";
     tempo = 1;
