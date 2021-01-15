@@ -15,6 +15,10 @@ GameWindow() -> game_init() ->
 game_play() -> game_begin() -> game_run()
 */
 
+// 
+TEMPO_ACC tempo_acc = UN_CERTAIN;
+
+
 void mainCharacter_attack( MainCharacter* main_character, Monster* monster){
     main_character->attack();
     monster->be_attacked(main_character->get_power());
@@ -244,7 +248,7 @@ void GameWindow::game_begin()
     // main_character->find_item(new AdvancedTorch(item_imgs["advanced_torch"],item_imgs["torch_slot"]));
 
 
-
+    items.push_back(new AdvancedShovel(item_imgs["advanced_shovel"],item_imgs["shovel_slot"],GRID_SIZE * 24,GRID_SIZE * 4));
     tempo_heart = new TempoHeart(other_imgs["tempo_heart"], other_imgs["beat_marker"], other_imgs["missed"]);
     
 
@@ -273,38 +277,56 @@ int GameWindow::game_update()
     update the status of every object. lives, position validation ...
     */
 
-    if (beat_cnt == BEAT_PER_TEMPO){ // moving tempo
-        // character move perfect!
+    int pos_x = main_character->get_x();
+    int pos_y = main_character->get_y();
+    int next_x = -1;
+    int next_y = -1;
 
-        int pos_x = main_character->get_x();
-        int pos_y = main_character->get_y();
+    if (beat_cnt == BEAT_PER_TEMPO){
+        // character move , monster move.
+        // main character next-step
+        // 1. kill monster 
+        // 2. stucked by wall 
+        // 3. remove wall
+        // 4. move normally
+        if (main_character->get_tmp_dir()!=NON){
+            // move perfect!
+            main_character->early_move();
+            next_x = main_character->get_next_x();
+            next_y = main_character->get_next_y();
 
-        // monsters early move
-        for (auto monster : monsters){
-            monster->early_move(pos_x, pos_y);
-        }
-        // main character early move
-        main_character->early_move();
-
-        int next_x = main_character->get_next_x();
-        int next_y = main_character->get_next_y();
-
-        for(auto it=monsters.begin(); it!=monsters.end(); ) {
-            Monster* monster = (*it);
-
-            if(next_x == monster->get_x() && next_y == monster->get_y()) {
-                // check if main character kill monsters
-                mainCharacter_attack( main_character, monster);
-            }else if ( next_x == monster->get_next_x() && next_y == monster->get_next_y()){
-                // check if monster kill main character
-                monster_attack(monster, main_character);
-                if (main_character->is_dead()){
-                    // exit(0); // game over
-                }
+            for(auto monster : monsters) {
+                monster->early_move(pos_x, pos_y);
+                if(next_x == monster->get_x() && next_y == monster->get_y()) {
+                    // check if main character kill monsters
+                    mainCharacter_attack( main_character, monster);
+                }else if (next_x == monster->get_next_x() && next_y == monster->get_next_y()){
+                    // check if monster kill main character
+                    monster_attack(monster, main_character);
+                } 
             }
-            it++;
+            if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD || game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::SHOP_FLAG) {
+                        main_character->move();
+            }
+            else if(main_character->shovable(game_map->get_block(next_x / GRID_SIZE, next_y / GRID_SIZE))) {
+                game_map->delete_wall(next_x / GRID_SIZE, next_y / GRID_SIZE, main_character->get_shovel_img());
+                main_character->stuck();
+            }
+            else {
+                main_character->stuck();
+            }
+
+        }else{
+            // already move;
+            for (auto monster : monsters){
+                 monster->early_move(pos_x, pos_y);
+                 if (pos_x == monster->get_next_x() && pos_y == monster->get_next_y()){
+                    monster_attack(monster, main_character); 
+                 }
+            }
         }
-        // check whether there is a wall.
+       
+        // monster next-step
         set<pair<int, int>> pos_set;
         for (auto monster : monsters){
             int idx_x = monster->get_next_x() / GRID_SIZE;
@@ -323,40 +345,74 @@ int GameWindow::game_update()
                 }
             }
         }
-        if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD || game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::SHOP_FLAG) {
-             main_character->move();
-        }
-        else if(main_character->shovable(game_map->get_block(next_x / GRID_SIZE, next_y / GRID_SIZE))) {
-            game_map->delete_wall(next_x / GRID_SIZE, next_y / GRID_SIZE, main_character->get_shovel_img());
-            main_character->stuck();
-        }
-        else {
-            main_character->stuck();
-        }
-        // find coin;
-        for (auto it=coins.begin(); it!=coins.end(); ){
-            if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
-                main_character->find_money((*it)->get_value());
-                Coin* coin = (*it);
-                delete coin;
-                it = coins.erase(it);
+        tempo_acc = UN_CERTAIN;
+        beat_cnt = 0;
+    }else if (beat_cnt >= 0){
+        // moved good.
+        // character move, monster stayed.
 
-            }else it++;
-        }
-        // find item;
-        for (auto it=items.begin(); it!=items.end(); it++){
-            if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
-                    main_character->find_item((*it));
-                    it = items.erase(it);
+        // main character next-step
+        // 1. kill monster 
+        // 2. stucked by wall 
+        // 3. remove wall
+        // 4. move normally
+        if (main_character->get_tmp_dir()!=NON){
+            tempo_acc = GOOD;
+
+            main_character->early_move();
+            next_x = main_character->get_next_x();
+            next_y = main_character->get_next_y();
+            for (auto monster : monsters){
+                if (next_x == monster->get_x() && next_y == monster->get_y()){
+                    mainCharacter_attack( main_character, monster);
+                }
+            }
+            if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::ROAD || game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::SHOP_FLAG) {
+                    main_character->move();
+            }
+            else if(main_character->shovable(game_map->get_block(next_x / GRID_SIZE, next_y / GRID_SIZE))) {
+                game_map->delete_wall(next_x / GRID_SIZE, next_y / GRID_SIZE, main_character->get_shovel_img());
+                main_character->stuck();
+            }
+            else {
+                main_character->stuck();
             }
         }
-        beat_cnt = 0;
-    }else if (beat_cnt >= (BEAT_PER_TEMPO/2)){
-        // character can move!
-    }else {
-        // missed!!
-    }
 
+    }else {
+        // moved missed.
+        if (main_character->get_tmp_dir() != NON){
+            tempo_acc = BAD;
+            tempo_heart->miss_tempo();
+            main_character->stuck();
+        }
+    }
+    // after move. 
+
+    // find coin;
+    for (auto it=coins.begin(); it!=coins.end(); ){
+        if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
+            main_character->find_money((*it)->get_value());
+            Coin* coin = (*it);
+            delete coin;
+            it = coins.erase(it);
+
+        }else it++;
+    }
+    // find item;
+    for (auto it=items.begin(); it!=items.end(); it++){
+        if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
+            Item* ret_item = main_character->find_item((*it));
+            it = items.erase(it);
+            if (ret_item != NULL) {
+                // put the return item to original position.
+                ret_item->release(pos_x, pos_y);
+                items.push_back(ret_item);
+                
+            }
+            break;
+        }
+    }
 
     // bombing items;
     for (auto it=bombing_items.begin(); it!=bombing_items.end();){
@@ -380,7 +436,6 @@ int GameWindow::game_update()
         }
 
         if ((*it)->need_recycle()){
-            cout << bombing_items.size() << endl;
             it = bombing_items.erase(it);
         }else it++;
     }
@@ -505,11 +560,6 @@ int GameWindow::process_event()
             // }
             for (auto bombing_item : bombing_items){
                 bombing_item->pass_beat();
-            }
-            if (beat_cnt != BEAT_PER_TEMPO) { 
-                // this region determine how good the player should match the tempo,
-                // so that the main_character can move
-                // main_character->change_dir(NON);
             }
         }
     }

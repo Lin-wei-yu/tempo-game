@@ -51,7 +51,10 @@ Range Item::get_range(){
 string Item::get_command(){
     return using_command;
 }
-void Item::release(int x, int y){}
+void Item::release(int x, int y){
+    pos_x = x;
+    pos_y = y;
+}
 bool Item::need_recycle(){
     return is_demaged;
 }

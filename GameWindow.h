@@ -61,9 +61,9 @@ const float FPS = 120;
 // total number of level
 const int LevelNum = 4;
 
-// 1 coin every 2 seconds
-// const int CoinSpeed = FPS * 2;
-// const int Coin_Time_Gain = 1;
+
+
+
 using namespace std;
 class GameWindow
 {

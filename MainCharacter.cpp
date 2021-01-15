@@ -12,13 +12,11 @@ MainCharacter::MainCharacter(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& numbe
     num_coin = 0;
     next_x = pos_x;
     next_y = pos_y;
-    cur_tempo = 0;
     cur_action = 0;
     beat_cnt = 0;
     jumping = false;
     tmp_dir = NON;
     move_status = stay;
-    body_status = healthy;
 }
 MainCharacter::~MainCharacter(){
 }
@@ -37,7 +35,7 @@ void MainCharacter::draw(){
     // al_draw_scaled_bitmap(img, 0, 0, w/2, h/2, pos_x, pos_y - CHARACTER_OFFSET, w/2, h/2, 0);
 }
 void MainCharacter::move(){
-    if (move_status == leave && body_status == healthy){
+    if (move_status == leave){
         if (pos_x != next_x || pos_y != next_y){
             jumping = true;
         }
@@ -45,63 +43,54 @@ void MainCharacter::move(){
         pos_y = next_y;
     }
     move_status = stay;
-    body_status = healthy;
     tmp_dir = NON;
 }
 void MainCharacter::stuck(){
     move_status = stay;
-    body_status = healthy;
     tmp_dir = NON;
 }
 void MainCharacter::early_move(){
-    cur_tempo ++;
-    if (cur_tempo == tempo){
-        move_status = leave;
-        body_status = healthy;
-        // waking path
-        switch (tmp_dir)
-        {
-            case UP:
-                next_x = pos_x;
-                next_y = pos_y - GRID_SIZE;
-                break;
-            case DOWN:
-                next_x = pos_x;
-                next_y = pos_y + GRID_SIZE;
-                break;
-            case LEFT:
-                next_x = pos_x - GRID_SIZE;
-                next_y = pos_y;
-                break;
-            case RIGHT:
-                next_x = pos_x + GRID_SIZE;
-                next_y = pos_y;
-                break;
-            default:
-                next_x = pos_x;
-                next_y = pos_y;
-                break;
-        }
-        tmp_dir = NON;
-        cur_tempo = 0;
+    move_status = leave;
+    // waking path
+    switch (tmp_dir)
+    {
+        case UP:
+            next_x = pos_x;
+            next_y = pos_y - GRID_SIZE;
+            break;
+        case DOWN:
+            next_x = pos_x;
+            next_y = pos_y + GRID_SIZE;
+            break;
+        case LEFT:
+            next_x = pos_x - GRID_SIZE;
+            next_y = pos_y;
+            break;
+        case RIGHT:
+            next_x = pos_x + GRID_SIZE;
+            next_y = pos_y;
+            break;
+        default:
+            next_x = pos_x;
+            next_y = pos_y;
+            break;
     }
-    else {
-        move_status = stay;
-    }
-
+    tmp_dir = NON;
+        
     // printf("main:");
     // printf("%d %d %d %d",pos_x,pos_y,next_x,next_y);
     // printf("\n");
 }
 void MainCharacter::attack(){
     move_status = stay;
+    
 }
 void MainCharacter::change_dir(DIR dir){
-    tmp_dir = dir; 
+    if (tempo_acc == UN_CERTAIN) tmp_dir = dir; 
 }
 void MainCharacter::be_attacked(float harm){
     remaining_lives = remaining_lives - harm;
-    body_status = injured;
+    //body_status = injured;
 }
 bool MainCharacter::is_dead(){
     return (remaining_lives <= 0);
@@ -118,8 +107,22 @@ int MainCharacter::get_next_y(){
 void MainCharacter::find_money(int num){
     num_coin += num;
 }
-void MainCharacter::find_item(Item* item){
-    item_list[item->get_type()].push_back(item);
+Item* MainCharacter::find_item(Item* item){
+    Item* ret_item = NULL;
+    if (item->get_type() == bomb){
+        item_list[item->get_type()].push_back(item);
+    }else{
+        /*shovel, attack_tool or torch */
+        if (item_list[item->get_type()].empty()){
+            item_list[item->get_type()].push_back(item);
+        }else {
+            auto it = item_list[item->get_type()].begin();
+            ret_item = (*it);
+            item_list[item->get_type()].erase(it);
+            item_list[item->get_type()].push_back(item);
+        }
+    }
+    return ret_item;
 }
 bool MainCharacter::shovable(Block block){
     for (auto shovel : item_list[shovel]){
@@ -223,4 +226,7 @@ Item* MainCharacter::release_bomb(string command){
         }else it++;
     }
     return NULL;
+}
+DIR MainCharacter::get_tmp_dir(){
+    return tmp_dir;
 }

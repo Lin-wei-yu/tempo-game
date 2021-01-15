@@ -21,5 +21,6 @@ typedef enum _DIR {UP, DOWN, LEFT, RIGHT, NON} DIR;
 #define DIR_KINDS 4
 // for tempo
 #define BEAT_PER_TEMPO 8
-
+typedef enum _TEMPO_ACC {BAD, GOOD, PERFECT, UN_CERTAIN} TEMPO_ACC;
+extern TEMPO_ACC tempo_acc;
 #endif // GLOBAL_H_INCLUDED
