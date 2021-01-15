@@ -162,7 +162,7 @@ void GameWindow::game_init()
     al_reserve_samples(3);
 
     //load music
-    sample = al_load_sample("assets/music/zone1_1_1.ogg");
+    sample = al_load_sample("assets/sound/zone1_1_1.ogg");
     startSound = al_create_sample_instance(sample);
     al_set_sample_instance_playmode(startSound, ALLEGRO_PLAYMODE_ONCE);
     al_attach_sample_instance_to_mixer(startSound, al_get_default_mixer());
