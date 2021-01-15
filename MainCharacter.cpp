@@ -118,10 +118,12 @@ Item* MainCharacter::find_item(Item* item){
         }else {
             auto it = item_list[item->get_type()].begin();
             ret_item = (*it);
+            ret_item->set_value(0);
             item_list[item->get_type()].erase(it);
             item_list[item->get_type()].push_back(item);
         }
     }
+    num_coin -= item->get_value();
     return ret_item;
 }
 void MainCharacter::buy_items(Item* item){

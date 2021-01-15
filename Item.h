@@ -12,6 +12,7 @@ public:
     Item(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img);
     virtual void draw();
     int get_value() { return value; };
+    void set_value(int value) { this->value = value; };
     void show(int x, int y, float enlarge_ratio);
     ItemType get_type();
     int get_level();

@@ -436,14 +436,16 @@ int GameWindow::game_update()
     // find item;
     for (auto it=items.begin(); it!=items.end(); it++){
         if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
-            Item* ret_item = main_character->find_item((*it));
-            ///////
-            items.erase(it);
-            if (ret_item != NULL) {
-                // put the return item to original position.
-                ret_item->release(pos_x, pos_y);
-                items.push_back(ret_item);
-                
+            if((*it)->get_value() <= main_character->get_num_coin()) {
+                Item* ret_item = main_character->find_item((*it));
+                ///////
+                items.erase(it);
+                if (ret_item != NULL) {
+                    // put the return item to original position.
+                    ret_item->release(pos_x, pos_y);
+                    items.push_back(ret_item);
+                    
+                }
             }
             break;
         }
