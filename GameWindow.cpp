@@ -267,14 +267,14 @@ void GameWindow::game_begin()
     main_character = new Aria(character_imgs["aria"], number_imgs, heart_imgs, other_imgs);
 
     //test
-    main_character->find_item(new Shovel(item_imgs["shovel"],item_imgs["shovel_slot"]));
-    main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"], other_imgs["explosion"]));
-    main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"], other_imgs["explosion"]));
-    main_character->find_item(new Dagger(item_imgs["dagger"],item_imgs["attack_slot"]));
-    main_character->find_item(new Torch(item_imgs["torch"],item_imgs["torch_slot"]));
+    main_character->find_item(new Shovel(item_imgs["shovel"],item_imgs["shovel_slot"], number_imgs, GRID_SIZE * 24,GRID_SIZE * 4));
+    main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"], other_imgs["explosion"], number_imgs, GRID_SIZE * 24,GRID_SIZE * 4));
+    main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"], other_imgs["explosion"], number_imgs, GRID_SIZE * 24,GRID_SIZE * 4));
+    main_character->find_item(new Dagger(item_imgs["dagger"],item_imgs["attack_slot"], number_imgs, GRID_SIZE * 24,GRID_SIZE * 4));
+    main_character->find_item(new Torch(item_imgs["torch"],item_imgs["torch_slot"], number_imgs, GRID_SIZE * 24,GRID_SIZE * 4));
     // main_character->find_item(new LongSword(item_imgs["longsword"],item_imgs["attack_slot"]));
     // main_character->find_item(new AdvancedShovel(item_imgs["advanced_shovel"],item_imgs["shovel_slot"]));
-    main_character->find_item(new AdvancedTorch(item_imgs["advanced_torch"],item_imgs["torch_slot"]));
+    main_character->find_item(new AdvancedTorch(item_imgs["advanced_torch"],item_imgs["torch_slot"], number_imgs, GRID_SIZE * 24,GRID_SIZE * 4));
 
 
     items.push_back(new AdvancedShovel(item_imgs["advanced_shovel"],item_imgs["shovel_slot"], number_imgs, GRID_SIZE * 24,GRID_SIZE * 4));
@@ -438,7 +438,7 @@ int GameWindow::game_update()
         if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
             Item* ret_item = main_character->find_item((*it));
             ///////
-            it = items.erase(it);
+            items.erase(it);
             if (ret_item != NULL) {
                 // put the return item to original position.
                 ret_item->release(pos_x, pos_y);

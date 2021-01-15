@@ -6,8 +6,8 @@ MainCharacter::MainCharacter(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& numbe
     this -> heart_imgs = heart_imgs;
     this -> coin_img = other_imgs["coin_icon"];
     this -> alphabet_img = other_imgs["alphabet"];
-    pos_x = GRID_SIZE * 10;
-    pos_y = GRID_SIZE * 10;
+    pos_x = GRID_SIZE * 24;
+    pos_y = GRID_SIZE * 5;
     power = 1;
     num_coin = 10;
     next_x = pos_x;
