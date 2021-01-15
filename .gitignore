@@ -10,7 +10,6 @@ allegro*
 *.jpg
 *.wav
 *.ogg
-*.ttf
 *.otf
 *.txt
 *.db
@@ -21,7 +20,6 @@ assets/entities/*
 assets/gui/*
 assets/items/*
 assets/level/*
-assets/mainmenu/*
 assets/music/*
 assets/particles/*
 assets/sounds/*

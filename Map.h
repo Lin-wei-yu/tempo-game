@@ -9,6 +9,7 @@
 #include "global.h"
 #include <fstream>
 #include <string>
+#include <stdlib.h>
 #include "Block.h"
 using namespace std;
 
@@ -17,13 +18,14 @@ public:
     Map();
     ~Map();
 
-    void draw();
+    void draw_block(int character_x, int character_y);
+    void draw(){};
     void pass_beat();
     Block get_block(int x, int y);
     void delete_wall(int x, int y, ALLEGRO_BITMAP* shovel_img);
     BlockType map_type[NUM_OF_HEIGHT][NUM_OF_WIDTH];
 private:
-    vector<Block> blocks;
+    Block blocks[WINDOW_HEIGHT/GRID_SIZE][WINDOW_WIDTH/GRID_SIZE];
     vector<ALLEGRO_BITMAP*> block_vec;
 };
 

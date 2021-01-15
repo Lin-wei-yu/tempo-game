@@ -5,7 +5,7 @@
 using namespace std;
 class Bomb: public Item{
 public:
-    Bomb(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img, ALLEGRO_BITMAP* explosion_img, int x, int y);
+    Bomb(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img, ALLEGRO_BITMAP* explosion_img,  vector<ALLEGRO_BITMAP*> number_imgs, int x, int y);
     Bomb(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img, ALLEGRO_BITMAP* explosion_img);
     ~Bomb(){};
     void draw() override;

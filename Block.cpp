@@ -1,6 +1,6 @@
 #include "Block.h"
 #include <stdlib.h>
-Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img, ALLEGRO_BITMAP *torch_img)
+Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img, ALLEGRO_BITMAP *torch_img, bool have_torch)
 {
     pos_x = x;
     pos_y = y;
@@ -34,31 +34,94 @@ Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img, ALLEGRO_BITMAP *
     tempo = 2;
     beat_of_change = (BEAT_PER_TEMPO*tempo)/num_action;
     num_action = 4;
-    if((rand() % 100 )< 5) have_torch = true;
+    this->have_torch = have_torch;
+    in_vision = false;
+    is_visited = false;
 }
 
-void Block::draw() {
-    if(type != BlockType::BACKGROUND) {
-        if(type != BlockType::DOOR) {
-            al_draw_scaled_bitmap(img, 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
-            // draw torch
-            if(type != BlockType::ROAD && type != BlockType::SHOP_FLAG) {
-                if(have_torch) al_draw_scaled_bitmap(torch_in_wall, 0 + 12 * cur_action, 0, TORCH_SIZE, GRID_SIZE, pos_x + TORCH_OFFSET, pos_y - GRID_OFFSET / 2, TORCH_SIZE, GRID_SIZE, 0);
+void Block::draw_block(int character_x, int character_y) {
+    if(!is_visited) {
+        // in vision
+        if(in_vision) { 
+            if(type != BlockType::BACKGROUND) {
+                if(type != BlockType::DOOR) {
+                    al_draw_scaled_bitmap(img, 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
+                    // draw torch
+                    if(type != BlockType::ROAD && type != BlockType::SHOP_FLAG) {
+                        if(have_torch) al_draw_scaled_bitmap(torch_in_wall, 0 + 12 * cur_action, 0, TORCH_SIZE, GRID_SIZE, pos_x + TORCH_OFFSET, pos_y - GRID_OFFSET / 2, TORCH_SIZE, GRID_SIZE, 0);
+                    }
+                }
+                else
+                { // if door, put floor first then put door
+                    al_draw_scaled_bitmap(al_load_bitmap("assets/block/boss_floor_A.png"), 0, 0, GRID_SIZE, GRID_SIZE, pos_x, pos_y, GRID_SIZE, GRID_SIZE, 0);
+                    al_draw_scaled_bitmap(img, 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
+                }
+            }
+            is_visited = true; 
+        }
+        // out of vision
+        else {
+            if(type != BlockType::BACKGROUND) {
+                if(type != BlockType::DOOR) {
+                    al_draw_tinted_scaled_bitmap(img, al_map_rgba_f(0., 0., 0., 1), 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
+                    // draw torch
+                    if(type != BlockType::ROAD && type != BlockType::SHOP_FLAG) {
+                        if(have_torch) al_draw_tinted_scaled_bitmap(torch_in_wall, al_map_rgba_f(0., 0., 0., 1), 0 + 12 * cur_action, 0, TORCH_SIZE, GRID_SIZE, pos_x + TORCH_OFFSET, pos_y - GRID_OFFSET / 2, TORCH_SIZE, GRID_SIZE, 0);
+                    }
+                }
+                else
+                { // if door, put floor first then put door
+                    al_draw_tinted_scaled_bitmap(al_load_bitmap("assets/block/boss_floor_A.png"), al_map_rgba_f(0., 0., 0., 1), 0, 0, GRID_SIZE, GRID_SIZE, pos_x, pos_y, GRID_SIZE, GRID_SIZE, 0);
+                    al_draw_tinted_scaled_bitmap(img, al_map_rgba_f(0., 0., 0., 1), 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
+                }
             }
         }
-        else
-        { // if door, put floor first then put door
-            al_draw_scaled_bitmap(al_load_bitmap("assets/block/boss_floor_A.png"), 0, 0, GRID_SIZE, GRID_SIZE, pos_x, pos_y, GRID_SIZE, GRID_SIZE, 0);
-            al_draw_scaled_bitmap(img, 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
+    }
+    else {
+        // in vision
+        if(in_vision) { 
+            if(type != BlockType::BACKGROUND) {
+                if(type != BlockType::DOOR) {
+                    al_draw_scaled_bitmap(img, 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
+                    // draw torch
+                    if(type != BlockType::ROAD && type != BlockType::SHOP_FLAG) {
+                        if(have_torch) al_draw_scaled_bitmap(torch_in_wall, 0 + 12 * cur_action, 0, TORCH_SIZE, GRID_SIZE, pos_x + TORCH_OFFSET, pos_y - GRID_OFFSET / 2, TORCH_SIZE, GRID_SIZE, 0);
+                    }
+                }
+                else
+                { // if door, put floor first then put door
+                    al_draw_scaled_bitmap(al_load_bitmap("assets/block/boss_floor_A.png"), 0, 0, GRID_SIZE, GRID_SIZE, pos_x, pos_y, GRID_SIZE, GRID_SIZE, 0);
+                    al_draw_scaled_bitmap(img, 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
+                }
+            }
+            is_visited = true; 
+        }
+        // out of vision
+        else {
+            if(type != BlockType::BACKGROUND) {
+                if(type != BlockType::DOOR) {
+                    al_draw_tinted_scaled_bitmap(img, al_map_rgba_f(0.6, 0.6, 0.6, 1), 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
+                    // draw torch
+                    if(type != BlockType::ROAD && type != BlockType::SHOP_FLAG) {
+                        if(have_torch) al_draw_tinted_scaled_bitmap(torch_in_wall, al_map_rgba_f(0.6, 0.6, 0.6, 1), 0 + 12 * cur_action, 0, TORCH_SIZE, GRID_SIZE, pos_x + TORCH_OFFSET, pos_y - GRID_OFFSET / 2, TORCH_SIZE, GRID_SIZE, 0);
+                    }
+                }
+                else
+                { // if door, put floor first then put door
+                    al_draw_tinted_scaled_bitmap(al_load_bitmap("assets/block/boss_floor_A.png"), al_map_rgba_f(0.6, 0.6, 0.6, 1), 0, 0, GRID_SIZE, GRID_SIZE, pos_x, pos_y, GRID_SIZE, GRID_SIZE, 0);
+                    al_draw_tinted_scaled_bitmap(img, al_map_rgba_f(0.6, 0.6, 0.6, 1), 0, 0, GRID_SIZE, GRID_SIZE + GRID_OFFSET, pos_x, pos_y, GRID_SIZE, GRID_SIZE + GRID_OFFSET, 0);
+                }
+            }
         }
     }
+}
+void Block::draw_shovel() {
     // draw shovel
     if(is_shovel) {
         al_draw_scaled_bitmap(shovel_img, 0, 0, GRID_SIZE, GRID_SIZE, pos_x, pos_y, GRID_SIZE, GRID_SIZE, 0);
         is_shovel = false;
     }
 }
-
 
 int Block::get_level()
 {

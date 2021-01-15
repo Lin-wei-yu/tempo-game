@@ -4,7 +4,7 @@
 
 class AdvancedShovel: public Item{
 public:
-    AdvancedShovel(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img, int x, int y);
+    AdvancedShovel(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img, vector<ALLEGRO_BITMAP*> number_imgs, int x, int y);
     AdvancedShovel(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img );
     ~AdvancedShovel(){};
 private:

@@ -1,12 +1,14 @@
 #include "Bomb.h"
 
-Bomb::Bomb(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img, ALLEGRO_BITMAP* explosion_img, int x, int y):Item(img, slot_img){
+Bomb::Bomb(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img, ALLEGRO_BITMAP* explosion_img, vector<ALLEGRO_BITMAP*> number_imgs, int x, int y):Item(img, slot_img){
     //
     pos_x = x;
     pos_y = y;
     item_type = bomb;
     item_level = 1;
     num_animation = 5;
+    this->value = 0;
+    this->number_imgs = number_imgs;
     //
     power = 1;
     using_command = "space";
@@ -19,7 +21,7 @@ Bomb::Bomb(ALLEGRO_BITMAP* img, ALLEGRO_BITMAP* slot_img, ALLEGRO_BITMAP* explos
     explode_animation = 8;
     range.build_range(1, 1, 1, 1);
 }
-Bomb::Bomb(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img, ALLEGRO_BITMAP* explosion_img ):Item(img, slot_img){
+Bomb::Bomb(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img, ALLEGRO_BITMAP* explosion_img):Item(img, slot_img){
     //
     item_type = bomb;
     item_level = 1;

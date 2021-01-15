@@ -4,7 +4,7 @@
 
 class Shovel: public Item{
 public:
-    Shovel(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img, int x, int y );
+    Shovel(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img, vector<ALLEGRO_BITMAP*> number_imgs, int x, int y);
     Shovel(ALLEGRO_BITMAP* img,ALLEGRO_BITMAP* slot_img );
     ~Shovel(){};
 private:

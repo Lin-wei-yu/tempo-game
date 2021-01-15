@@ -6,10 +6,10 @@ MainCharacter::MainCharacter(ALLEGRO_BITMAP* img, vector<ALLEGRO_BITMAP*>& numbe
     this -> heart_imgs = heart_imgs;
     this -> coin_img = other_imgs["coin_icon"];
     this -> alphabet_img = other_imgs["alphabet"];
-    pos_x = GRID_SIZE * 24;
-    pos_y = GRID_SIZE * 3;
+    pos_x = GRID_SIZE * 10;
+    pos_y = GRID_SIZE * 10;
     power = 1;
-    num_coin = 0;
+    num_coin = 10;
     next_x = pos_x;
     next_y = pos_y;
     cur_action = 0;
@@ -25,11 +25,11 @@ void MainCharacter::draw(){
     // draw chracter
     int w = al_get_bitmap_width(img);
     int h = al_get_bitmap_height(img);
-    int sw = w / num_action; 
+    int sw = w / num_action;
     int sh = h / 2;
     int offset_y = (jumping==true) ? JUMP_HIEIGHT : 0 ;
     offset_y += CHARACTER_OFFSET ;
-    
+
     al_draw_scaled_bitmap(img, sw*cur_action, 0, sw, sh, pos_x, pos_y-offset_y, sw, sh, 0);
     jumping = false;
     // al_draw_scaled_bitmap(img, 0, 0, w/2, h/2, pos_x, pos_y - CHARACTER_OFFSET, w/2, h/2, 0);
@@ -124,6 +124,17 @@ Item* MainCharacter::find_item(Item* item){
     }
     return ret_item;
 }
+void MainCharacter::buy_items(Item* item){
+    if (item->get_type() == shovel && item_list[item->get_type()].size() != 0){
+        Item* org_shovel = item_list[item->get_type()][0];
+        if (org_shovel->get_level() < item ->get_level()){
+            item_list[item->get_type()][0] = item;
+        }
+    }else {
+        item_list[item->get_type()].push_back(item);
+    }
+    num_coin -= item->get_value();
+}
 bool MainCharacter::shovable(Block block){
     for (auto shovel : item_list[shovel]){
         if (shovel->get_level() >= block.get_level() ){
@@ -181,13 +192,13 @@ void MainCharacter::draw_life_and_coin(){
         }
         remain --;
     }
-    
+
     // draw coin
     w = al_get_bitmap_width(coin_img);
     h = al_get_bitmap_height(coin_img);
     sw = w*enlarge_ratio;
     sh = h*enlarge_ratio;
-    al_draw_scaled_bitmap(coin_img, 0, 0, w, h, coin_x, life_coin_pos_y, sw, sh, 0); 
+    al_draw_scaled_bitmap(coin_img, 0, 0, w, h, coin_x, life_coin_pos_y, sw, sh, 0);
 
     // draw coin num
     w = al_get_bitmap_width(number_imgs[0]);
@@ -200,10 +211,9 @@ void MainCharacter::draw_life_and_coin(){
         int num_idx = coin_str[i] - '0';
         al_draw_scaled_bitmap(number_imgs[num_idx], 0, 0, w, h, num_x+i*(sw+gap), life_coin_pos_y+15, sw, sh, 0);
     }
-
 }
 void MainCharacter::draw_text(string str,int x, int y){
-    
+
 }
 void MainCharacter::pass_beat(){
     beat_cnt++;

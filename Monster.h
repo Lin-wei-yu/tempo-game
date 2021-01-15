@@ -11,7 +11,7 @@ using namespace std;
 
 class Monster: public Object{
 public:
-    Monster(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs);
+    Monster(ALLEGRO_BITMAP* img, map<string, ALLEGRO_BITMAP*>& heart_imgs, int x, int y);
     virtual ~Monster();
     virtual void draw();
     void change_action();

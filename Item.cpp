@@ -11,6 +11,17 @@ void Item::draw(){
     int w = al_get_bitmap_width(img);
     int h = al_get_bitmap_height(img);
     al_draw_scaled_bitmap(img, 0, 0, w, h/2, pos_x, pos_y, w, h/2, 0);
+
+    // draw coin num
+    w = al_get_bitmap_width(number_imgs[0]);
+    h = al_get_bitmap_height(number_imgs[0]);
+    
+    int gap = 2;
+    string coin_str = to_string(value);
+    for (int i=0; i<coin_str.size(); i++){
+        int num_idx = coin_str[i] - '0';
+        al_draw_scaled_bitmap(number_imgs[num_idx], 0, 0, w, h, pos_x+i*(w+gap), pos_y-10, w, h, 0);
+    }
 }
 void Item::show(int x, int y, float enlarge_ratio){
     // draw item.

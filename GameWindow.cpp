@@ -101,6 +101,46 @@ void GameWindow::load_other_imgs(){
     other_imgs["beat_marker"] = al_load_bitmap("assets/heart/TEMP_beat_marker.png");
 
 }
+void GameWindow::init_object_pos(){
+    // monster 
+    ifstream monster_pos;
+    string s;
+    monster_pos.open("map/monster.txt");
+    int w=0, h=0;
+    while(getline(monster_pos, s)) {
+        w = 0;
+        for(auto symbol: s) {
+            switch(symbol){
+                case 'A':
+                    monsters.push_back(new BlackSkeleton(monster_imgs["black_skeleton"], heart_imgs,GRID_SIZE*w,GRID_SIZE* h));
+                    break;
+                case 'B':
+                    monsters.push_back(new BlueSlime(monster_imgs["blue_slime"], heart_imgs, GRID_SIZE*w, GRID_SIZE*h));
+                    break;
+                case 'C':
+                    monsters.push_back(new GreenSlime(monster_imgs["green_slime"], heart_imgs, GRID_SIZE*w, GRID_SIZE*h));
+                    break;
+                case 'D':
+                    monsters.push_back(new RedBat(monster_imgs["red_bat"], heart_imgs, GRID_SIZE*w, GRID_SIZE*h));
+                    break;
+                case 'E':
+                    monsters.push_back(new Skeleton(monster_imgs["skeleton"], heart_imgs, GRID_SIZE*w, GRID_SIZE*h));
+                    break;
+                case 'F':
+                    monsters.push_back(new StoneGolem(monster_imgs["stone_golem"], heart_imgs, GRID_SIZE*w, GRID_SIZE*h));
+                    break;
+                case 'G':
+                    monsters.push_back(new Zombie(monster_imgs["zombie"], heart_imgs, GRID_SIZE*w, GRID_SIZE*h));
+                    break;
+                default :
+                    break;
+            }   
+            w++;
+        }
+        h++;
+    }
+    monster_pos.close();
+}
 void GameWindow::game_init()
 {   /*
     load stuff from memory
@@ -182,13 +222,12 @@ GameWindow::GameWindow()
 
     printf("Game Initializing...\n");
     // for full window
-    al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
+    // al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
     display = al_create_display(WINDOW_WIDTH, WINDOW_HEIGHT);
     event_queue = al_create_event_queue();
 
-    refresh_timer = al_create_timer(1.0 / FPS);
     quater_timer = al_create_timer(8.0 / FPS);
-    if(refresh_timer == NULL || quater_timer == NULL)
+    if(quater_timer == NULL)
         show_err_msg(-1);
 
     if (display == NULL || event_queue == NULL)
@@ -204,15 +243,12 @@ GameWindow::GameWindow()
     al_install_mouse();    // install mouse event
     al_install_audio();    // install audio event
 
-    // font = al_load_ttf_font("Caviar_Dreams_Bold.ttf",12,0); // load small font
-    // Medium_font = al_load_ttf_font("Caviar_Dreams_Bold.ttf",24,0); //load medium font
-    // Large_font = al_load_ttf_font("Caviar_Dreams_Bold.ttf",36,0); //load large font
+    // font = al_load_ttf_font("Caviar_Dreams_Bold.ttf", 72, 0); 
 
     al_register_event_source(event_queue, al_get_display_event_source(display));
     al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_mouse_event_source());
 
-    al_register_event_source(event_queue, al_get_timer_event_source(refresh_timer));
     al_register_event_source(event_queue, al_get_timer_event_source(quater_timer));
     game_init();
 }
@@ -224,31 +260,24 @@ void GameWindow::game_begin()
     */
 
     // init game objects
+    init_object_pos();
     game_map = new Map();
 
-    monsters.push_back(new GreenSlime(monster_imgs["green_slime"], heart_imgs));
-    monsters.push_back(new BlueSlime(monster_imgs["blue_slime"], heart_imgs));
-    monsters.push_back(new RedBat(monster_imgs["red_bat"], heart_imgs));
-    monsters.push_back(new Zombie(monster_imgs["zombie"], heart_imgs));
-    monsters.push_back(new Skeleton(monster_imgs["skeleton"], heart_imgs));
-    monsters.push_back(new BlackSkeleton(monster_imgs["black_skeleton"], heart_imgs));
-    monsters.push_back(new StoneGolem(monster_imgs["stone_golem"], heart_imgs));
-    
+
     main_character = new Aria(character_imgs["aria"], number_imgs, heart_imgs, other_imgs);
 
     //test
     main_character->find_item(new Shovel(item_imgs["shovel"],item_imgs["shovel_slot"]));
     main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"], other_imgs["explosion"]));
     main_character->find_item(new Bomb(item_imgs["bomb"],item_imgs["bomb_slot"], other_imgs["explosion"]));
-
-    // main_character->find_item(new Dagger(item_imgs["dagger"],item_imgs["attack_slot"]));
-    // main_character->find_item(new Torch(item_imgs["torch"],item_imgs["torch_slot"]));
+    main_character->find_item(new Dagger(item_imgs["dagger"],item_imgs["attack_slot"]));
+    main_character->find_item(new Torch(item_imgs["torch"],item_imgs["torch_slot"]));
     // main_character->find_item(new LongSword(item_imgs["longsword"],item_imgs["attack_slot"]));
     // main_character->find_item(new AdvancedShovel(item_imgs["advanced_shovel"],item_imgs["shovel_slot"]));
-    // main_character->find_item(new AdvancedTorch(item_imgs["advanced_torch"],item_imgs["torch_slot"]));
+    main_character->find_item(new AdvancedTorch(item_imgs["advanced_torch"],item_imgs["torch_slot"]));
 
 
-    items.push_back(new AdvancedShovel(item_imgs["advanced_shovel"],item_imgs["shovel_slot"],GRID_SIZE * 24,GRID_SIZE * 4));
+    items.push_back(new AdvancedShovel(item_imgs["advanced_shovel"],item_imgs["shovel_slot"], number_imgs, GRID_SIZE * 24,GRID_SIZE * 4));
     tempo_heart = new TempoHeart(other_imgs["tempo_heart"], other_imgs["beat_marker"], other_imgs["missed"]);
     
 
@@ -258,8 +287,7 @@ void GameWindow::game_begin()
     // while(al_get_sample_instance_playing(startSound));
     // al_play_sample_instance(backgroundSound);
 
-    al_start_timer(refresh_timer);
-    al_start_timer(quater_timer);
+    // al_start_timer(quater_timer);
 }
 
 int GameWindow::game_run()
@@ -311,6 +339,9 @@ int GameWindow::game_update()
             else if(main_character->shovable(game_map->get_block(next_x / GRID_SIZE, next_y / GRID_SIZE))) {
                 game_map->delete_wall(next_x / GRID_SIZE, next_y / GRID_SIZE, main_character->get_shovel_img());
                 main_character->stuck();
+            }
+            else if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::GOAL) {
+                game_status = GAME_OVER;
             }
             else {
                 main_character->stuck();
@@ -374,6 +405,9 @@ int GameWindow::game_update()
                 game_map->delete_wall(next_x / GRID_SIZE, next_y / GRID_SIZE, main_character->get_shovel_img());
                 main_character->stuck();
             }
+            else if(game_map->map_type[next_y / GRID_SIZE][next_x / GRID_SIZE] == BlockType::GOAL) {
+                game_status = GAME_OVER;
+            }
             else {
                 main_character->stuck();
             }
@@ -403,6 +437,7 @@ int GameWindow::game_update()
     for (auto it=items.begin(); it!=items.end(); it++){
         if (main_character->get_x() == (*it)->get_x() && main_character->get_y() == (*it)->get_y()){
             Item* ret_item = main_character->find_item((*it));
+            ///////
             it = items.erase(it);
             if (ret_item != NULL) {
                 // put the return item to original position.
@@ -433,8 +468,8 @@ int GameWindow::game_update()
                 && main_character->get_y() <= center_y+range.get_down() && main_character->get_y() >= center_y-range.get_up()){
                 item_attack_mainCharacter((*it), main_character);
             }
-        }
 
+        }
         if ((*it)->need_recycle()){
             it = bombing_items.erase(it);
         }else it++;
@@ -481,7 +516,6 @@ void GameWindow::game_reset()
     al_stop_sample_instance(startSound);
 
     // stop timer
-    al_stop_timer(refresh_timer);
     al_stop_timer(quater_timer);
 }
 
@@ -495,7 +529,6 @@ void GameWindow::game_destroy()
     // al_destroy_font(Medium_font);
     // al_destroy_font(Large_font);
     al_destroy_timer(quater_timer);
-    al_destroy_timer(refresh_timer);
 
     al_destroy_bitmap(icon);
 
@@ -571,7 +604,16 @@ int GameWindow::process_event()
         switch(event.keyboard.keycode) {
 
             case ALLEGRO_KEY_P:
-                /*TODO: handle pause event here*/
+                if(game_status == GAME_RUN) {
+                    game_status = GAME_PAUSE;
+                    // al_draw_text(font, al_map_rgb_f(1, 1, 1), 350, 480, 0, "PRESS \"P\" TO CONTINUE");
+                    al_flip_display();
+                    al_stop_timer(quater_timer);
+                }
+                else if(game_status == GAME_PAUSE) {
+                    game_status = GAME_RUN;
+                    al_start_timer(quater_timer);
+                }
                 break;
             case ALLEGRO_KEY_M:
                 mute = !mute;
@@ -581,16 +623,28 @@ int GameWindow::process_event()
                     al_play_sample_instance(backgroundSound);
                 break;
             case ALLEGRO_KEY_UP:
-                main_character->change_dir(UP);
+                if(game_status == GAME_RUN) main_character->change_dir(UP);
                 break;
             case ALLEGRO_KEY_DOWN:
-                main_character->change_dir(DOWN);
+                if(game_status == GAME_RUN) main_character->change_dir(DOWN);
                 break;
             case ALLEGRO_KEY_LEFT:
-                main_character->change_dir(LEFT);
+                if(game_status == GAME_RUN) main_character->change_dir(LEFT);
                 break;
             case ALLEGRO_KEY_RIGHT:
-                main_character->change_dir(RIGHT);
+                if(game_status == GAME_RUN) main_character->change_dir(RIGHT);
+                break;
+            case ALLEGRO_KEY_ENTER:
+                if(game_status == GAME_BEGIN) {
+                    game_status = GAME_RUN;
+                    al_start_timer(quater_timer);
+                }
+                // else if(game_status == GAME_RUN) {
+                //     game_status = GAME_OVER;
+                // }
+                else if(game_status == GAME_OVER) {
+                    exit(0);
+                }
                 break;
             case ALLEGRO_KEY_SPACE:
                 Item* item = main_character->release_bomb("space");
@@ -624,49 +678,71 @@ int GameWindow::process_event()
 
 void GameWindow::draw_running_map()
 {
-    // for camera.
-    // ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
-    // al_set_target_bitmap(tmp_bitmap);
-
-    // for 2 times bigger.
-    ALLEGRO_TRANSFORM prev, trans;
-    al_copy_transform(&prev, al_get_current_transform());
-    al_identity_transform(&trans);
-    al_scale_transform(&trans, 1.9, 1.9);
-    al_use_transform(&trans);
-    al_clear_to_color(BLACK);
-
-    
-    al_clear_to_color(al_map_rgb(0, 0, 0));
-    game_map -> draw();
-    for (auto monster : monsters){
-        monster->draw();
+    if(game_status == GAME_BEGIN) {
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        al_draw_scaled_bitmap(al_load_bitmap("assets/mainmenu/mainmenu.png"), 0, 0, 480, 270,  0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+        // al_draw_text(font, al_map_rgb_f(1, 1, 1), 350, 800, 0, "PRESS \"ENTER\" TO START");
+        al_flip_display();
     }
-    main_character -> draw();
-    main_character -> draw_life_and_coin();
-    main_character -> draw_items();
+    else if(game_status == GAME_RUN) {
 
-    for (auto coin : coins){
-        coin->draw();
+        // for camera.
+        ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
+        al_set_target_bitmap(tmp_bitmap);
+
+        // for 2 times bigger.
+        // ALLEGRO_TRANSFORM prev, trans;
+        // al_copy_transform(&prev, al_get_current_transform());
+        // al_identity_transform(&trans);
+        // al_scale_transform(&trans, 1.9, 1.9);
+        // al_use_transform(&trans);
+        // al_clear_to_color(BLACK);
+
+        
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        game_map -> draw_block(main_character->get_x() / GRID_SIZE, main_character->get_y() / GRID_SIZE);
+        for (auto monster : monsters){
+            monster->draw();
+        }
+        main_character -> draw();
+        
+
+        for (auto coin : coins){
+            coin->draw();
+        }
+        for (auto item: items){
+            item->draw();
+        }
+        for (auto bombing_item: bombing_items){
+            bombing_item->draw();
+        }
+        
+
+        // for 2 times bigger.
+        // al_use_transform(&prev);
+
+        // for camera.
+        float VISION_WIDTH = WINDOW_WIDTH / 3;
+        float VISION_HEIGHT = WINDOW_HEIGHT / 3;
+        al_set_target_bitmap(origin_bitmap);
+        al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
+        al_draw_tinted_scaled_bitmap(tmp_bitmap, al_map_rgba_f(1, 1, 1, 1), 
+                            main_character->get_x() - VISION_WIDTH / 2, 
+                            main_character->get_y() - VISION_HEIGHT / 2, 
+                            VISION_WIDTH, VISION_HEIGHT, 
+                            0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+        // small map
+        al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 3, 
+                            main_character->get_y() - WINDOW_HEIGHT / 3, 
+                            WINDOW_WIDTH / 1.5, WINDOW_HEIGHT / 1.5, 
+                            GRID_SIZE * 50, GRID_SIZE * 30, WINDOW_WIDTH / 8, WINDOW_HEIGHT / 8, 0);
+        main_character -> draw_life_and_coin();
+        main_character -> draw_items();
+        tempo_heart->draw();
+        al_flip_display();
     }
-    for (auto item: items){
-        item->draw();
+    else if(game_status == GAME_OVER) {
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        al_flip_display();
     }
-    for (auto bombing_item: bombing_items){
-        bombing_item->draw();
-    }
-    tempo_heart->draw();
-
-    // for 2 times bigger.
-    al_use_transform(&prev);
-
-    // for camera.
-    // al_set_target_bitmap(origin_bitmap);
-    // al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
-    // al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8, 
-    //                     main_character->get_y() - WINDOW_HEIGHT / 8, 
-    //                     WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, 
-    //                     0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-
-    al_flip_display();
 }

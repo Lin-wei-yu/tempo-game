@@ -32,6 +32,7 @@ public:
     Item* find_item(Item* item);
     bool shovable(Block block);
     void draw_items();
+    void buy_items(Item* item);
     void draw_life_and_coin();
     void change_action();
     void pass_beat();
@@ -39,6 +40,8 @@ public:
     DIR get_tmp_dir();
     ALLEGRO_BITMAP* get_shovel_img() { return item_list[ItemType::shovel][0]->get_img();};
     Item* release_bomb(string command);
+    int get_num_coin() { return num_coin; };
+    
 protected:
     // define in subclass
     int num_action;
