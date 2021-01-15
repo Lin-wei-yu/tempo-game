@@ -189,7 +189,7 @@ GameWindow::GameWindow()
     al_install_mouse();    // install mouse event
     al_install_audio();    // install audio event
 
-    font = al_load_ttf_font("Caviar_Dreams_Bold.ttf", 72, 0); 
+    // font = al_load_ttf_font("Caviar_Dreams_Bold.ttf", 72, 0); 
 
     al_register_event_source(event_queue, al_get_display_event_source(display));
     al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -456,7 +456,7 @@ int GameWindow::process_event()
             case ALLEGRO_KEY_P:
                 if(game_status == GAME_RUN) {
                     game_status = GAME_PAUSE;
-                    al_draw_text(font, al_map_rgb_f(1, 1, 1), 350, 480, 0, "PRESS \"P\" TO CONTINUE");
+                    // al_draw_text(font, al_map_rgb_f(1, 1, 1), 350, 480, 0, "PRESS \"P\" TO CONTINUE");
                     al_flip_display();
                     al_stop_timer(quater_timer);
                 }
@@ -523,22 +523,22 @@ void GameWindow::draw_running_map()
     if(game_status == GAME_BEGIN) {
         al_clear_to_color(al_map_rgb(0, 0, 0));
         al_draw_scaled_bitmap(al_load_bitmap("assets/mainmenu/mainmenu.png"), 0, 0, 480, 270,  0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-        al_draw_text(font, al_map_rgb_f(1, 1, 1), 350, 800, 0, "PRESS \"ENTER\" TO START");
+        // al_draw_text(font, al_map_rgb_f(1, 1, 1), 350, 800, 0, "PRESS \"ENTER\" TO START");
         al_flip_display();
     }
     else if(game_status == GAME_RUN) {
 
         // for camera.
-        // ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
-        // al_set_target_bitmap(tmp_bitmap);
+        ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();
+        al_set_target_bitmap(tmp_bitmap);
 
         // for 2 times bigger.
-        // ALLEGRO_TRANSFORM prev, trans;
-        // al_copy_transform(&prev, al_get_current_transform());
-        // al_identity_transform(&trans);
-        // al_scale_transform(&trans, 1.9, 1.9);
-        // al_use_transform(&trans);
-        // al_clear_to_color(BLACK);
+        ALLEGRO_TRANSFORM prev, trans;
+        al_copy_transform(&prev, al_get_current_transform());
+        al_identity_transform(&trans);
+        al_scale_transform(&trans, 1.9, 1.9);
+        al_use_transform(&trans);
+        al_clear_to_color(BLACK);
 
         
         al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -562,12 +562,12 @@ void GameWindow::draw_running_map()
         // al_use_transform(&prev);
 
         // for camera.
-        // al_set_target_bitmap(origin_bitmap);
-        // al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
-        // al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8, 
-        //                     main_character->get_y() - WINDOW_HEIGHT / 8, 
-        //                     WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, 
-        //                     0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+        al_set_target_bitmap(origin_bitmap);
+        al_clear_to_color(al_map_rgba_f(0, 0, 0, 1));
+        al_draw_scaled_bitmap(tmp_bitmap, main_character->get_x() - WINDOW_WIDTH / 8, 
+                            main_character->get_y() - WINDOW_HEIGHT / 8, 
+                            WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4, 
+                            0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
 
         al_flip_display();
     }
