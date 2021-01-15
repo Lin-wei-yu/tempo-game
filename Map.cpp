@@ -68,15 +68,15 @@ void Map::draw_block(int character_x, int character_y){
 
     for(int height_iter = 0; height_iter < WINDOW_HEIGHT / GRID_SIZE; height_iter++) {
         for(int width_iter = 0; width_iter < WINDOW_WIDTH / GRID_SIZE; width_iter++) {
-            if(abs(width_iter - character_x) + abs(height_iter - character_y) <= 3) {
+            if(abs(width_iter - character_x) <= 3 && abs(height_iter - character_y) <= 3) {
                 blocks[height_iter][width_iter].set_vision(true);
             }
         }
     }
-    for(int i = 2; i <= 3; i++) {
+    for(int i = 1; i <= 3; i++) {
         for(int height_iter = 0; height_iter < WINDOW_HEIGHT / GRID_SIZE; height_iter++) {
             for(int width_iter = 0; width_iter < WINDOW_WIDTH / GRID_SIZE; width_iter++) {
-                if(abs(width_iter - character_x) + abs(height_iter - character_y) == i) {
+                if(abs(width_iter - character_x) <= i && abs(height_iter - character_y) <= i) {
                     if(width_iter == character_x || height_iter == character_y) {
                         if(width_iter == character_x) {
                             if(height_iter < character_y) {
