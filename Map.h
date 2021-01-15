@@ -26,7 +26,8 @@ public:
     BlockType map_type[NUM_OF_HEIGHT][NUM_OF_WIDTH];
 private:
     Block blocks[WINDOW_HEIGHT/GRID_SIZE][WINDOW_WIDTH/GRID_SIZE];
-    vector<ALLEGRO_BITMAP*> block_vec;
+    
+    vector<ALLEGRO_BITMAP*> block_img_vec;
 };
 
 

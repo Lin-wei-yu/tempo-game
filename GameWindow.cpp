@@ -148,6 +148,7 @@ void GameWindow::game_init()
     char buffer[50];
 
     // load image
+    
     icon = al_load_bitmap("assets/main/icon.png");
     load_monster_imgs();
     load_coin_imgs();
@@ -156,16 +157,16 @@ void GameWindow::game_init()
     load_number_imgs();
     load_heart_imgs();
     load_other_imgs();
-
+    
     // load window
     al_set_display_icon(display, icon);
     al_reserve_samples(3);
 
     //load music
-    sample = al_load_sample("assets/sound/zone1_1_1.ogg");
-    startSound = al_create_sample_instance(sample);
-    al_set_sample_instance_playmode(startSound, ALLEGRO_PLAYMODE_ONCE);
-    al_attach_sample_instance_to_mixer(startSound, al_get_default_mixer());
+    // sample = al_load_sample("assets/sound/zone1_1_1.ogg");
+    // startSound = al_create_sample_instance(sample);
+    // al_set_sample_instance_playmode(startSound, ALLEGRO_PLAYMODE_ONCE);
+    // al_attach_sample_instance_to_mixer(startSound, al_get_default_mixer());
 
     // sample = al_load_sample("assets/music/zone5_2_2.ogg");
     // backgroundSound = al_create_sample_instance(sample);
@@ -175,6 +176,7 @@ void GameWindow::game_init()
     // create new bitmap for camera
     al_set_new_bitmap_flags(ALLEGRO_MIN_LINEAR | ALLEGRO_MAG_LINEAR | ALLEGRO_NO_PRESERVE_TEXTURE);
     tmp_bitmap = al_create_bitmap(WINDOW_WIDTH, WINDOW_HEIGHT);
+    
 }
 
 bool GameWindow::mouse_hover(int startx, int starty, int width, int height)
@@ -195,7 +197,7 @@ void GameWindow::game_play()
     msg = -1;
     game_reset();
     game_begin();
-
+    
     while(msg != GAME_EXIT)
     {
         msg = game_run();
@@ -262,7 +264,7 @@ void GameWindow::game_begin()
     // init game objects
     init_object_pos();
     game_map = new Map();
-
+    
 
     main_character = new Aria(character_imgs["aria"], number_imgs, heart_imgs, other_imgs);
 
@@ -283,7 +285,7 @@ void GameWindow::game_begin()
 
     draw_running_map();
 
-    al_play_sample_instance(startSound);
+    // al_play_sample_instance(startSound);
     // while(al_get_sample_instance_playing(startSound));
     // al_play_sample_instance(backgroundSound);
 
@@ -515,10 +517,11 @@ void GameWindow::game_reset()
 
     // stop sample instance
     // al_stop_sample_instance(backgroundSound);
-    al_stop_sample_instance(startSound);
+    // al_stop_sample_instance(startSound);
 
     // stop timer
     al_stop_timer(quater_timer);
+    
 }
 
 void GameWindow::game_destroy()
@@ -534,8 +537,8 @@ void GameWindow::game_destroy()
 
     al_destroy_bitmap(icon);
 
-    al_destroy_sample(sample);
-    al_destroy_sample_instance(startSound);
+    // al_destroy_sample(sample);
+    // al_destroy_sample_instance(startSound);
     // al_destroy_sample_instance(backgroundSound);
 
 
@@ -619,10 +622,10 @@ int GameWindow::process_event()
                 break;
             case ALLEGRO_KEY_M:
                 mute = !mute;
-                if(mute)
-                    al_stop_sample_instance(backgroundSound);
-                else
-                    al_play_sample_instance(backgroundSound);
+                // if(mute)
+                //     al_stop_sample_instance(backgroundSound);
+                // else
+                //     al_play_sample_instance(backgroundSound);
                 break;
             case ALLEGRO_KEY_UP:
                 if(game_status == GAME_RUN) main_character->change_dir(UP);
@@ -686,7 +689,8 @@ void GameWindow::draw_running_map()
         // al_draw_text(font, al_map_rgb_f(1, 1, 1), 350, 800, 0, "PRESS \"ENTER\" TO START");
         al_flip_display();
     }
-    else if(game_status == GAME_RUN) {
+    else 
+    if(game_status == GAME_RUN) {
 
         // for camera.
         ALLEGRO_BITMAP *origin_bitmap = al_get_target_bitmap();

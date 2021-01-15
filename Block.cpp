@@ -1,6 +1,6 @@
 #include "Block.h"
 #include <stdlib.h>
-Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img, ALLEGRO_BITMAP *torch_img, bool have_torch)
+Block::Block(int x, int y, BlockType type, ALLEGRO_BITMAP *img, ALLEGRO_BITMAP* torch_img, bool have_torch)
 {
     pos_x = x;
     pos_y = y;
