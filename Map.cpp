@@ -2,21 +2,21 @@
 #include <iostream>
 Map::Map(){
     for(int i = 0; i < NUM_OF_BLOCK_TYPE; i++) {
-        block_vec.push_back(NULL);
+        block_img_vec.push_back(NULL);
     }
-    block_vec[BlockType::BACKGROUND] = al_load_bitmap("assets/block/floor2.png");
-    block_vec[BlockType::WALL] = al_load_bitmap("assets/block/zone4_wall_catacomb_B.png");
-    block_vec[BlockType::ROAD] = al_load_bitmap("assets/block/boss_floor_A.png");
-    block_vec[BlockType::BREAKABLE_ONE] = al_load_bitmap("assets/block/wall_dirt_crypt_diamond2.png");
-    block_vec[BlockType::SHOP] = al_load_bitmap("assets/block/wall_shop_crypt.png");
-    block_vec[BlockType::DOOR] = al_load_bitmap("assets/block/door_front.png");
-    block_vec[BlockType::BREAKABLE_TWO] = al_load_bitmap("assets/block/wall_dirt_zone2_diamond1.png");
-    block_vec[BlockType::GOAL] = al_load_bitmap("assets/block/stairs.png");
-    block_vec[BlockType::SHOP_FLAG] = al_load_bitmap("assets/block/TEMP_shop_floor.png");
+    block_img_vec[BlockType::BACKGROUND] = al_load_bitmap("assets/block/floor2.png");
+    block_img_vec[BlockType::WALL] = al_load_bitmap("assets/block/zone4_wall_catacomb_B.png");
+    block_img_vec[BlockType::ROAD] = al_load_bitmap("assets/block/boss_floor_A.png");
+    block_img_vec[BlockType::BREAKABLE_ONE] = al_load_bitmap("assets/block/wall_dirt_crypt_diamond2.png");
+    block_img_vec[BlockType::SHOP] = al_load_bitmap("assets/block/wall_shop_crypt.png");
+    block_img_vec[BlockType::DOOR] = al_load_bitmap("assets/block/door_front.png");
+    block_img_vec[BlockType::BREAKABLE_TWO] = al_load_bitmap("assets/block/wall_dirt_zone2_diamond1.png");
+    block_img_vec[BlockType::GOAL] = al_load_bitmap("assets/block/stairs.png");
+    block_img_vec[BlockType::SHOP_FLAG] = al_load_bitmap("assets/block/TEMP_shop_floor.png");
     ALLEGRO_BITMAP* torch_in_wall = al_load_bitmap("assets/block/wall_torch.png");
     ifstream input_block_type;
     ifstream input_torch;
-    bool have_torch[WINDOW_HEIGHT][WINDOW_WIDTH];
+    bool have_torch[WINDOW_HEIGHT/GRID_SIZE][WINDOW_WIDTH/GRID_SIZE];
     string s;
 
     // input torch
@@ -40,11 +40,11 @@ Map::Map(){
         for(auto symbol: s) {
             if((BlockType)(symbol - '0') == BlockType::ROAD || (BlockType)(symbol - '0') == BlockType::GOAL || (BlockType)(symbol - '0') == BlockType::SHOP_FLAG) {
                 // blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]));
-                blocks[height_iter][width_iter] = Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]);
+                blocks[height_iter][width_iter] = Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter, (BlockType)(symbol - '0'), block_img_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]);
             }
             else {
                 // blocks.push_back(Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter - GRID_OFFSET, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]));
-                blocks[height_iter][width_iter] = Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter - GRID_OFFSET, (BlockType)(symbol - '0'), block_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]);
+                blocks[height_iter][width_iter] = Block(GRID_SIZE * width_iter, GRID_SIZE * height_iter - GRID_OFFSET, (BlockType)(symbol - '0'), block_img_vec[(BlockType)(symbol-'0')], torch_in_wall, have_torch[height_iter][width_iter]);
             }
             map_type[height_iter][width_iter] = (BlockType)(symbol - '0');
             width_iter++;
@@ -52,6 +52,7 @@ Map::Map(){
         height_iter++;
     }
     input_block_type.close();
+    input_torch.close();
 }
 Map::~Map(){
 

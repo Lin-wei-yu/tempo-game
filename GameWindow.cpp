@@ -162,7 +162,7 @@ void GameWindow::game_init()
     al_reserve_samples(3);
 
     //load music
-    sample = al_load_sample("assets/sound/zone1_1_1.ogg");
+    sample = al_load_sample("assets/sound/zone1_1_2.ogg");
     startSound = al_create_sample_instance(sample);
     al_set_sample_instance_playmode(startSound, ALLEGRO_PLAYMODE_ONCE);
     al_attach_sample_instance_to_mixer(startSound, al_get_default_mixer());
@@ -243,7 +243,7 @@ GameWindow::GameWindow()
     al_install_mouse();    // install mouse event
     al_install_audio();    // install audio event
 
-    // font = al_load_ttf_font("Caviar_Dreams_Bold.ttf", 72, 0); 
+    font = al_load_ttf_font("Caviar_Dreams_Bold.ttf", 72, 0); 
 
     al_register_event_source(event_queue, al_get_display_event_source(display));
     al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -683,7 +683,7 @@ void GameWindow::draw_running_map()
     if(game_status == GAME_BEGIN) {
         al_clear_to_color(al_map_rgb(0, 0, 0));
         al_draw_scaled_bitmap(al_load_bitmap("assets/mainmenu/mainmenu.png"), 0, 0, 480, 270,  0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
-        // al_draw_text(font, al_map_rgb_f(1, 1, 1), 350, 800, 0, "PRESS \"ENTER\" TO START");
+        al_draw_text(font, al_map_rgb_f(1, 1, 1), 350, 800, 0, "PRESS \"ENTER\" TO START");
         al_flip_display();
     }
     else if(game_status == GAME_RUN) {
